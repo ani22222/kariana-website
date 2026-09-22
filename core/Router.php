@@ -120,6 +120,9 @@ class Router
     public function dispatch(Request $request): Response
     {
         $requestMethod = $request->getMethod();
+        if ($requestMethod === 'HEAD') {
+            $requestMethod = 'GET';
+        }
         $requestPath = $request->getPath();
 
         foreach ($this->routes as $route) {
