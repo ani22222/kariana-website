@@ -631,8 +631,8 @@ body {
         width: 16px;
     }
     .hero-art {
-        width: min(200px, 52vw);
-        height: min(265px, 35vh);
+        width: min(210px, 52vw);
+        height: min(280px, 38vh);
     }
     .hero-book-card {
         padding: 0.95rem 0.85rem 0.8rem;
@@ -662,26 +662,54 @@ body {
         padding: 0.25rem 0.7rem;
     }
     .hero-scroll-indicator {
-        padding: 0.35rem 0 0.2rem;
-        margin-top: 0.75rem;
-        margin-bottom: 0.25rem;
+        padding: 0.25rem 0 0;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
     }
 }
 
-/* Natural Cohesive Hero Section */
+/* ============================================================
+   HERO SECTION — Full-Viewport Immersive Layout
+   Uses min-height to fill remaining viewport after header/ticker,
+   with flexbox centering so content sits naturally in the middle.
+   On short viewports where content exceeds space, it just flows.
+   ============================================================ */
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
+    /* Fill remaining viewport: 100svh minus ticker(26px) + header(~52px) + header border(2px) */
+    min-height: calc(100svh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding-top: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     will-change: transform, opacity;
 }
 
+/* Fallback for browsers without svh support */
+@supports not (min-height: 100svh) {
+    #heroSectionWrapper {
+        min-height: calc(100vh - 80px);
+    }
+}
+
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        padding-top: 2rem;
-        padding-bottom: 3.5rem;
+        /* Desktop: ticker is taller (~34px), header is taller (~60px) */
+        min-height: calc(100svh - 96px);
+        padding-top: 1.5rem;
+        padding-bottom: 2.5rem;
+    }
+}
+
+/* Small mobile screens where content naturally fills: don't force min-height */
+@media (max-height: 580px) {
+    #heroSectionWrapper {
+        min-height: auto;
+        padding-top: 0.75rem;
+        padding-bottom: 1rem;
     }
 }
 
