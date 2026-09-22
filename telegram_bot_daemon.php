@@ -232,7 +232,14 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
         ];
     }
 
-    return tgRequest('sendMessage', $params);
+    $res = tgRequest('sendMessage', $params);
+    if (!($res['ok'] ?? false)) {
+        // Fallback to plain text if Markdown parsing failed
+        botLog("[TG WARN] sendMsg with Markdown failed: " . ($res['description'] ?? 'error') . " - retrying as plain text");
+        unset($params['parse_mode']);
+        $res = tgRequest('sendMessage', $params);
+    }
+    return $res;
 }
 
 function editMsg(string $chatId, int $messageId, string $text, ?array $inlineKeyboard = null): array {
@@ -246,7 +253,13 @@ function editMsg(string $chatId, int $messageId, string $text, ?array $inlineKey
     if ($inlineKeyboard) {
         $params['reply_markup'] = ['inline_keyboard' => $inlineKeyboard];
     }
-    return tgRequest('editMessageText', $params);
+    $res = tgRequest('editMessageText', $params);
+    if (!($res['ok'] ?? false)) {
+        botLog("[TG WARN] editMsg with Markdown failed: " . ($res['description'] ?? 'error') . " - retrying as plain text");
+        unset($params['parse_mode']);
+        $res = tgRequest('editMessageText', $params);
+    }
+    return $res;
 }
 
 function answerCallback(string $callbackQueryId, string $text = ''): void {
@@ -278,10 +291,26 @@ function sendPhoto(string $chatId, string $photoPath, string $caption = ''): arr
     $err = curl_error($ch);
     curl_close($ch);
     if ($err) {
-        echo "[CURL ERROR sendPhoto] " . $err . "\n";
+        botLog("[CURL ERROR sendPhoto] " . $err);
         return ['ok' => false, 'error' => $err];
     }
-    return json_decode($res, true) ?? ['ok' => false];
+    $json = json_decode($res, true) ?? ['ok' => false];
+    if (!($json['ok'] ?? false)) {
+        botLog("[TG WARN] sendPhoto with Markdown failed: " . ($json['description'] ?? 'error') . " - retrying as plain text");
+        $ch2 = curl_init($url);
+        unset($params['parse_mode']);
+        curl_setopt_array($ch2, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $params,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 40,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $res2 = curl_exec($ch2);
+        curl_close($ch2);
+        return json_decode($res2, true) ?? ['ok' => false];
+    }
+    return $json;
 }
 
 // ---------------------------------------------------------
@@ -906,23 +935,30 @@ function renderStatusView(string $chatId, array $state): void {
 // Prompt Forwarding & Real-time Live Watcher
 // ---------------------------------------------------------
 
-function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$state): void {
+function dispatchPrompt(string $chatId, string $prompt, array &$state): ?array {
     $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
     $projName = $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
     $chatTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
     $mode = $state['mode'] ?? 'turbo';
     $model = $state['selected_model'] ?? DEFAULT_MODEL;
 
+    // Sanitize prompt for preview in markdown
+    $safePrompt = str_replace(['_', '*', '`', '['], ' ', $prompt);
+    if (mb_strlen($safePrompt) > 120) {
+        $safePrompt = mb_substr($safePrompt, 0, 117) . '...';
+    }
+
     // 1. Initial Status Message
-    $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
+    $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
               . "━━━━━━━━━━━━━━━━━━━━\n"
               . "🎯 *প্রজেক্ট:* `{$projName}`\n"
               . "💬 *চ্যাট:* `{$chatTitle}`\n"
               . "🧠 *মডেল:* `{$model}`\n"
               . "⚙️ *মোড:* " . getModeTitle($mode) . "\n"
-              . "📝 *আপনার প্রম্পট:* _{$prompt}_\n\n"
-              . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু করছে...";
-    
+              . "📝 *আপনার প্রম্পট:* _{$safePrompt}_\n\n"
+              . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু হয়েছে...\n\n"
+              . "💡 _আপনি যেকোনো মেনু বাটন ব্যবহার করতে পারেন, বট সবসময় রেসপন্সিভ থাকবে।_";
+
     $sent = sendMsg($chatId, $initText);
     $statusMsgId = $sent['result']['message_id'] ?? null;
 
@@ -946,7 +982,7 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     }
 
     $cmd = '"' . AGENT_API_BAT . '" send-message ' . escapeshellarg($convId) . ' ' . escapeshellarg($finalPrompt);
-    
+
     botLog("[AGENTAPI] Sending prompt to {$convId}...");
     $out = [];
     $code = 0;
@@ -954,16 +990,15 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     botLog("[AGENTAPI] Code: {$code}, Output: " . implode(" ", $out));
 
     if ($code !== 0) {
-        // Check for Quota or Rate Limit errors
         $errString = implode("\n", $out);
         $isQuotaError = (stripos($errString, 'quota') !== false || stripos($errString, 'rate') !== false || stripos($errString, 'limit') !== false || stripos($errString, '429') !== false);
 
         if ($isQuotaError) {
             $errText = "⚠️ *কোটা / রেট লিমিট সতর্কতা!*\n"
                      . "━━━━━━━━━━━━━━━━━━━━\n"
-                     . "বর্তমান অ্যাকাউন্টের লিমিট শেষ হয়েছে।\n"
-                     . "🟢 *টেলিগ্রাম বট ২৪ ঘণ্টা নন-স্টপ কানেক্টেড রয়েছে!*\n\n"
-                     . "👇 *নিচের বাটনে চাপ দিয়ে ব্যাকআপ অ্যাকাউন্টে সুইচ করুন অথবা মডেল পরিবর্তন করুন:*";
+                     . "বর্তমান অ্যাকাউন্টের লিমিট শেষ হয়েছে।\n"
+                     . "🟢 *টেলিগ্রাম বট ২৪ ঘণ্টা নন-স্টপ কানেক্টেড রয়েছে!*\n\n"
+                     . "👇 *নিচের বাটনে চাপ দিয়ে ব্যাকআপ অ্যাকাউন্টে সুইচ করুন অথবা মডেল পরিবর্তন করুন:*";
 
             $errKb = [
                 [['text' => '🔄 ব্যাকআপ অ্যাকাউন্ট ২-এ সুইচ করুন', 'callback_data' => 'switchacc_acc_2']],
@@ -976,112 +1011,118 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
             } else {
                 sendMsg($chatId, $errText, $errKb);
             }
-            return;
+            return null;
         }
 
-        $errText = "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . $errString . "`\n\nসরাসরি Antigravity IDE-তে চেক করুন।";
+        $errText = "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . $errString . "`\n\nসরাসরি Antigravity IDE-তে চেক করুন।";
         if ($statusMsgId) {
             editMsg($chatId, $statusMsgId, $errText);
         } else {
             sendMsg($chatId, $errText);
         }
-        return;
+        return null;
     }
 
-    // 4. Watch transcript for live updates (Wait up to 180 seconds)
-    $startTime = time();
-    $lastReportedStatus = '';
-    $finalResponseText = '';
-    $completed = false;
+    return [
+        'conv_id'          => $convId,
+        'chat_id'          => $chatId,
+        'status_msg_id'    => $statusMsgId,
+        'start_time'       => time(),
+        'initial_lines'    => $initialLineCount,
+        'last_line_read'   => $initialLineCount,
+        'last_tool_action' => '',
+        'last_edit_time'   => time(),
+        'prompt'           => $safePrompt,
+        'projName'         => $projName,
+        'chatTitle'        => $chatTitle,
+        'model'            => $model
+    ];
+}
 
-    while (time() - $startTime < 180) {
-        sleep(2);
+function checkActiveTaskProgress(array &$task): bool {
+    $convId = $task['conv_id'];
+    $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
+    if (!file_exists($transcriptFile)) {
+        return false;
+    }
 
-        if (!file_exists($transcriptFile)) {
-            continue;
+    $lines = @file($transcriptFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (!$lines) return false;
+
+    $totalLines = count($lines);
+    if ($totalLines <= $task['last_line_read']) {
+        // Check timeout (5 minutes)
+        if (time() - $task['start_time'] > 300) {
+            $timeoutMsg = "⏱️ *টাস্কটি দীর্ঘ সময় নিচ্ছে!*\n"
+                        . "━━━━━━━━━━━━━━━━━━━━\n"
+                        . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
+                        . "অ্যান্টিগ্রাভিটি ব্যাকগ্রাউন্ডে কাজ সম্পন্ন করছে। সমাপ্ত হলে চ্যাটে দেখতে পাবেন।"
+                        . getStandardLinksText();
+            sendMsg($task['chat_id'], $timeoutMsg);
+            return true;
         }
+        return false;
+    }
 
-        $lines = file($transcriptFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $totalLines = count($lines);
+    for ($i = $task['last_line_read']; $i < $totalLines; $i++) {
+        $json = json_decode($lines[$i], true);
+        if (!$json) continue;
 
-        if ($totalLines <= $initialLineCount) {
-            continue;
-        }
+        $type = $json['type'] ?? '';
+        $status = $json['status'] ?? '';
+        $source = $json['source'] ?? '';
 
-        for ($i = $initialLineCount; $i < $totalLines; $i++) {
-            $line = $lines[$i];
-            $json = json_decode($line, true);
-            if (!$json) continue;
-
-            $type = $json['type'] ?? '';
-            $status = $json['status'] ?? '';
-            $source = $json['source'] ?? '';
-
-            // Tool executions
-            if (!empty($json['tool_calls'])) {
-                foreach ($json['tool_calls'] as $tc) {
-                    $toolName = $tc['name'] ?? 'tool';
-                    $toolSummary = $tc['args']['toolSummary'] ?? $toolName;
-                    $statusUpdate = "🛠️ `{$toolName}` ({$toolSummary})";
-                    if ($statusUpdate !== $lastReportedStatus && $statusMsgId) {
-                        $lastReportedStatus = $statusUpdate;
-                        $updateMsg = "⏳ *কাজ চলমান রয়েছে...*\n"
-                                   . "━━━━━━━━━━━━━━━━━━━━\n"
-                                   . "🎯 *প্রজেক্ট:* `{$projName}`\n"
-                                   . "💬 *চ্যাট:* `{$chatTitle}`\n"
-                                   . "🧠 *মডেল:* `{$model}`\n"
-                                   . "📝 *প্রম্পট:* _{$prompt}_\n\n"
-                                   . "🔄 *বর্তমান অ্যাকশন:* {$statusUpdate}\n"
-                                   . "⏱️ *অতিবাহিত সময়:* " . (time() - $startTime) . "s";
-                        editMsg($chatId, $statusMsgId, $updateMsg);
-                    }
+        // Tool executions
+        if (!empty($json['tool_calls'])) {
+            foreach ($json['tool_calls'] as $tc) {
+                $toolName = $tc['name'] ?? 'tool';
+                $toolSummary = $tc['args']['toolSummary'] ?? $toolName;
+                $actionStr = "🛠️ `{$toolName}` ({$toolSummary})";
+                if ($actionStr !== $task['last_tool_action'] && (time() - $task['last_edit_time'] >= 3) && $task['status_msg_id']) {
+                    $task['last_tool_action'] = $actionStr;
+                    $task['last_edit_time'] = time();
+                    $updateMsg = "⏳ *কাজ চলমান রয়েছে...*\n"
+                               . "━━━━━━━━━━━━━━━━━━━━\n"
+                               . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
+                               . "💬 *চ্যাট:* `{$task['chatTitle']}`\n"
+                               . "🧠 *মডেল:* `{$task['model']}`\n"
+                               . "📝 *প্রম্পট:* _{$task['prompt']}_\n\n"
+                               . "🔄 *বর্তমান অ্যাকশন:* {$actionStr}\n"
+                               . "⏱️ *অতিবাহিত সময়:* " . (time() - $task['start_time']) . "s";
+                    editMsg($task['chat_id'], $task['status_msg_id'], $updateMsg);
                 }
             }
+        }
 
-            // Planner response final output
-            if ($source === 'MODEL' && $type === 'PLANNER_RESPONSE' && $status === 'DONE') {
-                if (!empty($json['content'])) {
-                    $finalResponseText = $json['content'];
-                    $completed = true;
-                    break 2;
-                }
+        // Completion
+        if ($source === 'MODEL' && $type === 'PLANNER_RESPONSE' && $status === 'DONE') {
+            $content = $json['content'] ?? '';
+            if (!empty($content)) {
+                $cleanText = mb_substr($content, 0, 3000);
+                $finalMsg = "✅ *কাজ সম্পন্ন হয়েছে! (Task Complete)*\n"
+                          . "━━━━━━━━━━━━━━━━━━━━\n"
+                          . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
+                          . "💬 *চ্যাট:* `{$task['chatTitle']}`\n"
+                          . "🧠 *মডেল:* `{$task['model']}`\n\n"
+                          . $cleanText
+                          . getStandardLinksText();
+
+                $keyboard = [
+                    [
+                        ['text' => '💬 পরবর্তী নির্দেশ দিন', 'callback_data' => 'prompt_help'],
+                        ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+                    ]
+                ];
+
+                sendMsg($task['chat_id'], $finalMsg, $keyboard);
+                botLog("[COMPLETION] Task complete for conversation {$convId}");
+                return true;
             }
         }
     }
 
-    // 5. Send completion summary
-    if ($completed && !empty($finalResponseText)) {
-        $cleanText = mb_substr($finalResponseText, 0, 3000);
-        $finalMsg = "✅ *কাজ সম্পন্ন হয়েছে! (Task Complete)*\n"
-                  . "━━━━━━━━━━━━━━━━━━━━\n"
-                  . "🎯 *প্রজেক্ট:* `{$projName}`\n"
-                  . "💬 *চ্যাট:* `{$chatTitle}`\n"
-                  . "🧠 *মডেল:* `{$model}`\n\n"
-                  . $cleanText
-                  . getStandardLinksText();
-
-        $keyboard = [
-            [
-                ['text' => '💬 পরবর্তী নির্দেশ দিন', 'callback_data' => 'prompt_help'],
-                ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
-            ]
-        ];
-
-        sendMsg($chatId, $finalMsg, $keyboard);
-    } else {
-        $ongoingMsg = "🚀 *টাস্কটি Antigravity-তে প্রসেস হচ্ছে!*\n"
-                    . "━━━━━━━━━━━━━━━━━━━━\n"
-                    . "আপনার নির্দেশ অনুযায়ী ব্যাকগ্রাউন্ডে কাজ চলমান। আপনি নিশ্চিন্তে বিশ্রাম নিন।"
-                    . getStandardLinksText();
-        
-        $keyboard = [
-            [
-                ['text' => '📊 স্ট্যাটাস চেক', 'callback_data' => 'menu_status'],
-                ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
-            ]
-        ];
-        sendMsg($chatId, $ongoingMsg, $keyboard);
-    }
+    $task['last_line_read'] = $totalLines;
+    return false;
 }
 
 // ---------------------------------------------------------
@@ -1150,6 +1191,7 @@ if (in_array('--boot', $argv ?? [])) {
 }
 
 $lastHeartbeatSave = time();
+$activeTask = null;
 
 while (true) {
     try {
@@ -1160,9 +1202,16 @@ while (true) {
             $lastHeartbeatSave = time();
         }
 
+        // Check active task progress if one is running (Non-blocking background check)
+        if ($activeTask !== null) {
+            if (checkActiveTaskProgress($activeTask)) {
+                $activeTask = null;
+            }
+        }
+
         $updates = tgRequest('getUpdates', [
             'offset'  => $state['last_update_id'] + 1,
-            'timeout' => 25
+            'timeout' => 2
         ]);
 
         if (!empty($updates['result'])) {
@@ -1420,12 +1469,29 @@ while (true) {
                     continue;
                 }
 
-                // 2. Handle Text Messages
+                // 2. Handle Messages (Text & Voice)
                 if (isset($up['message'])) {
                     $msg = $up['message'];
                     $chatId = (string)($msg['chat']['id'] ?? $state['chat_id']);
                     $state['chat_id'] = $chatId;
                     saveState($state);
+
+                    // Handle Voice Messages
+                    if (isset($msg['voice'])) {
+                        $voice = $msg['voice'];
+                        $dur = $voice['duration'] ?? 0;
+                        botLog("[VOICE] Received voice message ({$dur}s) from {$chatId}");
+                        $voiceReply = "🎙️ *আপনার ভয়েস মেসেজ পেয়েছি!* ({$dur} সেকেন্ড)\n"
+                                    . "━━━━━━━━━━━━━━━━━━━━\n"
+                                    . "💡 *মোবাইল থেকে সরাসরি মুখে বলে কমান্ড দেওয়ার সহজ উপায়:*\n\n"
+                                    . "১. টেলিগ্রামের টেক্সট লেখার বক্সে ক্লিক করুন।\n"
+                                    . "২. আপনার ফোনের কীবোর্ডের (যেমন Google Gboard) নিচে স্পেসবারের পাশে থাকা 🎤 **মাইক্রোফোন আইকনে** চাপুন।\n"
+                                    . "৩. বাংলায় মুখে যা বলবেন, তা সাথে সাথে নিখুঁত বাংলা টেক্সট হয়ে যাবে।\n"
+                                    . "৪. সেন্ড বাটনে চাপলেই সাথে সাথে অ্যান্টিগ্রাভিটিতে কোডিং/কাজ শুরু হবে!\n\n"
+                                    . "📱 বিছানা থেকেই আপনি নিচের বাটন চেপে পিসির স্ক্রিনশট বা স্ট্যাটাস দেখে নিতে পারেন 🟢";
+                        sendMsg($chatId, $voiceReply);
+                        continue;
+                    }
 
                     $text = trim($msg['text'] ?? '');
                     if (empty($text)) continue;
@@ -1539,15 +1605,18 @@ while (true) {
                             }
                         }
 
-                        // Direct message: Execute directly on active project!
+                        // Direct message: Execute directly on active project via non-blocking dispatcher!
                         botLog("[PROMPT] Forwarding prompt to {$state['active_conv_id']}: {$text}");
-                        executePromptAndStreamUpdates($chatId, $text, $state);
+                        $task = dispatchPrompt($chatId, $text, $state);
+                        if ($task !== null) {
+                            $activeTask = $task;
+                        }
                     }
                 }
             }
         }
-    } catch (Exception $e) {
-        echo "[LOOP ERROR] " . $e->getMessage() . "\n";
-        sleep(3);
+    } catch (Throwable $e) {
+        botLog("[LOOP ERROR] " . $e->getMessage());
+        sleep(2);
     }
 }
