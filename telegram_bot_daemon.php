@@ -577,6 +577,82 @@ function getLatestModelResponse(string $convId): ?array {
     return null;
 }
 
+function splitIntoTelegramChunks(string $text, int $maxLen = 3400): array {
+    if (mb_strlen($text) <= $maxLen) {
+        return [$text];
+    }
+
+    $chunks = [];
+    $paragraphs = explode("\n\n", $text);
+    $currentChunk = '';
+
+    foreach ($paragraphs as $para) {
+        if (mb_strlen($para) > $maxLen) {
+            $lines = explode("\n", $para);
+            foreach ($lines as $line) {
+                if (mb_strlen($currentChunk . "\n" . $line) > $maxLen) {
+                    if (!empty(trim($currentChunk))) {
+                        $chunks[] = trim($currentChunk);
+                        $currentChunk = '';
+                    }
+                    if (mb_strlen($line) > $maxLen) {
+                        $lineChunks = mb_str_split($line, $maxLen);
+                        foreach ($lineChunks as $lc) {
+                            $chunks[] = $lc;
+                        }
+                    } else {
+                        $currentChunk = $line;
+                    }
+                } else {
+                    $currentChunk .= (empty($currentChunk) ? '' : "\n") . $line;
+                }
+            }
+        } elseif (mb_strlen($currentChunk . "\n\n" . $para) > $maxLen) {
+            if (!empty(trim($currentChunk))) {
+                $chunks[] = trim($currentChunk);
+            }
+            $currentChunk = $para;
+        } else {
+            $currentChunk .= (empty($currentChunk) ? '' : "\n\n") . $para;
+        }
+    }
+
+    if (!empty(trim($currentChunk))) {
+        $chunks[] = trim($currentChunk);
+    }
+
+    return empty($chunks) ? [$text] : $chunks;
+}
+
+function sendChunkedTelegramResponse(string $chatId, string $titleHeader, string $fullContent, ?array $finalKeyboard = null): void {
+    $chunks = splitIntoTelegramChunks($fullContent, 3400);
+    $total = count($chunks);
+
+    if ($total <= 1) {
+        $msg = $titleHeader . "\n\n" . $fullContent;
+        sendMsg($chatId, $msg, $finalKeyboard);
+        return;
+    }
+
+    for ($i = 0; $i < $total; $i++) {
+        $partNum = $i + 1;
+        $isFirst = ($i === 0);
+        $isLast = ($i === $total - 1);
+
+        if ($isFirst) {
+            $chunkMsg = "{$titleHeader} *(পর্ব {$partNum}/{$total})*\n━━━━━━━━━━━━━━━━━━━━\n\n" . $chunks[$i];
+            sendMsg($chatId, $chunkMsg, null);
+        } elseif ($isLast) {
+            $chunkMsg = "📄 *(শেষ পর্ব {$partNum}/{$total})*\n━━━━━━━━━━━━━━━━━━━━\n\n" . $chunks[$i];
+            sendMsg($chatId, $chunkMsg, $finalKeyboard);
+        } else {
+            $chunkMsg = "📄 *(পর্ব {$partNum}/{$total})*\n━━━━━━━━━━━━━━━━━━━━\n\n" . $chunks[$i];
+            sendMsg($chatId, $chunkMsg, null);
+        }
+        usleep(300000); // 300ms pause for reliable message sequence
+    }
+}
+
 function renderLatestResponseView(string $chatId, array $state): void {
     $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
     $resp = getLatestModelResponse($convId);
@@ -594,16 +670,7 @@ function renderLatestResponseView(string $chatId, array $state): void {
             . "━━━━━━━━━━━━━━━━━━━━\n"
             . "📁 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
             . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
-            . "🔢 *স্টেপ:* `{$resp['step_index']}` | ⏰ *সময়:* {$timeStr}\n"
-            . "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-    $body = $resp['content'];
-    $maxLen = 3700;
-    if (mb_strlen($body) > $maxLen) {
-        $body = mb_substr($body, 0, $maxLen) . "\n\n...(কন্টেন্ট বড় হওয়ায় স্ক্রিন থেকে বাকি অংশ সংক্ষেপিত)";
-    }
-
-    $fullText = $header . $body;
+            . "🔢 *স্টেপ:* `{$resp['step_index']}` | ⏰ *সময়:* {$timeStr}";
 
     $kb = [
         [
@@ -615,8 +682,9 @@ function renderLatestResponseView(string $chatId, array $state): void {
         ]
     ];
 
-    sendMsg($chatId, $fullText, $kb);
+    sendChunkedTelegramResponse($chatId, $header, $resp['content'], $kb);
 }
+
 
 function renderMainMenu(string $chatId, array $state): void {
     $agyOnline = isAntigravityRunning() ? "🟢 Active" : "🟡 Background";
@@ -1489,7 +1557,24 @@ while (true) {
             $lastQuotaCheck = time();
         }
 
-        // Live Watcher: Auto-stream completed Antigravity responses from transcript.jsonl
+        // 1. Dynamic Auto-Sync with Latest Active Conversation from Antigravity DB
+        static $lastConvSync = 0;
+        if (time() - $lastConvSync >= 2) {
+            $lastConvSync = time();
+            $latestConv = getLatestActiveConversation();
+            if ($latestConv && !empty($latestConv['id']) && $latestConv['id'] !== ($state['active_conv_id'] ?? '')) {
+                botLog("[AUTO-SYNC] Active conversation shifted to: {$latestConv['id']} ({$latestConv['title']})");
+                $state['active_conv_id'] = $latestConv['id'];
+                $state['active_proj_name'] = $latestConv['project'];
+                $state['active_chat_title'] = $latestConv['title'];
+                // Reset last streamed step so the response from the new conversation streams immediately!
+                $initResp = getLatestModelResponse($latestConv['id']);
+                $state['last_streamed_step'] = ($initResp && isset($initResp['step_index'])) ? max(0, $initResp['step_index'] - 1) : 0;
+                saveState($state);
+            }
+        }
+
+        // 2. Live Watcher: Auto-stream completed Antigravity responses from transcript.jsonl
         $activeConv = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
         $latestResp = getLatestModelResponse($activeConv);
         if ($latestResp && !empty($latestResp['content'])) {
@@ -1501,19 +1586,12 @@ while (true) {
                 saveState($state);
             } elseif ($curStep > $lastSent) {
                 botLog("[STREAM] Auto-streaming AI response step {$curStep} to Telegram...");
-                $cleanContent = mb_substr($latestResp['content'], 0, 3600);
-                if (mb_strlen($latestResp['content']) > 3600) {
-                    $cleanContent .= "\n\n...(কন্টেন্ট বড় হওয়ায় স্ক্রিন থেকে বাকি অংশ সংক্ষেপিত)";
-                }
 
-                $streamMsg = "🖥️ *পিসির স্ক্রিনে নতুন উত্তর (Live from Antigravity):*\n"
-                           . "━━━━━━━━━━━━━━━━━━━━\n"
-                           . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
-                           . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
-                           . "🔢 *স্টেপ:* `{$curStep}`\n"
-                           . "━━━━━━━━━━━━━━━━━━━━\n\n"
-                           . $cleanContent
-                           . getStandardLinksText();
+                $streamHeader = "🖥️ *পিসির স্ক্রিনে নতুন উত্তর (Live from Antigravity):*\n"
+                              . "━━━━━━━━━━━━━━━━━━━━\n"
+                              . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                              . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+                              . "🔢 *স্টেপ:* `{$curStep}`";
 
                 $streamKb = [
                     [
@@ -1525,11 +1603,13 @@ while (true) {
                     ]
                 ];
 
-                sendMsg($state['chat_id'], $streamMsg, $streamKb);
+                $bodyWithLinks = $latestResp['content'] . getStandardLinksText();
+                sendChunkedTelegramResponse($state['chat_id'], $streamHeader, $bodyWithLinks, $streamKb);
                 $state['last_streamed_step'] = $curStep;
                 saveState($state);
             }
         }
+
 
         $updates = tgRequest('getUpdates', [
             'offset'  => $state['last_update_id'] + 1,
