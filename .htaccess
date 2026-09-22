@@ -1,0 +1,82 @@
+# ==============================================================================
+# Kariana Quran Islamic Educational Portal & CMS
+# Optimized for Hostinger public_html, cPanel, and local XAMPP Apache
+# ==============================================================================
+
+# 1. Default Charset & Directory Options
+AddDefaultCharset UTF-8
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.php
+
+# 2. Prevent Direct HTTP Access to Sensitive Internal Directories & Files
+<IfModule mod_authz_core.c>
+    # Apache 2.4+
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "\.(sql|log|ini|env|md|json|lock)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    # Apache 2.2 Fallback
+    <FilesMatch "^\.">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    <FilesMatch "\.(sql|log|ini|env|md|json|lock)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+RewriteEngine On
+
+# Strictly protect internal application directories from direct web access
+RewriteRule ^(app|config|core|database|storage|tests|\.agents|\.git)/ - [F,L,NC]
+
+# 3. Handle Static Assets directly if file or directory exists
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Flexible Asset Rewrite for both Subfolder (XAMPP) and Root Domain (cPanel/Hostinger)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond public/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
+
+# Also check inside public/ directory if requested without /public/ prefix
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !public/ [NC]
+RewriteCond public/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+RewriteRule ^(.*)$ public/$1 [L]
+
+# 4. Front Controller Routing
+# Pass all remaining requests to index.php with original query string preserved
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# 5. Browser Caching for Performance (Core Web Vitals)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+</IfModule>
+
+# 6. Enable Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>

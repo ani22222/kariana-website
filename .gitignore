@@ -1,0 +1,15 @@
+# Binary executables
+bin/
+*.exe
+*.msi
+
+# Temporary & Log files
+*.log
+tunnel.log
+tunnel_err.log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
