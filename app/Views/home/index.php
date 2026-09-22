@@ -1,7 +1,7 @@
 <!-- ============================================================
      VAPE-INSPIRED SMOOTH HERO SLIDER & 3D BOOK SHOWCASE (100VH IMMERSIVE)
      ============================================================ -->
-<div class="bg-emerald-deep pt-4 sm:pt-6 pb-4 sm:pb-6 px-4 relative overflow-hidden min-h-[calc(100svh-108px)] flex flex-col justify-between">
+<div class="bg-emerald-deep pt-3 sm:pt-5 pb-2 sm:pb-4 px-3 sm:px-4 relative overflow-hidden min-h-[calc(100svh-94px-68px)] md:min-h-[calc(100vh-94px)] flex flex-col justify-between">
     <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1">
         
         <!-- Main Vape-Style Hero Shell -->
@@ -43,7 +43,7 @@
                     <div class="flex flex-col items-center justify-center w-full text-center max-w-2xl mx-auto z-20">
                         
                         <!-- Top Pill: Bestseller Flagship Edition (Pure SVG, Zero Emojis) -->
-                        <div class="mb-2">
+                        <div class="mb-1.5 sm:mb-2">
                             <span class="slide-pill">
                                 <svg class="w-3.5 h-3.5 mr-1.5 text-amber-300 inline-block shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -53,7 +53,7 @@
                         </div>
 
                         <!-- Single-Line Clean Headline -->
-                        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-md truncate max-w-xl mx-auto mb-3 px-2" itemprop="name">
+                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md truncate max-w-xl mx-auto mb-2 sm:mb-3 px-2" itemprop="name">
                             <?= htmlspecialchars($b['title']) ?>
                         </h1>
 
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Animated Scroll Down Indicator for 100vh Full Screen Viewport -->
-        <div class="hero-scroll-indicator text-center pt-4 pb-2 z-20">
+        <div class="hero-scroll-indicator text-center pt-2 sm:pt-4 pb-1 sm:pb-2 z-20">
             <button type="button" 
                     onclick="document.getElementById('mainContentSection').scrollIntoView({ behavior: 'smooth' });" 
                     class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-colors focus:outline-none"
@@ -282,7 +282,7 @@
         setTimeout(function() {
             currentSlide.classList.remove(exitClass);
             isTransitioning = false;
-        }, 550);
+        }, 650);
 
         if (user) restart();
     }
@@ -360,6 +360,26 @@
 
     if (dots.length) dots[0].classList.add('is-active');
     restart();
+})();
+
+// Smooth Entrance Reveal for Main Content Section on Scroll / Click
+(function() {
+    var mainSection = document.getElementById('mainContentSection');
+    if (!mainSection) return;
+
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    mainSection.classList.add('is-revealed');
+                    observer.unobserve(mainSection);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+        observer.observe(mainSection);
+    } else {
+        mainSection.classList.add('is-revealed');
+    }
 })();
 </script>
 

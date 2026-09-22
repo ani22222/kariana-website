@@ -185,14 +185,16 @@ body {
     visibility: hidden;
     pointer-events: none;
     transform-style: preserve-3d;
-    transform: perspective(1200px) rotateY(16deg) scale(0.92) translateX(40px);
-    transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.55s ease;
+    transform: perspective(1200px) rotateY(16deg) scale(0.9) translateX(55px);
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
+                transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
+                filter 0.65s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1rem 0.5rem;
-    filter: blur(2px);
+    padding: 0.5rem 1rem 0.25rem;
+    filter: blur(3px);
     will-change: transform, opacity;
 }
 
@@ -200,40 +202,44 @@ body {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: perspective(1200px) rotateY(0deg) scale(1) translateX(0);
+    transform: perspective(1200px) translateX(0) translateY(0) rotateY(0deg) rotateZ(0deg) scale(1);
     filter: blur(0px);
     position: relative;
     z-index: 5;
 }
 
+/* Exiting to Left (Smooth glide away into distance to the left) */
 .hero-slide.is-exit-left {
     opacity: 0;
     visibility: visible;
-    transform: perspective(1200px) rotateY(-18deg) scale(0.9) translateX(-45px);
-    filter: blur(2px);
+    transform: perspective(1200px) translateX(-65px) translateY(18px) rotateY(18deg) rotateZ(-3deg) scale(0.88);
+    filter: blur(3px);
     z-index: 1;
 }
 
+/* Exiting to Right (When going in reverse) */
 .hero-slide.is-exit-right {
     opacity: 0;
     visibility: visible;
-    transform: perspective(1200px) rotateY(18deg) scale(0.9) translateX(45px);
-    filter: blur(2px);
+    transform: perspective(1200px) translateX(65px) translateY(18px) rotateY(-18deg) rotateZ(3deg) scale(0.88);
+    filter: blur(3px);
     z-index: 1;
 }
 
+/* Entering from Left (When going in reverse) */
 .hero-slide.is-enter-left {
     opacity: 0;
     visibility: visible;
-    transform: perspective(1200px) rotateY(-18deg) scale(0.9) translateX(-45px);
-    filter: blur(2px);
+    transform: perspective(1200px) translateX(-65px) translateY(-32px) rotateY(18deg) rotateZ(-3deg) scale(0.88);
+    filter: blur(3px);
 }
 
+/* Entering from Upper-Right (Gliding diagonally from upper-right down to center left) */
 .hero-slide.is-enter-right {
     opacity: 0;
     visibility: visible;
-    transform: perspective(1200px) rotateY(18deg) scale(0.9) translateX(45px);
-    filter: blur(2px);
+    transform: perspective(1200px) translateX(65px) translateY(-32px) rotateY(-18deg) rotateZ(3deg) scale(0.88);
+    filter: blur(3px);
 }
 
 .slide-pill {
@@ -374,6 +380,19 @@ body {
     bottom: -12px;
     left: -12px;
     animation-delay: 1.5s;
+}
+
+.hero-slide .chip-a,
+.hero-slide .chip-b {
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+.hero-slide:not(.is-active) .chip-a {
+    transform: translate(14px, -14px) scale(0.8);
+    opacity: 0;
+}
+.hero-slide:not(.is-active) .chip-b {
+    transform: translate(-14px, 14px) scale(0.8);
+    opacity: 0;
 }
 
 @keyframes floatChip {
@@ -558,26 +577,26 @@ body {
 /* Responsive Mobile Polish for Hero Slider and Touch Viewports (< 640px) */
 @media (max-width: 640px) {
     #heroCarousel {
-        min-height: 400px;
+        min-height: min(350px, 48vh);
     }
     .hero-controls-bar {
-        gap: 0.4rem;
-        margin-top: 0.5rem;
+        gap: 0.35rem;
+        margin-top: 0.35rem;
     }
     .hero-action-group {
-        gap: 0.4rem;
+        gap: 0.35rem;
     }
     .hero-btn-primary {
-        font-size: 0.76rem;
-        padding: 0.42rem 0.75rem;
+        font-size: 0.74rem;
+        padding: 0.38rem 0.7rem;
     }
     .hero-btn-secondary {
-        font-size: 0.76rem;
-        padding: 0.42rem 0.7rem;
+        font-size: 0.74rem;
+        padding: 0.38rem 0.65rem;
     }
     .hero-nav-btn, .hero-arrow {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
     .hero-dots button {
         width: 5px;
@@ -587,27 +606,27 @@ body {
         width: 14px;
     }
     .hero-art {
-        width: 220px;
-        height: 316px;
+        width: min(205px, 48vw);
+        height: min(290px, 40vh);
     }
     .hero-shape-ring {
-        width: 300px;
-        height: 300px;
+        width: 260px;
+        height: 260px;
     }
     .hero-slide {
-        padding: 0.5rem 0.5rem 0.25rem;
+        padding: 0.25rem 0.5rem 0.2rem;
     }
     .chip-a {
-        right: -8px;
-        top: -10px;
-        font-size: 0.72rem;
-        padding: 0.32rem 0.75rem;
+        right: -6px;
+        top: -8px;
+        font-size: 0.7rem;
+        padding: 0.28rem 0.7rem;
     }
     .chip-b {
-        left: -8px;
-        bottom: -10px;
-        font-size: 0.72rem;
-        padding: 0.32rem 0.75rem;
+        left: -6px;
+        bottom: -8px;
+        font-size: 0.7rem;
+        padding: 0.28rem 0.7rem;
     }
 }
 
@@ -644,7 +663,22 @@ body {
 }
 
 /* ============================================================
-   MODERN MOBILE BOTTOM NAVIGATION (Reference: media_1790103764775.png)
+   SMOOTH SECTION SCROLL REVEAL (#mainContentSection)
+   ============================================================ */
+#mainContentSection {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+#mainContentSection.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   MODERN MOBILE BOTTOM NAVIGATION (Royal Islamic Emerald & Gold)
    ============================================================ */
 .bottom-nav-wrapper {
     position: fixed;
@@ -661,11 +695,13 @@ body {
     pointer-events: auto;
     width: 100%;
     max-width: 520px;
-    background: #ffffff;
+    background: linear-gradient(180deg, rgba(2, 44, 34, 0.96) 0%, rgba(1, 26, 20, 0.98) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-top-left-radius: 28px;
     border-top-right-radius: 28px;
-    border-top: 1px solid rgba(226, 232, 240, 0.85);
-    box-shadow: 0 -8px 25px -4px rgba(0, 0, 0, 0.08), 0 -2px 6px -1px rgba(0, 0, 0, 0.03);
+    border-top: 1.5px solid rgba(251, 191, 36, 0.35);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.55), 0 -1px 0 rgba(251, 191, 36, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
     padding: 0.65rem 0.6rem 0.25rem;
     padding-bottom: calc(0.35rem + env(safe-area-inset-bottom, 0px));
 }
@@ -682,16 +718,16 @@ body {
     align-items: center;
     justify-content: center;
     flex: 1;
-    padding: 0.2rem 0;
-    color: #64748b;
+    padding: 0.25rem 0;
+    color: #94a3b8;
     text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     -webkit-tap-highlight-color: transparent;
 }
 
 .bottom-nav-item:hover {
-    color: #047857;
+    color: #fbbf24;
 }
 
 .bottom-nav-item:active {
@@ -702,7 +738,9 @@ body {
     width: 22px;
     height: 22px;
     margin-bottom: 2px;
-    transition: transform 0.2s ease, stroke 0.2s ease, color 0.2s ease;
+    color: #94a3b8;
+    stroke: currentColor;
+    transition: transform 0.25s ease, stroke 0.25s ease, color 0.25s ease, filter 0.25s ease;
 }
 
 .bottom-nav-item span {
@@ -710,29 +748,44 @@ body {
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 1.15;
+    color: #94a3b8;
+    transition: color 0.25s ease, font-weight 0.25s ease;
 }
 
-/* Active State: Highlighted matching reference UI */
+/* Active State: Royal Gold Glow matching website palette */
 .bottom-nav-item.is-active {
-    color: #047857;
+    color: #fbbf24;
 }
 
 .bottom-nav-item.is-active svg {
-    color: #047857;
-    stroke-width: 2.1;
-    transform: translateY(-1px);
+    color: #fbbf24;
+    stroke-width: 2.2;
+    transform: translateY(-2px) scale(1.08);
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
 }
 
 .bottom-nav-item.is-active span {
     font-weight: 700;
-    color: #047857;
+    color: #fef08a;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+.bottom-nav-item.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    width: 14px;
+    height: 3px;
+    background: #fbbf24;
+    border-radius: 9999px;
+    box-shadow: 0 0 8px #fbbf24;
 }
 
 /* iOS-Style Home Indicator Bar at the bottom */
 .bottom-nav-indicator {
     width: 115px;
     height: 3.5px;
-    background: #cbd5e1;
+    background: rgba(251, 191, 36, 0.35);
     border-radius: 9999px;
     margin: 0.45rem auto 0.1rem;
 }
