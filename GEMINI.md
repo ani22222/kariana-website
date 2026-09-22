@@ -13,6 +13,12 @@ Whenever this project or any project is served, always provide all four standard
 3. **Cloudflare Live Web Tunnel (Global WAN)**: `https://rev-mysql-stops-ext.trycloudflare.com` (Accessible from outside mobile data / anywhere)
 4. **GitHub Repository**: `https://github.com/ani22222/kariana-website`
 
+## Telegram Remote Control Daemon
+- **Bot Username**: `@raselcodebot`
+- **Owner Chat ID**: `1827362508`
+- **Daemon Script**: `php telegram_bot_daemon.php`
+- **Features**: Interactive Menu, Instant Project Switcher, Real-time Transcript Streaming, One-Click Actions.
+
 ## Global Rules for Antigravity Brain
 1. **GitHub Versioning Policy**:
    - Any project or task must be uploaded/maintained on GitHub under account `ani22222`.
