@@ -18,3 +18,9 @@ scratch/
 
 node_modules/
 package-lock.json
+
+# Storage logs and screenshots
+storage/logs/*.png
+storage/logs/*.oga
+storage/logs/*.log
+storage/logs/
