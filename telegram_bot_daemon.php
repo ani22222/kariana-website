@@ -154,27 +154,33 @@ function loadState(): array {
                 $data['active_proj_name']  = $latest['project'] ?? DEFAULT_PROJECT_NAME;
                 $data['active_chat_title'] = $latest['title'] ?? DEFAULT_CHAT_TITLE;
             }
-            $data['chat_id']           = $data['chat_id'] ?? '1827362508';
-            $data['last_update_id']    = $data['last_update_id'] ?? 0;
-            $data['mode']              = $data['mode'] ?? 'turbo';
-            $data['selected_model']    = $data['selected_model'] ?? DEFAULT_MODEL;
-            $data['active_account']    = $data['active_account'] ?? 'acc_1';
-            $data['is_busy']           = $data['is_busy'] ?? false;
-            $data['last_heartbeat']    = $data['last_heartbeat'] ?? time();
+            $data['chat_id']            = $data['chat_id'] ?? '1827362508';
+            $data['last_update_id']     = $data['last_update_id'] ?? 0;
+            $data['mode']               = $data['mode'] ?? 'turbo';
+            $data['selected_model']     = $data['selected_model'] ?? DEFAULT_MODEL;
+            $data['active_account']     = $data['active_account'] ?? 'acc_1';
+            $data['is_busy']            = $data['is_busy'] ?? false;
+            $data['last_heartbeat']     = $data['last_heartbeat'] ?? time();
+            $data['pending_voice']      = $data['pending_voice'] ?? [];
+            $data['last_streamed_step'] = $data['last_streamed_step'] ?? 0;
+            $data['editing_voice_id']   = $data['editing_voice_id'] ?? null;
             return $data;
         }
     }
     return [
-        'active_conv_id'    => $latest['id'] ?? DEFAULT_CONV_ID,
-        'active_proj_name'  => $latest['project'] ?? DEFAULT_PROJECT_NAME,
-        'active_chat_title' => $latest['title'] ?? DEFAULT_CHAT_TITLE,
-        'chat_id'           => '1827362508',
-        'last_update_id'    => 0,
-        'mode'              => 'turbo',
-        'selected_model'    => DEFAULT_MODEL,
-        'active_account'    => 'acc_1',
-        'is_busy'           => false,
-        'last_heartbeat'    => time()
+        'active_conv_id'     => $latest['id'] ?? DEFAULT_CONV_ID,
+        'active_proj_name'   => $latest['project'] ?? DEFAULT_PROJECT_NAME,
+        'active_chat_title'  => $latest['title'] ?? DEFAULT_CHAT_TITLE,
+        'chat_id'            => '1827362508',
+        'last_update_id'     => 0,
+        'mode'               => 'turbo',
+        'selected_model'     => DEFAULT_MODEL,
+        'active_account'     => 'acc_1',
+        'is_busy'            => false,
+        'last_heartbeat'     => time(),
+        'pending_voice'      => [],
+        'last_streamed_step' => 0,
+        'editing_voice_id'   => null
     ];
 }
 
@@ -194,7 +200,7 @@ function tgRequest(string $method, array $params = []): array {
         CURLOPT_POSTFIELDS     => json_encode($params),
         CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 35,
+        CURLOPT_TIMEOUT        => 15,
         CURLOPT_SSL_VERIFYPEER => false,
     ]);
     $res = curl_exec($ch);
@@ -202,13 +208,17 @@ function tgRequest(string $method, array $params = []): array {
     curl_close($ch);
 
     if ($err) {
-        echo "[CURL ERROR] " . $err . "\n";
+        botLog("[CURL ERROR] " . $err);
         return ['ok' => false, 'error' => $err];
     }
     return json_decode($res, true) ?? ['ok' => false];
 }
 
 function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bool $includePersistentKeyboard = true): array {
+    if (mb_strlen($text) > 4000) {
+        $text = mb_substr($text, 0, 3950) . "\n\n...(কন্টেন্ট বড় হওয়ায় সংক্ষিপ্ত করা হয়েছে)";
+    }
+
     $params = [
         'chat_id'                  => $chatId,
         'text'                     => $text,
@@ -221,11 +231,12 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
     } elseif ($includePersistentKeyboard) {
         $params['reply_markup'] = [
             'keyboard' => [
-                [['text' => '🏠 মেইন মেনু'], ['text' => '📁 সাম্প্রতিক প্রজেক্ট']],
+                [['text' => '🏠 মেইন মেনু'], ['text' => '💬 স্ক্রিনের সর্বশেষ উত্তর']],
                 [['text' => '📸 পিসির স্ক্রিনশট'], ['text' => '📱 ওয়েবসাইট লাইভ ভিউ']],
-                [['text' => '🧠 এআই মডেল নির্বাচন'], ['text' => '👤 অ্যাকাউন্ট ও কোটা']],
-                [['text' => '📊 পিসি হেলথ ও রিসোর্স'], ['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস']],
-                [['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট'], ['text' => '⚙️ মোড পরিবর্তন']]
+                [['text' => '📁 সাম্প্রতিক প্রজেক্ট'], ['text' => '🧠 এআই মডেল নির্বাচন']],
+                [['text' => '👤 অ্যাকাউন্ট ও কোটা'], ['text' => '📊 পিসি হেলথ ও রিসোর্স']],
+                [['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস'], ['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট']],
+                [['text' => '🔄 পিসি রিস্টার্ট'], ['text' => '⚙️ মোড পরিবর্তন']]
             ],
             'resize_keyboard' => true,
             'persistent'      => true
@@ -255,19 +266,31 @@ function editMsg(string $chatId, int $messageId, string $text, ?array $inlineKey
     }
     $res = tgRequest('editMessageText', $params);
     if (!($res['ok'] ?? false)) {
-        botLog("[TG WARN] editMsg with Markdown failed: " . ($res['description'] ?? 'error') . " - retrying as plain text");
-        unset($params['parse_mode']);
-        $res = tgRequest('editMessageText', $params);
+        if (stripos($res['description'] ?? '', "can't parse entities") !== false) {
+            unset($params['parse_mode']);
+            $res = tgRequest('editMessageText', $params);
+        }
     }
     return $res;
 }
 
 function answerCallback(string $callbackQueryId, string $text = ''): void {
-    tgRequest('answerCallbackQuery', [
-        'callback_query_id' => $callbackQueryId,
-        'text'              => $text,
-        'show_alert'        => false
+    $url = TG_API . '/answerCallbackQuery';
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode([
+            'callback_query_id' => $callbackQueryId,
+            'text'              => $text,
+            'show_alert'        => false
+        ]),
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 3,
+        CURLOPT_SSL_VERIFYPEER => false,
     ]);
+    curl_exec($ch);
+    curl_close($ch);
 }
 
 function sendPhoto(string $chatId, string $photoPath, string $caption = ''): array {
@@ -511,8 +534,87 @@ function getModeTitle(string $mode): string {
 }
 
 // ---------------------------------------------------------
-// View Handlers (Multi-Purpose Dashboard 5.0)
+// View Handlers & Live Transcript Mirror
 // ---------------------------------------------------------
+
+function getLatestModelResponse(string $convId): ?array {
+    $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
+    if (!file_exists($transcriptFile)) return null;
+
+    $lines = @file($transcriptFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (!$lines) return null;
+
+    $totalLines = count($lines);
+    for ($i = $totalLines - 1; $i >= 0; $i--) {
+        $j = json_decode($lines[$i], true);
+        if (!$j) continue;
+
+        if (($j['source'] ?? '') === 'MODEL' && ($j['type'] ?? '') === 'PLANNER_RESPONSE' && !empty($j['content'])) {
+            $content = $j['content'];
+            $truncated = $j['truncated_fields'] ?? [];
+            if (in_array('content', $truncated)) {
+                $fullFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript_full.jsonl";
+                if (file_exists($fullFile)) {
+                    $fullLines = @file($fullFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if ($fullLines && isset($fullLines[$i])) {
+                        $fj = json_decode($fullLines[$i], true);
+                        if (!empty($fj['content'])) {
+                            $content = $fj['content'];
+                        }
+                    }
+                }
+            }
+            return [
+                'step_index' => (int)($j['step_index'] ?? ($i + 1)),
+                'content'    => $content,
+                'created_at' => $j['created_at'] ?? '',
+                'line_num'   => $i + 1
+            ];
+        }
+    }
+    return null;
+}
+
+function renderLatestResponseView(string $chatId, array $state): void {
+    $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
+    $resp = getLatestModelResponse($convId);
+
+    if (!$resp || empty($resp['content'])) {
+        sendMsg($chatId, "ℹ️ *এখনও কোনো এআই উত্তর পাওয়া যায়নি।*\n\nচ্যাটে নতুন কোনো প্রশ্ন বা প্রম্পট লিখুন অথবা পিসির স্ক্রিনশট দেখুন।", [
+            [['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']],
+            [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
+        ]);
+        return;
+    }
+
+    $timeStr = !empty($resp['created_at']) ? date('d M Y, h:i A', strtotime($resp['created_at'])) : date('d M Y, h:i A');
+    $header = "🖥️ *পিসির স্ক্রিনের সর্বশেষ উত্তর (Latest AI Response)*\n"
+            . "━━━━━━━━━━━━━━━━━━━━\n"
+            . "📁 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+            . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+            . "🔢 *স্টেপ:* `{$resp['step_index']}` | ⏰ *সময়:* {$timeStr}\n"
+            . "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    $body = $resp['content'];
+    $maxLen = 3700;
+    if (mb_strlen($body) > $maxLen) {
+        $body = mb_substr($body, 0, $maxLen) . "\n\n...(কন্টেন্ট বড় হওয়ায় স্ক্রিন থেকে বাকি অংশ সংক্ষেপিত)";
+    }
+
+    $fullText = $header . $body;
+
+    $kb = [
+        [
+            ['text' => '🔄 রিফ্রেশ (আপডেট দেখুন)', 'callback_data' => 'action_latest_response'],
+            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+        ],
+        [
+            ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $fullText, $kb);
+}
 
 function renderMainMenu(string $chatId, array $state): void {
     $agyOnline = isAntigravityRunning() ? "🟢 Active" : "🟡 Background";
@@ -541,37 +643,38 @@ function renderMainMenu(string $chatId, array $state): void {
     $keyboard = [
         [
             ['text' => '🎯 অ্যাক্টিভ চ্যাট সিঙ্ক', 'callback_data' => 'action_sync_active_chat'],
-            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+            ['text' => '💬 স্ক্রিনের সর্বশেষ উত্তর', 'callback_data' => 'action_latest_response']
         ],
         [
-            ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot'],
-            ['text' => '🚀 Antigravity ওপেন', 'callback_data' => 'action_open_agy']
+            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot'],
+            ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot']
         ],
         [
-            ['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces'],
-            ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
+            ['text' => '🚀 Antigravity ওপেন', 'callback_data' => 'action_open_agy'],
+            ['text' => '📁 সাম্প্রতিক প্রজেক্টসমূহ', 'callback_data' => 'menu_workspaces']
         ],
         [
-            ['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস', 'callback_data' => 'menu_agy_status'],
-            ['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট', 'callback_data' => 'menu_troubleshoot']
+            ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana'],
+            ['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস', 'callback_data' => 'menu_agy_status']
         ],
         [
-            ['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models'],
-            ['text' => '👤 অ্যাকাউন্ট ও কোটা', 'callback_data' => 'menu_accounts']
+            ['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট', 'callback_data' => 'menu_troubleshoot'],
+            ['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models']
         ],
         [
-            ['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health'],
-            ['text' => '⚙️ কাজের মোড পরিবর্তন', 'callback_data' => 'menu_modes']
+            ['text' => '👤 অ্যাকাউন্ট ও কোটা', 'callback_data' => 'menu_accounts'],
+            ['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health']
         ],
         [
-            ['text' => '🛑 পিসি শাটডাউন', 'callback_data' => 'action_shutdown_pc'],
-            ['text' => '🔄 পিসি রিস্টার্ট', 'callback_data' => 'action_restart_pc']
+            ['text' => '⚙️ কাজের মোড পরিবর্তন', 'callback_data' => 'menu_modes'],
+            ['text' => '🔄 সার্ভার রিস্টার্ট (8015)', 'callback_data' => 'action_restart_srv']
         ],
         [
-            ['text' => '🔄 সার্ভার রিস্টার্ট (8015)', 'callback_data' => 'action_restart_srv'],
-            ['text' => '🔒 পিসি স্ক্রিন লক', 'callback_data' => 'action_lock_pc']
+            ['text' => '🔄 পিসি রিস্টার্ট', 'callback_data' => 'action_restart_pc'],
+            ['text' => '🛑 পিসি শাটডাউন', 'callback_data' => 'action_shutdown_pc']
         ],
         [
+            ['text' => '🔒 পিসি স্ক্রিন লক', 'callback_data' => 'action_lock_pc'],
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
         ]
     ];
@@ -932,23 +1035,114 @@ function renderStatusView(string $chatId, array $state): void {
 }
 
 // ---------------------------------------------------------
+// Voice Message Automation & AI Translation Module
+// ---------------------------------------------------------
+
+function renderVoicePreviewCard(string $chatId, string $actionId, array $state): void {
+    if (!isset($state['pending_voice'][$actionId])) {
+        sendMsg($chatId, "⚠️ ভয়েস মেসেজ সেশনটি পাওয়া যায়নি।");
+        return;
+    }
+    $v = $state['pending_voice'][$actionId];
+
+    $card  = "━━━━━━━━━━━━━━━━━━\n";
+    $card .= "🎤 *Voice Message Processed*\n\n";
+    $card .= "📝 *Original Text:*\n`" . $v['original'] . "`\n\n";
+    $card .= "🇧🇩 *বাংলা Text:*\n" . $v['bangla'] . "\n\n";
+    $card .= "✨ *AI Optimized:*\n" . $v['optimized'] . "\n\n";
+    $card .= "🎯 *Target:*\n`" . $v['target'] . "`\n";
+    $card .= "━━━━━━━━━━━━━━━━━━";
+
+    $kb = [
+        [
+            ['text' => '🚀 Send', 'callback_data' => 'vsend_' . $actionId],
+            ['text' => '✏️ Edit', 'callback_data' => 'vedit_' . $actionId]
+        ],
+        [
+            ['text' => '🎯 Change Target', 'callback_data' => 'vtarget_' . $actionId]
+        ],
+        [
+            ['text' => '📋 Copy', 'callback_data' => 'vcopy_' . $actionId],
+            ['text' => '❌ Cancel', 'callback_data' => 'vcancel_' . $actionId]
+        ]
+    ];
+
+    sendMsg($chatId, $card, $kb);
+}
+
+function renderVoiceConfirmCard(string $chatId, string $actionId, array $state): void {
+    if (!isset($state['pending_voice'][$actionId])) return;
+    $v = $state['pending_voice'][$actionId];
+
+    $card  = "⚠️ *আপনি কি এই Text-টি নির্বাচিত Target-এ পাঠাতে চান?*\n\n";
+    $card .= "🎯 *Target:* `{$v['target']}`\n\n";
+    $card .= "📝 *Text:*\n" . $v['final'] . "\n\n";
+    $card .= "নিচের কনফার্ম বাটনে চাপলে এটি সরাসরি টার্গেটে পৌঁছে যাবে:";
+
+    $kb = [
+        [
+            ['text' => '✅ Confirm & Send', 'callback_data' => 'vconfirm_' . $actionId]
+        ],
+        [
+            ['text' => '↩️ Back', 'callback_data' => 'vback_' . $actionId],
+            ['text' => '❌ Cancel', 'callback_data' => 'vcancel_' . $actionId]
+        ]
+    ];
+
+    sendMsg($chatId, $card, $kb);
+}
+
+function renderVoiceTargetMenu(string $chatId, string $actionId, array $state): void {
+    if (!isset($state['pending_voice'][$actionId])) return;
+    $v = $state['pending_voice'][$actionId];
+
+    $text  = "🎯 *Select Target Application / Project*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "বর্তমান টার্গেট: `{$v['target']}`\n\n";
+    $text .= "ভয়েস কমান্ডটি কোথায় পাঠাতে চান তা বেছে নিন:";
+
+    $workspaces = getWorkspaces();
+    $currName = $state['active_proj_name'] ?? 'Current Project';
+    $kb = [
+        [
+            ['text' => '💻 Current Project (' . $currName . ')', 'callback_data' => 'vsettarget_' . $actionId . '_curr'],
+        ],
+        [
+            ['text' => '🕌 Kariana Website', 'callback_data' => 'vsettarget_' . $actionId . '_kariana'],
+        ]
+    ];
+
+    foreach ($workspaces as $hash => $ws) {
+        if ($ws['name'] !== 'Kariana Website' && $ws['name'] !== $currName) {
+            $kb[] = [
+                ['text' => '📁 ' . $ws['name'], 'callback_data' => 'vsettarget_' . $actionId . '_' . $hash]
+            ];
+        }
+    }
+
+    $kb[] = [
+        ['text' => '↩️ Back to Preview', 'callback_data' => 'vback_' . $actionId]
+    ];
+
+    sendMsg($chatId, $text, $kb);
+}
+
+// ---------------------------------------------------------
 // Prompt Forwarding & Real-time Live Watcher
 // ---------------------------------------------------------
 
-function dispatchPrompt(string $chatId, string $prompt, array &$state): ?array {
+function dispatchPrompt(string $chatId, string $prompt, array &$state): void {
     $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
     $projName = $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
     $chatTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
     $mode = $state['mode'] ?? 'turbo';
     $model = $state['selected_model'] ?? DEFAULT_MODEL;
 
-    // Sanitize prompt for preview in markdown
     $safePrompt = str_replace(['_', '*', '`', '['], ' ', $prompt);
     if (mb_strlen($safePrompt) > 120) {
         $safePrompt = mb_substr($safePrompt, 0, 117) . '...';
     }
 
-    // 1. Initial Status Message
     $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
               . "━━━━━━━━━━━━━━━━━━━━\n"
               . "🎯 *প্রজেক্ট:* `{$projName}`\n"
@@ -956,26 +1150,11 @@ function dispatchPrompt(string $chatId, string $prompt, array &$state): ?array {
               . "🧠 *মডেল:* `{$model}`\n"
               . "⚙️ *মোড:* " . getModeTitle($mode) . "\n"
               . "📝 *আপনার প্রম্পট:* _{$safePrompt}_\n\n"
-              . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু হয়েছে...\n\n"
-              . "💡 _আপনি যেকোনো মেনু বাটন ব্যবহার করতে পারেন, বট সবসময় রেসপন্সিভ থাকবে।_";
+              . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু হয়েছে...\n"
+              . "কাজ শেষ হলে সম্পূর্ণ উত্তর স্বয়ংক্রিয়ভাবে এখানে পৌঁছে যাবে 🟢";
 
-    $sent = sendMsg($chatId, $initText);
-    $statusMsgId = $sent['result']['message_id'] ?? null;
+    sendMsg($chatId, $initText);
 
-    // 2. Measure current transcript lines before sending
-    $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
-    $initialLineCount = 0;
-    if (file_exists($transcriptFile)) {
-        $fp = @fopen($transcriptFile, 'r');
-        if ($fp) {
-            while (!feof($fp)) {
-                if (fgets($fp) !== false) $initialLineCount++;
-            }
-            fclose($fp);
-        }
-    }
-
-    // 3. Send message to Antigravity via agentapi.bat
     $finalPrompt = $prompt;
     if ($mode === 'planning') {
         $finalPrompt = "[Planning Mode Request] " . $prompt . " (অনুগ্রহ করে সরাসরি কোড পরিবর্তন না করে প্রথমে বিস্তারিত প্ল্যান তৈরি করুন)";
@@ -1005,124 +1184,31 @@ function dispatchPrompt(string $chatId, string $prompt, array &$state): ?array {
                 [['text' => '🚀 মডেল Flash-Lite-এ বদলান', 'callback_data' => 'model_gemini_lite']],
                 [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
             ];
-
-            if ($statusMsgId) {
-                editMsg($chatId, $statusMsgId, $errText, $errKb);
-            } else {
-                sendMsg($chatId, $errText, $errKb);
-            }
-            return null;
-        }
-
-        $errText = "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . $errString . "`\n\nসরাসরি Antigravity IDE-তে চেক করুন।";
-        if ($statusMsgId) {
-            editMsg($chatId, $statusMsgId, $errText);
+            sendMsg($chatId, $errText, $errKb);
         } else {
-            sendMsg($chatId, $errText);
+            sendMsg($chatId, "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . $errString . "`");
         }
-        return null;
     }
-
-    return [
-        'conv_id'          => $convId,
-        'chat_id'          => $chatId,
-        'status_msg_id'    => $statusMsgId,
-        'start_time'       => time(),
-        'initial_lines'    => $initialLineCount,
-        'last_line_read'   => $initialLineCount,
-        'last_tool_action' => '',
-        'last_edit_time'   => time(),
-        'prompt'           => $safePrompt,
-        'projName'         => $projName,
-        'chatTitle'        => $chatTitle,
-        'model'            => $model
-    ];
 }
 
-function checkActiveTaskProgress(array &$task): bool {
-    $convId = $task['conv_id'];
-    $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
-    if (!file_exists($transcriptFile)) {
-        return false;
-    }
-
-    $lines = @file($transcriptFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    if (!$lines) return false;
-
-    $totalLines = count($lines);
-    if ($totalLines <= $task['last_line_read']) {
-        // Check timeout (5 minutes)
-        if (time() - $task['start_time'] > 300) {
-            $timeoutMsg = "⏱️ *টাস্কটি দীর্ঘ সময় নিচ্ছে!*\n"
-                        . "━━━━━━━━━━━━━━━━━━━━\n"
-                        . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
-                        . "অ্যান্টিগ্রাভিটি ব্যাকগ্রাউন্ডে কাজ সম্পন্ন করছে। সমাপ্ত হলে চ্যাটে দেখতে পাবেন।"
-                        . getStandardLinksText();
-            sendMsg($task['chat_id'], $timeoutMsg);
-            return true;
-        }
-        return false;
-    }
-
-    for ($i = $task['last_line_read']; $i < $totalLines; $i++) {
-        $json = json_decode($lines[$i], true);
-        if (!$json) continue;
-
-        $type = $json['type'] ?? '';
-        $status = $json['status'] ?? '';
-        $source = $json['source'] ?? '';
-
-        // Tool executions
-        if (!empty($json['tool_calls'])) {
-            foreach ($json['tool_calls'] as $tc) {
-                $toolName = $tc['name'] ?? 'tool';
-                $toolSummary = $tc['args']['toolSummary'] ?? $toolName;
-                $actionStr = "🛠️ `{$toolName}` ({$toolSummary})";
-                if ($actionStr !== $task['last_tool_action'] && (time() - $task['last_edit_time'] >= 3) && $task['status_msg_id']) {
-                    $task['last_tool_action'] = $actionStr;
-                    $task['last_edit_time'] = time();
-                    $updateMsg = "⏳ *কাজ চলমান রয়েছে...*\n"
-                               . "━━━━━━━━━━━━━━━━━━━━\n"
-                               . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
-                               . "💬 *চ্যাট:* `{$task['chatTitle']}`\n"
-                               . "🧠 *মডেল:* `{$task['model']}`\n"
-                               . "📝 *প্রম্পট:* _{$task['prompt']}_\n\n"
-                               . "🔄 *বর্তমান অ্যাকশন:* {$actionStr}\n"
-                               . "⏱️ *অতিবাহিত সময়:* " . (time() - $task['start_time']) . "s";
-                    editMsg($task['chat_id'], $task['status_msg_id'], $updateMsg);
-                }
-            }
-        }
-
-        // Completion
-        if ($source === 'MODEL' && $type === 'PLANNER_RESPONSE' && $status === 'DONE') {
-            $content = $json['content'] ?? '';
-            if (!empty($content)) {
-                $cleanText = mb_substr($content, 0, 3000);
-                $finalMsg = "✅ *কাজ সম্পন্ন হয়েছে! (Task Complete)*\n"
-                          . "━━━━━━━━━━━━━━━━━━━━\n"
-                          . "🎯 *প্রজেক্ট:* `{$task['projName']}`\n"
-                          . "💬 *চ্যাট:* `{$task['chatTitle']}`\n"
-                          . "🧠 *মডেল:* `{$task['model']}`\n\n"
-                          . $cleanText
-                          . getStandardLinksText();
-
-                $keyboard = [
-                    [
-                        ['text' => '💬 পরবর্তী নির্দেশ দিন', 'callback_data' => 'prompt_help'],
-                        ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
-                    ]
-                ];
-
-                sendMsg($task['chat_id'], $finalMsg, $keyboard);
-                botLog("[COMPLETION] Task complete for conversation {$convId}");
-                return true;
-            }
-        }
-    }
-
-    $task['last_line_read'] = $totalLines;
-    return false;
+function registerBotCommands(): void {
+    $commands = [
+        ['command' => 'start', 'description' => '🏠 প্রধান নিয়ন্ত্রণ মেনু খুলুন'],
+        ['command' => 'latest', 'description' => '💬 পিসির স্ক্রিনের সর্বশেষ এআই উত্তর দেখুন'],
+        ['command' => 'screen', 'description' => '📸 পিসির লাইভ স্ক্রিনশট নিন'],
+        ['command' => 'web', 'description' => '📱 ওয়েবসাইটের লাইভ মোবাইল প্রিভিউ'],
+        ['command' => 'menu', 'description' => '📋 মেইন মেনু ড্যাশবোর্ড'],
+        ['command' => 'recent', 'description' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ'],
+        ['command' => 'models', 'description' => '🧠 এআই মডেল নির্বাচন ও পরিবর্তন'],
+        ['command' => 'accounts', 'description' => '👤 অ্যাকাউন্ট ও কোটা স্ট্যাটাস'],
+        ['command' => 'health', 'description' => '📊 পিসি হেলথ (CPU, RAM, Uptime)'],
+        ['command' => 'status', 'description' => '🌐 কারিয়ানা লাইভ সিস্টেম স্ট্যাটাস'],
+        ['command' => 'fix', 'description' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট'],
+        ['command' => 'mode', 'description' => '⚙️ কাজের মোড পরিবর্তন (টার্বো/সেইফ)'],
+        ['command' => 'restart', 'description' => '🔄 পিসি নিরাপদ রিস্টার্ট (১০ সেক কাউন্টডাউন)'],
+        ['command' => 'shutdown', 'description' => '🛑 পিসি পাওয়ার অফ / শাটডাউন']
+    ];
+    tgRequest('setMyCommands', ['commands' => $commands]);
 }
 
 // ---------------------------------------------------------
@@ -1137,6 +1223,18 @@ echo "  24/7 Persistent Connectivity Active\n";
 echo "=====================================================\n";
 
 $state = loadState();
+
+// Ensure webhook is cleared so getUpdates never encounters Error 409 Conflict
+tgRequest('deleteWebhook', ['drop_pending_updates' => false]);
+registerBotCommands();
+
+// Initialize last_streamed_step with current latest response if 0
+$convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
+$initResp = getLatestModelResponse($convId);
+if ($initResp && empty($state['last_streamed_step'])) {
+    $state['last_streamed_step'] = $initResp['step_index'];
+    saveState($state);
+}
 
 // Handle Boot Notification (When PC boots or script is invoked with --boot)
 if (in_array('--boot', $argv ?? [])) {
@@ -1191,7 +1289,6 @@ if (in_array('--boot', $argv ?? [])) {
 }
 
 $lastHeartbeatSave = time();
-$activeTask = null;
 
 while (true) {
     try {
@@ -1202,10 +1299,45 @@ while (true) {
             $lastHeartbeatSave = time();
         }
 
-        // Check active task progress if one is running (Non-blocking background check)
-        if ($activeTask !== null) {
-            if (checkActiveTaskProgress($activeTask)) {
-                $activeTask = null;
+        // Live Watcher: Auto-stream completed Antigravity responses from transcript.jsonl
+        $activeConv = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
+        $latestResp = getLatestModelResponse($activeConv);
+        if ($latestResp && !empty($latestResp['content'])) {
+            $curStep = (int)$latestResp['step_index'];
+            $lastSent = (int)($state['last_streamed_step'] ?? 0);
+
+            if ($lastSent === 0) {
+                $state['last_streamed_step'] = $curStep;
+                saveState($state);
+            } elseif ($curStep > $lastSent) {
+                botLog("[STREAM] Auto-streaming AI response step {$curStep} to Telegram...");
+                $cleanContent = mb_substr($latestResp['content'], 0, 3600);
+                if (mb_strlen($latestResp['content']) > 3600) {
+                    $cleanContent .= "\n\n...(কন্টেন্ট বড় হওয়ায় স্ক্রিন থেকে বাকি অংশ সংক্ষেপিত)";
+                }
+
+                $streamMsg = "🖥️ *পিসির স্ক্রিনে নতুন উত্তর (Live from Antigravity):*\n"
+                           . "━━━━━━━━━━━━━━━━━━━━\n"
+                           . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                           . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+                           . "🔢 *স্টেপ:* `{$curStep}`\n"
+                           . "━━━━━━━━━━━━━━━━━━━━\n\n"
+                           . $cleanContent
+                           . getStandardLinksText();
+
+                $streamKb = [
+                    [
+                        ['text' => '💬 স্ক্রিনের সর্বশেষ উত্তর', 'callback_data' => 'action_latest_response'],
+                        ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+                    ],
+                    [
+                        ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+                    ]
+                ];
+
+                sendMsg($state['chat_id'], $streamMsg, $streamKb);
+                $state['last_streamed_step'] = $curStep;
+                saveState($state);
             }
         }
 
@@ -1228,7 +1360,91 @@ while (true) {
                     $chatId = (string)($cb['message']['chat']['id'] ?? $state['chat_id']);
                     $state['chat_id'] = $chatId;
 
-                    echo "[BUTTON CLICK] Data: {$data} from {$chatId}\n";
+                    // Immediately dismiss spinner for instant mobile feedback (<10ms)
+                    answerCallback($cbId);
+
+                    botLog("[BUTTON CLICK] Data: {$data} from {$chatId}");
+
+                    // Voice Module Callback Handlers
+                    if (strpos($data, 'vsend_') === 0) {
+                        $actId = substr($data, 6);
+                        renderVoiceConfirmCard($chatId, $actId, $state);
+                        continue;
+                    } elseif (strpos($data, 'vconfirm_') === 0) {
+                        $actId = substr($data, 9);
+                        if (isset($state['pending_voice'][$actId])) {
+                            $v = $state['pending_voice'][$actId];
+                            $reqId = 'REQ-' . strtoupper(substr(md5(uniqid()), 0, 6));
+                            
+                            $successMsg = "✅ *Successfully Sent!*\n━━━━━━━━━━━━━━━━━━━━\n"
+                                        . "🎯 *Target:* `{$v['target']}`\n"
+                                        . "📝 *Text:* {$v['final']}\n"
+                                        . "🆔 *Request ID:* `{$reqId}`\n\n"
+                                        . "🚀 নির্দেশটি সফলভাবে Antigravity-তে পৌঁছেছে ও কাজ শুরু হয়েছে!\n"
+                                        . "কাজ সম্পন্ন হলে সম্পূর্ণ উত্তর স্বয়ংক্রিয়ভাবে এখানে চলে আসবে 🟢";
+                            sendMsg($chatId, $successMsg);
+                            
+                            dispatchPrompt($chatId, $v['final'], $state);
+                            unset($state['pending_voice'][$actId]);
+                            saveState($state);
+                        } else {
+                            sendMsg($chatId, "⚠️ ভয়েস রিকোয়েস্ট পাওয়া যায়নি বা মেয়াদোত্তীর্ণ হয়েছে।");
+                        }
+                        continue;
+                    } elseif (strpos($data, 'vback_') === 0) {
+                        $actId = substr($data, 6);
+                        answerCallback($cbId);
+                        renderVoicePreviewCard($chatId, $actId, $state);
+                        continue;
+                    } elseif (strpos($data, 'vcancel_') === 0) {
+                        $actId = substr($data, 8);
+                        unset($state['pending_voice'][$actId]);
+                        saveState($state);
+                        answerCallback($cbId, 'বাতিল করা হয়েছে');
+                        sendMsg($chatId, "❌ ভয়েস মেসেজ রিকোয়েস্ট বাতিল করা হয়েছে।");
+                        renderMainMenu($chatId, $state);
+                        continue;
+                    } elseif (strpos($data, 'vcopy_') === 0) {
+                        $actId = substr($data, 6);
+                        answerCallback($cbId, 'কপি বক্স রেডি');
+                        if (isset($state['pending_voice'][$actId])) {
+                            $v = $state['pending_voice'][$actId];
+                            sendMsg($chatId, "📋 *কপি করার জন্য টেক্সট:*\n```\n" . $v['final'] . "\n```");
+                        }
+                        continue;
+                    } elseif (strpos($data, 'vedit_') === 0) {
+                        $actId = substr($data, 6);
+                        answerCallback($cbId, 'এডিট মোড');
+                        $state['editing_voice_id'] = $actId;
+                        saveState($state);
+                        sendMsg($chatId, "✏️ *টেক্সট পরিবর্তন করতে:*\nআপনার সংশোধিত টেক্সটটি লিখে পাঠান। সাথে সাথে প্রিভিউ কার্ড আপডেট হয়ে যাবে!");
+                        continue;
+                    } elseif (strpos($data, 'vtarget_') === 0) {
+                        $actId = substr($data, 8);
+                        answerCallback($cbId, 'টার্গেট নির্বাচন...');
+                        renderVoiceTargetMenu($chatId, $actId, $state);
+                        continue;
+                    } elseif (strpos($data, 'vsettarget_') === 0) {
+                        $parts = explode('_', $data);
+                        $actId = $parts[1] ?? '';
+                        $tgtKey = $parts[2] ?? 'curr';
+                        if (isset($state['pending_voice'][$actId])) {
+                            if ($tgtKey === 'curr') {
+                                $state['pending_voice'][$actId]['target'] = $state['active_proj_name'];
+                            } elseif ($tgtKey === 'kariana') {
+                                $state['pending_voice'][$actId]['target'] = 'Kariana Website';
+                            } else {
+                                $workspaces = getWorkspaces();
+                                if (isset($workspaces[$tgtKey])) {
+                                    $state['pending_voice'][$actId]['target'] = $workspaces[$tgtKey]['name'];
+                                }
+                            }
+                            saveState($state);
+                            answerCallback($cbId, 'টার্গেট পরিবর্তিত হয়েছে');
+                            renderVoicePreviewCard($chatId, $actId, $state);
+                        }
+                        continue;
+                    }
 
                     if ($data === 'menu_home') {
                         answerCallback($cbId, 'মেইন মেনু লোড হচ্ছে...');
@@ -1290,6 +1506,8 @@ while (true) {
                             sendMsg($chatId, "⚠️ সক্রিয় চ্যাট পাওয়া যায়নি।");
                         }
                         renderMainMenu($chatId, $state);
+                    } elseif ($data === 'action_latest_response') {
+                        renderLatestResponseView($chatId, $state);
                     } elseif ($data === 'action_pc_screenshot') {
                         answerCallback($cbId, 'পিসি স্ক্রিনশট নেওয়া হচ্ছে...');
                         botLog("[SCREENSHOT] Capturing desktop screenshot...");
@@ -1480,16 +1698,68 @@ while (true) {
                     if (isset($msg['voice'])) {
                         $voice = $msg['voice'];
                         $dur = $voice['duration'] ?? 0;
+                        $fileId = $voice['file_id'] ?? '';
                         botLog("[VOICE] Received voice message ({$dur}s) from {$chatId}");
-                        $voiceReply = "🎙️ *আপনার ভয়েস মেসেজ পেয়েছি!* ({$dur} সেকেন্ড)\n"
-                                    . "━━━━━━━━━━━━━━━━━━━━\n"
-                                    . "💡 *মোবাইল থেকে সরাসরি মুখে বলে কমান্ড দেওয়ার সহজ উপায়:*\n\n"
-                                    . "১. টেলিগ্রামের টেক্সট লেখার বক্সে ক্লিক করুন।\n"
-                                    . "২. আপনার ফোনের কীবোর্ডের (যেমন Google Gboard) নিচে স্পেসবারের পাশে থাকা 🎤 **মাইক্রোফোন আইকনে** চাপুন।\n"
-                                    . "৩. বাংলায় মুখে যা বলবেন, তা সাথে সাথে নিখুঁত বাংলা টেক্সট হয়ে যাবে।\n"
-                                    . "৪. সেন্ড বাটনে চাপলেই সাথে সাথে অ্যান্টিগ্রাভিটিতে কোডিং/কাজ শুরু হবে!\n\n"
-                                    . "📱 বিছানা থেকেই আপনি নিচের বাটন চেপে পিসির স্ক্রিনশট বা স্ট্যাটাস দেখে নিতে পারেন 🟢";
-                        sendMsg($chatId, $voiceReply);
+
+                        $notify = sendMsg($chatId, "🎙️ *আপনার ভয়েস মেসেজ পেয়েছি!* ({$dur} সেকেন্ড)\n⏳ প্রক্রিয়াকরণ হচ্ছে, অনুগ্রহ করে ২-৩ সেকেন্ড অপেক্ষা করুন...");
+                        $notifyMsgId = $notify['result']['message_id'] ?? null;
+
+                        $fileInfo = tgRequest('getFile', ['file_id' => $fileId]);
+                        if (!empty($fileInfo['result']['file_path'])) {
+                            $filePath = $fileInfo['result']['file_path'];
+                            $downloadUrl = "https://api.telegram.org/file/bot" . BOT_TOKEN . "/" . $filePath;
+
+                            $tempAudio = PROJECT_ROOT . '/storage/logs/voice_' . uniqid() . '.oga';
+                            if (!is_dir(dirname($tempAudio))) @mkdir(dirname($tempAudio), 0777, true);
+
+                            $ch = curl_init($downloadUrl);
+                            $fp = fopen($tempAudio, 'wb');
+                            curl_setopt($ch, CURLOPT_FILE, $fp);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            curl_exec($ch);
+                            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            curl_close($ch);
+                            fclose($fp);
+
+                            if ($httpCode === 200 && file_exists($tempAudio) && filesize($tempAudio) > 100) {
+                                $pyScript = PROJECT_ROOT . '/transcribe_voice.py';
+                                $cmd = 'python "' . $pyScript . '" "' . $tempAudio . '" 2>&1';
+                                $pyOut = trim(shell_exec($cmd) ?? '');
+                                @unlink($tempAudio);
+
+                                botLog("[VOICE PY OUT] " . $pyOut);
+                                $pyJson = json_decode($pyOut, true);
+
+                                if (!empty($pyJson['ok']) && !empty($pyJson['text'])) {
+                                    $rawText = trim($pyJson['text']);
+                                    $actionId = 'V' . substr(md5(uniqid()), 0, 8);
+
+                                    $state['pending_voice'][$actionId] = [
+                                        'original'  => $rawText,
+                                        'bangla'    => $rawText,
+                                        'optimized' => $rawText,
+                                        'final'     => $rawText,
+                                        'target'    => $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME,
+                                        'time'      => time()
+                                    ];
+                                    saveState($state);
+
+                                    if ($notifyMsgId) {
+                                        tgRequest('deleteMessage', ['chat_id' => $chatId, 'message_id' => $notifyMsgId]);
+                                    }
+
+                                    renderVoicePreviewCard($chatId, $actionId, $state);
+                                    continue;
+                                } else {
+                                    $err = $pyJson['error'] ?? 'কণ্ঠস্বর স্পষ্টভাবে শনাক্ত করা যায়নি';
+                                    sendMsg($chatId, "⚠️ *ভয়েস শনাক্ত করা যায়নি!*\n\nকারণ: `{$err}`\n\nঅনুগ্রহ করে আবার স্পষ্ট করে বলুন অথবা বাংলায় লিখে পাঠান।");
+                                    continue;
+                                }
+                            }
+                        }
+
+                        sendMsg($chatId, "⚠️ ভয়েস ফাইল ডাউনলোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
                         continue;
                     }
 
@@ -1498,8 +1768,22 @@ while (true) {
 
                     botLog("[MESSAGE] From {$chatId}: {$text}");
 
+                    // Check if user is currently editing voice text
+                    if (!empty($state['editing_voice_id']) && isset($state['pending_voice'][$state['editing_voice_id']])) {
+                        $editId = $state['editing_voice_id'];
+                        $state['pending_voice'][$editId]['final'] = $text;
+                        $state['pending_voice'][$editId]['optimized'] = $text;
+                        $state['editing_voice_id'] = null;
+                        saveState($state);
+                        sendMsg($chatId, "✅ *ভয়েস টেক্সট সফলভাবে আপডেট করা হয়েছে!*");
+                        renderVoicePreviewCard($chatId, $editId, $state);
+                        continue;
+                    }
+
                     if ($text === '/start' || $text === '🏠 মেইন মেনু' || $text === '/menu') {
                         renderMainMenu($chatId, $state);
+                    } elseif ($text === '/latest' || $text === '💬 স্ক্রিনের সর্বশেষ উত্তর') {
+                        renderLatestResponseView($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {
                         renderWorkspacesMenu($chatId, $state);
                     } elseif ($text === '🧠 এআই মডেল নির্বাচন' || $text === '/models' || $text === '/model') {
@@ -1607,10 +1891,7 @@ while (true) {
 
                         // Direct message: Execute directly on active project via non-blocking dispatcher!
                         botLog("[PROMPT] Forwarding prompt to {$state['active_conv_id']}: {$text}");
-                        $task = dispatchPrompt($chatId, $text, $state);
-                        if ($task !== null) {
-                            $activeTask = $task;
-                        }
+                        dispatchPrompt($chatId, $text, $state);
                     }
                 }
             }

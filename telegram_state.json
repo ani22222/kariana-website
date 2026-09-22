@@ -2,11 +2,14 @@
     "active_conv_id": "b5d31c4a-85e9-4609-b28a-3786eed9a1a3",
     "active_proj_name": "Kariana Website",
     "chat_id": "1827362508",
-    "last_update_id": 611136751,
+    "last_update_id": 611136779,
     "is_busy": false,
     "active_chat_title": "আমি তোমাকে একটি ওয়েবসাইটের ফোল্ডার...",
     "mode": "turbo",
-    "last_heartbeat": 1790119023,
+    "last_heartbeat": 1790119609,
     "selected_model": "Gemini 3.8 Flash (High)",
-    "active_account": "acc_1"
+    "active_account": "acc_1",
+    "pending_voice": [],
+    "last_streamed_step": 3494,
+    "editing_voice_id": null
 }
