@@ -1559,7 +1559,7 @@ while (true) {
 
         // 1. Dynamic Auto-Sync with Latest Active Conversation from Antigravity DB
         static $lastConvSync = 0;
-        if (time() - $lastConvSync >= 2) {
+        if (time() - $lastConvSync >= 3) {
             $lastConvSync = time();
             $latestConv = getLatestActiveConversation();
             if ($latestConv && !empty($latestConv['id']) && $latestConv['id'] !== ($state['active_conv_id'] ?? '')) {
@@ -1567,9 +1567,15 @@ while (true) {
                 $state['active_conv_id'] = $latestConv['id'];
                 $state['active_proj_name'] = $latestConv['project'];
                 $state['active_chat_title'] = $latestConv['title'];
-                // Reset last streamed step so the response from the new conversation streams immediately!
-                $initResp = getLatestModelResponse($latestConv['id']);
-                $state['last_streamed_step'] = ($initResp && isset($initResp['step_index'])) ? max(0, $initResp['step_index'] - 1) : 0;
+                
+                if (!isset($state['streamed_steps']) || !is_array($state['streamed_steps'])) {
+                    $state['streamed_steps'] = [];
+                }
+                if (!isset($state['streamed_steps'][$latestConv['id']])) {
+                    $initResp = getLatestModelResponse($latestConv['id']);
+                    $state['streamed_steps'][$latestConv['id']] = ($initResp && isset($initResp['step_index'])) ? (int)$initResp['step_index'] : 0;
+                }
+                $state['last_streamed_step'] = $state['streamed_steps'][$latestConv['id']];
                 saveState($state);
             }
         }
@@ -1579,9 +1585,13 @@ while (true) {
         $latestResp = getLatestModelResponse($activeConv);
         if ($latestResp && !empty($latestResp['content'])) {
             $curStep = (int)$latestResp['step_index'];
-            $lastSent = (int)($state['last_streamed_step'] ?? 0);
+            if (!isset($state['streamed_steps']) || !is_array($state['streamed_steps'])) {
+                $state['streamed_steps'] = [];
+            }
+            $lastSent = (int)($state['streamed_steps'][$activeConv] ?? ($state['last_streamed_step'] ?? 0));
 
             if ($lastSent === 0) {
+                $state['streamed_steps'][$activeConv] = $curStep;
                 $state['last_streamed_step'] = $curStep;
                 saveState($state);
             } elseif ($curStep > $lastSent) {
@@ -1605,6 +1615,7 @@ while (true) {
 
                 $bodyWithLinks = $latestResp['content'] . getStandardLinksText();
                 sendChunkedTelegramResponse($state['chat_id'], $streamHeader, $bodyWithLinks, $streamKb);
+                $state['streamed_steps'][$activeConv] = $curStep;
                 $state['last_streamed_step'] = $curStep;
                 saveState($state);
             }
@@ -1843,7 +1854,7 @@ while (true) {
                             sendMsg($chatId, "⏳ প্রিভিউ ব্যাকগ্রাউন্ডে তৈরি হচ্ছে, অনুগ্রহ করে কয়েক সেকেন্ড পর আবার চাপ দিন।");
                         }
                         // Refresh in background without blocking
-                        pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js"', 'r'));
+                        pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js" >nul 2>&1', 'r'));
                     } elseif ($data === 'action_open_agy') {
                         answerCallback($cbId, 'Antigravity ওপেন হচ্ছে...');
                         exec('powershell.exe -Command "Start-Process \'C:\Users\UseR\AppData\Local\Programs\antigravity\Antigravity.exe\'"');
@@ -2124,7 +2135,7 @@ while (true) {
                                 sendPhoto($chatId, $webShot, "📱 *কারিয়ানা মোবাইল লাইভ ভিউ* (Port 8015)\n" . getStandardLinksText());
                             }
                             // Refresh in background without blocking
-                            pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js"', 'r'));
+                            pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js" >nul 2>&1', 'r'));
                         }
                     } elseif ($text === '📱 ওয়েবসাইট লাইভ ভিউ' || $text === '/web' || $text === '/preview') {
                         botLog("[WEB] Text command triggered website preview");
@@ -2141,7 +2152,7 @@ while (true) {
                             sendMsg($chatId, "⏳ প্রিভিউ ব্যাকগ্রাউন্ডে তৈরি হচ্ছে, অনুগ্রহ করে কয়েক সেকেন্ড পর আবার চাপ দিন।");
                         }
                         // Refresh in background without blocking
-                        pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js"', 'r'));
+                        pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js" >nul 2>&1', 'r'));
                     } elseif ($text === '🛑 পিসি শাটডাউন' || $text === '/shutdown') {
                         $cancelKb = [[['text' => '❌ শাটডাউন বাতিল করুন', 'callback_data' => 'action_cancel_shutdown']]];
                         sendMsg($chatId, "🛑 *কম্পিউটার শাটডাউন হতে যাচ্ছে!*\n━━━━━━━━━━━━━━━━━━━━\n⏱️ ১০ সেকেন্ডের মধ্যে পিসি পাওয়ার অফ হবে।\n\nবাতিল করতে চাইলে নিচের বাটনে চাপ দিন:", $cancelKb);
