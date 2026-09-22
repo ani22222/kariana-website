@@ -51,7 +51,10 @@ if (file_exists($routesFile)) {
         // Default Home Rendering
         $db = \Core\Database::getInstance();
         $featuredCourses = $db->query("SELECT * FROM `courses` WHERE `admission_open` = 1 ORDER BY `sort_order` ASC LIMIT 4")->fetchAll();
-        $featuredBooks = $db->query("SELECT * FROM `books` WHERE `is_featured` = 1 ORDER BY `sort_order` ASC LIMIT 3")->fetchAll();
+        $featuredBooks = $db->query("SELECT * FROM `books` WHERE `is_featured` = 1 ORDER BY `sort_order` ASC, `id` ASC LIMIT 10")->fetchAll();
+        if (empty($featuredBooks)) {
+            $featuredBooks = $db->query("SELECT * FROM `books` ORDER BY `sort_order` ASC, `id` ASC LIMIT 10")->fetchAll();
+        }
         $recentPosts = $db->query("SELECT * FROM `posts` WHERE `status` = 'published' ORDER BY `created_at` DESC LIMIT 3")->fetchAll();
         $featuredDirectors = $db->query("SELECT * FROM `directors` WHERE `status` = 'active' ORDER BY `id` ASC LIMIT 4")->fetchAll();
         $totalDirectorsCount = (int)$db->query("SELECT COUNT(*) FROM `directors` WHERE `status` = 'active'")->fetchColumn();
