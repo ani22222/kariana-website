@@ -307,15 +307,69 @@ class AuthController
     public function checkPhone(Request $request): Response
     {
         $phone = trim((string)$request->get('phone', ''));
-        if (strlen($phone) < 6) {
-            return Response::json(['exists' => false, 'message' => 'Invalid phone length']);
+        if (strlen($phone) < 3) {
+            return Response::json(['exists' => false, 'message' => 'Invalid identifier length']);
         }
 
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
-        $exists = $this->isPhoneRegistered($phone, $cleanPhone);
+        $clean10 = strlen($cleanPhone) >= 10 ? substr($cleanPhone, -10) : $cleanPhone;
+        $likePhone = '%' . $clean10;
+
+        $exists = false;
+        $userName = null;
+        $userRole = null;
+
+        // 1. Check users table
+        $s1 = $this->db->prepare("SELECT name, role FROM `users` WHERE `phone` = ? OR `phone` LIKE ? OR `username` = ? OR `email` = ? LIMIT 1");
+        $s1->execute([$phone, $likePhone, $phone, $phone]);
+        $r1 = $s1->fetch();
+        if ($r1) {
+            $exists = true;
+            $userName = $r1['name'];
+            $userRole = $r1['role'];
+        }
+
+        // 2. Check managers
+        if (!$exists) {
+            $s2 = $this->db->prepare("SELECT name FROM `managers` WHERE `phone` = ? OR `phone` LIKE ? OR `username` = ? OR `email` = ? LIMIT 1");
+            $s2->execute([$phone, $likePhone, $phone, $phone]);
+            $r2 = $s2->fetch();
+            if ($r2) {
+                $exists = true;
+                $userName = $r2['name'];
+                $userRole = 'manager';
+            }
+        }
+
+        // 3. Check directors
+        if (!$exists) {
+            $s3 = $this->db->prepare("SELECT name, district_name FROM `directors` WHERE `phone` = ? OR `phone` LIKE ? OR `username` = ? OR `email` = ? LIMIT 1");
+            $s3->execute([$phone, $likePhone, $phone, $phone]);
+            $r3 = $s3->fetch();
+            if ($r3) {
+                $exists = true;
+                $userName = $r3['name'];
+                $userRole = 'director';
+            }
+        }
+
+        // 4. Check teachers
+        if (!$exists) {
+            $s4 = $this->db->prepare("SELECT name FROM `teachers` WHERE `phone` = ? OR `phone` LIKE ? OR `username` = ? OR `email` = ? LIMIT 1");
+            $s4->execute([$phone, $likePhone, $phone, $phone]);
+            $r4 = $s4->fetch();
+            if ($r4) {
+                $exists = true;
+                $userName = $r4['name'];
+                $userRole = 'teacher';
+            }
+        }
 
         return Response::json([
             'exists'     => $exists,
+            'name'       => $userName,
+            'role'       => $userRole,
+            'greeting'   => $userName ? "আসসালামু আলাইকুম, {$userName}!" : null,
             'phone'      => $phone,
             'cleanPhone' => $cleanPhone,
             'suggestion' => $exists ? 'registered' : 'unregistered'
