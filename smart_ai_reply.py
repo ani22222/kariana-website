@@ -56,7 +56,17 @@ def ask_ai(prompt: str, conv_title: str = "Telegram Assistant") -> str:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        user_msg = " ".join(sys.argv[1:])
+        arg = sys.argv[1]
+        user_msg = ""
+        if os.path.exists(arg) and arg.endswith('.json'):
+            try:
+                with open(arg, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    user_msg = data.get('prompt', '')
+            except:
+                user_msg = ""
+        if not user_msg:
+            user_msg = " ".join(sys.argv[1:])
         reply = ask_ai(user_msg)
         if reply:
             print(reply)

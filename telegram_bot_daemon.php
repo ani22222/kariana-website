@@ -1343,8 +1343,13 @@ function handleSmartMessage(string $chatId, string $text, array &$state): void {
     tgRequest('sendChatAction', ['chat_id' => $chatId, 'action' => 'typing']);
 
     $pyScript = PROJECT_ROOT . '/smart_ai_reply.py';
-    $cmd = 'python "' . $pyScript . '" ' . escapeshellarg($text);
+    $cacheDir = PROJECT_ROOT . '/storage/logs/ai_cache';
+    if (!is_dir($cacheDir)) @mkdir($cacheDir, 0777, true);
+    $promptFile = $cacheDir . '/prompt_' . uniqid() . '.json';
+    file_put_contents($promptFile, json_encode(['prompt' => $text], JSON_UNESCAPED_UNICODE));
+    $cmd = 'python "' . $pyScript . '" "' . $promptFile . '" 2>&1';
     $aiOutput = trim(shell_exec($cmd) ?? '');
+    @unlink($promptFile);
 
     if (empty($aiOutput)) {
         // Warm fallback if python script didn't return
