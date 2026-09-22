@@ -125,11 +125,6 @@ body {
    ============================================================ */
 .hero-shell {
     position: relative;
-    overflow: hidden;
-    border-radius: 2rem;
-    background: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #02231b 100%);
-    border: 2px solid rgba(217, 119, 6, 0.4);
-    box-shadow: 0 25px 50px -12px rgba(2, 44, 34, 0.5), 0 0 35px rgba(217, 119, 6, 0.15);
     user-select: none;
     touch-action: pan-y;
 }
@@ -380,56 +375,60 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: rgba(2, 44, 34, 0.85);
-    border: 1.5px solid rgba(251, 191, 36, 0.6);
+    background: rgba(2, 44, 34, 0.9);
+    border: 2px solid rgba(251, 191, 36, 0.75);
     color: #fbbf24;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 25;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: all 0.25s ease;
+    z-index: 40;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(217, 119, 6, 0.3);
 }
 
 .hero-arrow:hover {
-    background: #d97706;
+    background: linear-gradient(135deg, #d97706, #b45309);
     color: #ffffff;
-    border-color: #fbbf24;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 0 16px rgba(217, 119, 6, 0.5);
+    border-color: #fef08a;
+    transform: translateY(-50%) scale(1.12);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(251, 191, 36, 0.6);
 }
 
-.hero-arrow.prev { left: 0.75rem; }
-.hero-arrow.next { right: 0.75rem; }
+.hero-arrow:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+.hero-arrow.prev { left: 0.5rem; }
+.hero-arrow.next { right: 0.5rem; }
 
 @media (min-width: 640px) {
-    .hero-arrow.prev { left: max(1.5rem, calc(50% - 210px)); }
-    .hero-arrow.next { right: max(1.5rem, calc(50% - 210px)); }
+    .hero-arrow.prev { left: max(1rem, calc(50% - 220px)); }
+    .hero-arrow.next { right: max(1rem, calc(50% - 220px)); }
 }
 
 @media (min-width: 1024px) {
-    .hero-arrow.prev { left: max(2rem, calc(50% - 240px)); }
-    .hero-arrow.next { right: max(2rem, calc(50% - 240px)); }
+    .hero-arrow.prev { left: max(2rem, calc(50% - 260px)); }
+    .hero-arrow.next { right: max(2rem, calc(50% - 260px)); }
 }
 
 /* Responsive Mobile Polish for Hero Slider and Touch Viewports (< 640px) */
 @media (max-width: 640px) {
     #heroCarousel {
-        min-height: 540px;
+        min-height: 520px;
     }
     .hero-arrow {
-        width: 36px;
-        height: 36px;
-        font-size: 0.85rem;
-        left: 0.35rem;
+        width: 40px;
+        height: 40px;
+        left: 0.25rem;
     }
     .hero-arrow.next {
-        right: 0.35rem;
+        right: 0.25rem;
     }
     .hero-art {
         width: 240px;

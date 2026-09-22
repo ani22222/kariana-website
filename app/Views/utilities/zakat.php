@@ -22,8 +22,13 @@ $baseUrl = isset($baseUrl) ? rtrim($baseUrl, '/') : '';
             </div>
         </div>
 
-        <div class="p-4 rounded-lg bg-emerald-50/60 text-xs text-emerald-800 leading-relaxed">
-            💡 <strong>নীতিমালা:</strong> যদি আপনার ঋণ বাদে মোট যাকাতযোগ্য সম্পদের মূল্য নিসাব সীমার সমান বা বেশি হয় এবং তা এক চন্দ্রবছর স্থায়ী থাকে, তবে মোট সম্পদের ২.৫% (চল্লিশ ভাগের এক ভাগ) যাকাত প্রদান করা ফরজ।
+        <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-xs text-emerald-900 leading-relaxed flex items-start space-x-2">
+            <svg class="w-4 h-4 text-emerald-700 mt-0.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+                <strong>নীতিমালা:</strong> যদি আপনার ঋণ বাদে মোট যাকাতযোগ্য সম্পদের মূল্য নিসাব সীমার সমান বা বেশি হয় এবং তা এক চন্দ্রবছর স্থায়ী থাকে, তবে মোট সম্পদের ২.৫% (চল্লিশ ভাগের এক ভাগ) যাকাত প্রদান করা ফরজ।
+            </div>
         </div>
     </div>
 </section>

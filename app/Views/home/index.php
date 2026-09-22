@@ -18,9 +18,9 @@
                 <?php 
                 $booksList = !empty($featuredBooks) ? $featuredBooks : [];
                 $slidePills = [
-                    0 => ['pill' => '★ ১ম বেস্টসেলার - ফ্ল্যাগশিপ সংস্করণ', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
-                    1 => ['pill' => '★ ২য় বেস্টসেলার - ৩০তম পারা আমপারা', 'chipA' => 'সূরা নাবা হতে নাস', 'chipB' => 'প্রতিটি পৃষ্ঠায় লেসন'],
-                    2 => ['pill' => '★ ৩য় বেস্টসেলার - ৩০ দিনে কুরআন শিক্ষা', 'chipA' => 'বৈজ্ঞানিক নূরানী কায়দা', 'chipB' => 'সহজ তাজবীদ সংকেত'],
+                    0 => ['pill' => '১ম বেস্টসেলার - ফ্ল্যাগশিপ সংস্করণ', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
+                    1 => ['pill' => '২য় বেস্টসেলার - ৩০তম পারা আমপারা', 'chipA' => 'সূরা নাবা হতে নাস', 'chipB' => 'প্রতিটি পৃষ্ঠায় লেসন'],
+                    2 => ['pill' => '৩য় বেস্টসেলার - ৩০ দিনে কুরআন শিক্ষা', 'chipA' => 'বৈজ্ঞানিক নূরানী কায়দা', 'chipB' => 'সহজ তাজবীদ সংকেত'],
                 ];
 
                 foreach ($booksList as $idx => $b):
@@ -28,17 +28,20 @@
                     $origPrice = (float)$b['price'];
                     $hasDiscount = ($discPrice > 0 && $discPrice < $origPrice);
                     $saveAmount = (int)($origPrice - $discPrice);
-                    $pills = $slidePills[$idx] ?? ['pill' => '★ বিশেষ সংস্করণ', 'chipA' => 'নূরানী সংকেত', 'chipB' => 'ভিডিও পাঠ'];
+                    $pills = $slidePills[$idx] ?? ['pill' => 'বিশেষ সংস্করণ', 'chipA' => 'নূরানী সংকেত', 'chipB' => 'ভিডিও পাঠ'];
                 ?>
                 <article class="hero-slide <?= $idx === 0 ? 'is-active' : '' ?>" 
                          data-index="<?= $idx ?>"
                          itemscope itemtype="https://schema.org/Book">
                     <div class="flex flex-col items-center justify-center w-full text-center max-w-2xl mx-auto z-20">
                         
-                        <!-- Top Pill: Bestseller Flagship Edition -->
-                        <div class="mb-2">
+                        <!-- Top Pill: Bestseller Flagship Edition (Pure SVG, Zero Emojis) -->
+                        <div class="mb-2.5">
                             <span class="slide-pill">
-                                <i class="fas fa-crown mr-1.5 text-gold-shimmer text-xs"></i> <?= $pills['pill'] ?>
+                                <svg class="w-3.5 h-3.5 mr-1.5 text-amber-300 inline-block shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <?= htmlspecialchars($pills['pill']) ?>
                             </span>
                         </div>
 
@@ -47,17 +50,24 @@
                             <?= htmlspecialchars($b['title']) ?>
                         </h1>
 
-                        <!-- Center 3D Floating Book Art (Identical to User Reference Screenshot) -->
+                        <!-- Center 3D Floating Book Art (Floating freely without rigid outer boxes) -->
                         <div class="py-2 relative">
                             <div class="hero-art">
                                 <div class="halo"></div>
 
-                                <!-- Orbit Floating Chips -->
+                                <!-- Orbit Floating Chips with SVGs -->
                                 <span class="orbit-chip chip-a">
-                                    <span class="pulse"></span> <?= $pills['chipA'] ?>
+                                    <span class="pulse"></span>
+                                    <svg class="w-3 h-3 text-emerald-400 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <?= htmlspecialchars($pills['chipA']) ?>
                                 </span>
                                 <span class="orbit-chip chip-b">
-                                    <i class="fas fa-qrcode text-gold-shimmer mr-1.5"></i> <?= $pills['chipB'] ?>
+                                    <svg class="w-3.5 h-3.5 text-amber-300 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                    </svg>
+                                    <?= htmlspecialchars($pills['chipB']) ?>
                                 </span>
 
                                 <!-- 3D Book Mockup Card -->
@@ -66,14 +76,16 @@
                                         <span class="text-[10px] bg-amber-600 text-white font-bold px-2.5 py-0.5 rounded-full shadow">
                                             কারিয়ানা নূরানী
                                         </span>
-                                        <span class="text-[11px] text-gold-shimmer font-mono font-bold">
-                                            <?= ($idx + 1) ?>/৩
+                                        <span class="text-[11px] text-amber-300 font-mono font-bold">
+                                            <?= \Core\BengaliHelper::toBengaliNumber($idx + 1) ?>/৩
                                         </span>
                                     </div>
 
                                     <div class="text-center my-auto py-4">
-                                        <div class="w-16 h-16 mx-auto bg-gold-rich/20 rounded-full flex items-center justify-center text-gold-shimmer text-3xl mb-3 shadow-inner border border-gold-rich/40">
-                                            <i class="fas fa-book-quran"></i>
+                                        <div class="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400/20 to-emerald-900/40 rounded-full flex items-center justify-center text-amber-300 mb-3 shadow-inner border border-amber-400/40">
+                                            <svg class="w-8 h-8 text-amber-300 drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
                                         </div>
                                         <h3 class="font-extrabold text-base sm:text-lg text-white line-clamp-2 px-2">
                                             <?= htmlspecialchars($b['title']) ?>
@@ -83,7 +95,7 @@
 
                                     <div class="pt-3 border-t border-emerald-700/60 flex items-center justify-between text-xs text-emerald-200">
                                         <span>নূরানী প্রকাশনা</span>
-                                        <span class="font-bold text-gold-shimmer font-mono text-sm">৳<?= \Core\BengaliHelper::toBengaliNumber((int)$discPrice) ?></span>
+                                        <span class="font-bold text-amber-300 font-mono text-sm">৳<?= \Core\BengaliHelper::toBengaliNumber((int)$discPrice) ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -98,12 +110,18 @@
                             <a href="https://wa.me/8801711756391?text=<?= urlencode('আসসালামু আলাইকুম, আমি কারিয়ানা ওয়েবসাইট থেকে "' . $b['title'] . '" বইটি অফার মূল্যে (৳' . (int)$discPrice . ') অর্ডার করতে চাই।') ?>" 
                                target="_blank"
                                class="bg-gradient-to-r from-gold-rich via-amber-500 to-gold-deep hover:brightness-110 text-white font-bold py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(217,119,6,0.35)] transition transform hover:scale-105 flex items-center text-xs sm:text-sm">
-                                <i class="fab fa-whatsapp text-base mr-2 text-emerald-200"></i> অর্ডার করুন - ৳<?= \Core\BengaliHelper::toBengaliNumber((int)$discPrice) ?>
+                                <svg class="w-4 h-4 mr-2 text-emerald-100 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                                </svg>
+                                অর্ডার করুন - ৳<?= \Core\BengaliHelper::toBengaliNumber((int)$discPrice) ?>
                             </a>
 
                             <a href="<?= $baseUrl ?? '' ?>/books/<?= htmlspecialchars($b['slug']) ?>" 
                                class="bg-emerald-night/80 hover:bg-emerald-night border border-emerald-500/50 hover:border-gold-rich text-emerald-100 hover:text-white font-semibold py-2.5 px-5 rounded-full transition flex items-center text-xs sm:text-sm backdrop-blur-sm">
-                                <i class="fas fa-book-open mr-1.5 text-gold-shimmer"></i> বিস্তারিত দেখুন
+                                <svg class="w-4 h-4 mr-1.5 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                বিস্তারিত দেখুন
                             </a>
                         </div>
 
@@ -115,9 +133,25 @@
             <!-- Slide Indicator Dots -->
             <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
 
-            <!-- Prev / Next Navigation Arrows (Flanking the Book Card) -->
-            <button class="hero-arrow prev" id="heroPrev" aria-label="পূর্ববর্তী বই"><i class="fas fa-chevron-left"></i></button>
-            <button class="hero-arrow next" id="heroNext" aria-label="পরবর্তী বই"><i class="fas fa-chevron-right"></i></button>
+            <!-- Prev / Next Navigation Arrows (Flanking the Book Card with Pure SVGs and 100% Fail-Safe Listeners) -->
+            <button type="button" 
+                    class="hero-arrow prev group" 
+                    id="heroPrev" 
+                    onclick="if(window.heroPrev) { window.heroPrev(); } else if(window.heroGo) { window.heroGo(-1, true, true); }" 
+                    aria-label="পূর্ববর্তী বই">
+                <svg class="w-5 h-5 text-amber-300 group-hover:text-white transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button type="button" 
+                    class="hero-arrow next group" 
+                    id="heroNext" 
+                    onclick="if(window.heroNext) { window.heroNext(); } else if(window.heroGo) { window.heroGo(1, true, true); }" 
+                    aria-label="পরবর্তী বই">
+                <svg class="w-5 h-5 text-amber-300 group-hover:text-white transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
         </div>
 
         <!-- Top 3 Books Interactive Quick-Select Thumbnails Bar (Direct Tab Switcher) -->
@@ -129,8 +163,10 @@
                     onclick="window.heroGo(<?= $tIdx ?>, true)" 
                     id="book-tab-btn-<?= $tIdx ?>"
                     class="book-tab-btn p-3 rounded-2xl bg-[#fffefb] border-2 <?= $tIdx === 0 ? 'border-gold-rich shadow-md bg-amber-50/60' : 'border-[#e4dcce]' ?> hover:border-gold-rich text-left transition-all duration-200 flex items-center space-x-3 group">
-                <div class="w-9 h-11 bg-emerald-900 border border-gold-rich/60 rounded-lg flex items-center justify-center text-gold-shimmer text-base shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-                    <i class="fas fa-book-quran"></i>
+                <div class="w-9 h-11 bg-emerald-900 border border-gold-rich/60 rounded-lg flex items-center justify-center text-amber-300 text-base shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
                 </div>
                 <div class="overflow-hidden flex-1">
                     <span class="text-[10px] text-gold-deep font-bold block uppercase tracking-wider">
@@ -163,11 +199,16 @@
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Generate Dots
+    dotsBox.innerHTML = '';
     slides.forEach(function(_, i) {
         var d = document.createElement('button');
         d.setAttribute('role', 'tab');
         d.setAttribute('aria-label', 'বই স্লাইড ' + (i + 1));
-        d.addEventListener('click', function() { go(i, true); });
+        if (i === 0) d.classList.add('is-active');
+        d.addEventListener('click', function(e) { 
+            e.stopPropagation();
+            go(i, true, false); 
+        });
         dotsBox.appendChild(d);
     });
     var dots = dotsBox.querySelectorAll('button');
@@ -187,12 +228,21 @@
         }
     }
 
-    function go(n, user) {
-        if (!slides[idx]) return;
+    function go(target, user, isRelative) {
+        if (!slides.length) return;
+        var nextIdx;
+        if (isRelative) {
+            nextIdx = (idx + target + total) % total;
+        } else {
+            nextIdx = (target + total) % total;
+        }
+
+        if (nextIdx === idx && user && !isRelative) return;
+
         slides[idx].classList.add('is-exit-left');
         slides[idx].classList.remove('is-active');
 
-        idx = (n + total) % total;
+        idx = nextIdx;
 
         slides.forEach(function(s, i) {
             if (i !== idx) s.classList.remove('is-exit-left');
@@ -209,21 +259,36 @@
 
         if (user) restart();
     }
-    window.heroGo = go;
+
+    window.heroGo = function(target, user) { go(target, user, false); };
+    window.heroPrev = function() { go(-1, true, true); };
+    window.heroNext = function() { go(1, true, true); };
 
     function restart() {
         if (reduceMotion) return;
         clearInterval(timer);
         timer = setInterval(function() {
-            if (!document.hidden) go(idx + 1);
-        }, 5500);
+            if (!document.hidden) go(1, false, true);
+        }, 6000);
     }
 
     var prevBtn = document.getElementById('heroPrev');
-    if (prevBtn) prevBtn.addEventListener('click', function() { go(idx - 1, true); });
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.heroPrev();
+        });
+    }
 
     var nextBtn = document.getElementById('heroNext');
-    if (nextBtn) nextBtn.addEventListener('click', function() { go(idx + 1, true); });
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.heroNext();
+        });
+    }
 
     // Touch Swipe & Mouse Drag Handling
     var shell = document.getElementById('heroShell');
