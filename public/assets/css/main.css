@@ -672,17 +672,18 @@ body {
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
-    min-height: calc(100svh - 80px);
+    /* dvh accounts for mobile browser chrome (address bar hide/show) */
+    min-height: calc(100dvh - 80px);
     display: flex;
     flex-direction: column;
     padding-top: 0.75rem;
-    padding-bottom: 0;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
 }
 
-/* Fallback for browsers without svh support */
-@supports not (min-height: 100svh) {
+/* Fallback for browsers without dvh support */
+@supports not (min-height: 100dvh) {
     #heroSectionWrapper {
         min-height: calc(100vh - 80px);
     }
@@ -696,33 +697,27 @@ body {
     align-items: center;
 }
 
-/* Hero shell stretches to fill, distributing space */
+/* Hero shell stretches and vertically centers all content as one unit */
 .hero-shell {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 0;
 }
 
-/* Push carousel down from top (creates balanced top space) */
-#heroCarousel {
-    margin-top: auto;
-}
-
-/* Push scroll indicator to bottom (creates gap between dots and indicator, filling the remaining space) */
+/* Scroll indicator stays part of the centered group, no artificial gap */
 .hero-scroll-indicator {
-    margin-top: auto !important;
-    padding-bottom: calc(74px + env(safe-area-inset-bottom, 8px)) !important;
+    padding-bottom: 0;
 }
 
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        min-height: calc(100svh - 96px);
+        min-height: calc(100dvh - 96px);
         padding-top: 1rem;
-    }
-    .hero-scroll-indicator {
-        padding-bottom: 1.5rem !important;
+        padding-bottom: 2rem; /* No bottom nav on desktop */
     }
 }
 
@@ -731,13 +726,6 @@ body {
     #heroSectionWrapper {
         min-height: auto;
         padding-top: 0.5rem;
-    }
-    #heroCarousel {
-        margin-top: 0;
-    }
-    .hero-scroll-indicator {
-        margin-top: 0.5rem !important;
-        padding-bottom: 0 !important;
     }
 }
 
