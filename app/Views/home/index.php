@@ -1,8 +1,8 @@
 <!-- ============================================================
      VAPE-INSPIRED SMOOTH HERO SLIDER & 3D BOOK SHOWCASE (100VH IMMERSIVE)
      ============================================================ -->
-<div id="heroSectionWrapper" class="bg-emerald-deep pt-2 sm:pt-4 pb-1 sm:pb-2 px-3 sm:px-4 relative overflow-hidden h-[calc(100svh-92px-68px)] md:h-[calc(100vh-92px)] max-h-[calc(100svh-92px-68px)] md:max-h-[calc(100vh-92px)] flex flex-col justify-between">
-    <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1">
+<div id="heroSectionWrapper" class="bg-emerald-deep pt-1 sm:pt-4 pb-1 sm:pb-2 px-2 sm:px-4 relative overflow-hidden h-[calc(100svh-88px-76px)] md:h-[calc(100vh-92px)] max-h-[calc(100svh-88px-76px)] md:max-h-[calc(100vh-92px)] flex flex-col justify-between">
+    <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1 h-full">
         
         <!-- Main Vape-Style Hero Shell -->
         <div class="hero-shell relative" id="heroShell">
@@ -18,10 +18,10 @@
                 $booksList = !empty($featuredBooks) ? $featuredBooks : [];
                 $slidePills = [
                     0 => ['pill' => '১ম বেস্টসেলার - ফ্ল্যাগশিপ সংস্করণ', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
-                    1 => ['pill' => '২য় বেস্টসেলার - ৩০তম পারা আমপারা', 'chipA' => 'সূরা নাবা হতে নাস', 'chipB' => 'প্রতিটি পৃষ্ঠায় লেসন'],
-                    2 => ['pill' => '৩য় বেস্টসেলার - ৩০ দিনে কুরআন শিক্ষা', 'chipA' => 'বৈজ্ঞানিক নূরানী কায়দা', 'chipB' => 'সহজ তাজবীদ সংকেত'],
-                    3 => ['pill' => '৪র্থ বেস্টসেলার - মুয়াল্লিম গাইডবুক', 'chipA' => 'শিক্ষক সহায়িকা', 'chipB' => 'পাঠদান পদ্ধতি'],
-                    4 => ['pill' => '৫ম বেস্টসেলার - হিফজুল কুরআন সহায়িকা', 'chipA' => 'সহজ মুখস্থ কৌশল', 'chipB' => 'মাসনুন দুআ'],
+                    1 => ['pill' => '২য় বেস্টসেলার - ৩০তম পারা আমপারা', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
+                    2 => ['pill' => '৩য় বেস্টসেলার - ৩০ দিনে কুরআন শিক্ষা', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
+                    3 => ['pill' => '৪র্থ বেস্টসেলার - মুয়াল্লিম গাইডবুক', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
+                    4 => ['pill' => '৫ম বেস্টসেলার - হিফজুল কুরআন সহায়িকা', 'chipA' => '১২টি তাজবীদ সংকেত', 'chipB' => 'কিউআর ভিডিও লেসন'],
                 ];
 
                 foreach ($booksList as $idx => $b):
@@ -53,7 +53,7 @@
                         </div>
 
                         <!-- Single-Line Clean Headline -->
-                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md truncate max-w-xl mx-auto mb-2 sm:mb-3 px-2" itemprop="name">
+                        <h1 class="text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md truncate max-w-xl mx-auto mb-1.5 sm:mb-3 px-2" itemprop="name">
                             <?= htmlspecialchars($b['title']) ?>
                         </h1>
 
@@ -413,7 +413,7 @@ window.smoothScrollToContent = function() {
 </script>
 
 <!-- Quick Stats / Features Bar (Soft Warm Ivory with Gold Borders) -->
-<div id="mainContentSection" class="bg-[#fffdf9] border-2 border-[#e6dcce] py-8 relative z-20 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] -mt-6 mx-4 md:mx-auto max-w-5xl rounded-2xl">
+<div id="mainContentSection" class="bg-[#fffdf9] border-2 border-[#e6dcce] py-8 relative z-20 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] mt-6 md:mt-8 mx-4 md:mx-auto max-w-5xl rounded-2xl">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-[#ece3d4]">
         <div class="px-3">
             <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">

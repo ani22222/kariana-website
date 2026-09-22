@@ -316,13 +316,34 @@ body {
     z-index: 5;
     width: 100%;
     height: 100%;
-    border-radius: 26px;
-    border: 2.5px solid #fbbf24;
-    transform: rotateY(-8deg) rotateX(2deg);
+    border-radius: 24px;
+    border: 2px solid #fbbf24;
+    transform: perspective(1000px) rotateY(-7deg) rotateX(2deg);
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.3s ease;
-    box-shadow: 0 0 25px rgba(251, 191, 36, 0.35), 0 20px 45px -10px rgba(0, 0, 0, 0.8), -6px 0 16px -2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.3), 0 20px 45px -10px rgba(0, 0, 0, 0.8), -6px 0 16px -2px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     background: #022c22;
+}
+
+/* Inner golden decorative border */
+.hero-book-3d::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Realistic hardcover spine depth & shadow on left edge */
+.hero-book-3d::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(255,255,255,0.18) 3%, rgba(0,0,0,0.2) 6%, transparent 12%);
+    pointer-events: none;
+    z-index: 5;
 }
 
 .hero-book-3d img {
@@ -331,11 +352,11 @@ body {
     object-fit: cover;
     object-position: center;
     display: block;
-    border-radius: 23px;
+    border-radius: 22px;
 }
 
 .hero-art:hover .hero-book-3d {
-    transform: rotateY(0deg) rotateX(0deg) scale(1.03);
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
     border-color: #fde047;
     box-shadow: 0 0 35px rgba(251, 191, 36, 0.55), 0 28px 60px -10px rgba(0, 0, 0, 0.9);
 }
@@ -577,66 +598,70 @@ body {
 /* Responsive Mobile Polish for Hero Slider and Touch Viewports (< 640px) */
 @media (max-width: 640px) {
     #heroCarousel {
-        min-height: min(280px, 35vh);
+        min-height: min(260px, 32vh);
     }
     .hero-controls-bar {
-        gap: 0.3rem;
-        margin-top: 0.2rem;
-        padding: 0.2rem;
+        gap: 0.35rem;
+        margin-top: 0.15rem;
+        padding: 0.15rem;
     }
     .hero-action-group {
-        gap: 0.3rem;
+        gap: 0.35rem;
     }
     .hero-btn-primary {
-        font-size: 0.72rem;
-        padding: 0.34rem 0.65rem;
+        font-size: 0.74rem;
+        padding: 0.36rem 0.72rem;
     }
     .hero-btn-secondary {
-        font-size: 0.72rem;
-        padding: 0.34rem 0.6rem;
+        font-size: 0.74rem;
+        padding: 0.36rem 0.68rem;
     }
     .hero-nav-btn, .hero-arrow {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
+    }
+    .hero-dots {
+        padding: 2px 7px;
+        gap: 4px;
     }
     .hero-dots button {
         width: 5px;
         height: 5px;
     }
     .hero-dots button.is-active {
-        width: 13px;
+        width: 14px;
     }
     .hero-art {
-        width: min(180px, 42vw);
-        height: min(245px, 31vh);
+        width: min(168px, 40vw);
+        height: min(225px, 28vh);
     }
     .hero-shape-ring {
-        width: 230px;
-        height: 230px;
+        width: 210px;
+        height: 210px;
     }
     .hero-slide {
-        padding: 0.15rem 0.4rem 0.15rem;
+        padding: 0.1rem 0.35rem 0.1rem;
     }
     .chip-a {
         right: -6px;
         top: -6px;
         font-size: 0.68rem;
-        padding: 0.24rem 0.65rem;
+        padding: 0.22rem 0.65rem;
     }
     .chip-b {
         left: -6px;
         bottom: -6px;
         font-size: 0.68rem;
-        padding: 0.24rem 0.65rem;
+        padding: 0.22rem 0.65rem;
     }
     .scroll-indicator-mouse {
-        width: 20px;
-        height: 32px;
-        padding-top: 4px;
+        width: 18px;
+        height: 28px;
+        padding-top: 3px;
     }
     .scroll-indicator-wheel {
         width: 3px;
-        height: 6px;
+        height: 5px;
     }
 }
 
@@ -703,9 +728,10 @@ body {
    ============================================================ */
 .bottom-nav-wrapper {
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
     left: 0;
     right: 0;
+    padding: 0 14px;
     z-index: 50;
     pointer-events: none;
     display: flex;
@@ -715,16 +741,15 @@ body {
 .bottom-nav {
     pointer-events: auto;
     width: 100%;
-    max-width: 520px;
-    background: linear-gradient(180deg, rgba(2, 44, 34, 0.96) 0%, rgba(1, 26, 20, 0.98) 100%);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
-    border-top: 1.5px solid rgba(251, 191, 36, 0.35);
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.55), 0 -1px 0 rgba(251, 191, 36, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    padding: 0.65rem 0.6rem 0.25rem;
-    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom, 0px));
+    max-width: 440px;
+    background: linear-gradient(135deg, rgba(3, 44, 34, 0.96) 0%, rgba(1, 26, 20, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 26px;
+    border: 1.5px solid rgba(251, 191, 36, 0.45);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65), 0 0 16px rgba(251, 191, 36, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    padding: 0.5rem 0.6rem 0.2rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
 }
 
 .bottom-nav-items {

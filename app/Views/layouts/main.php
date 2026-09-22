@@ -107,8 +107,8 @@
         }
     </script>
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= $baseUrl ?? '' ?>/assets/css/main.css">
+    <!-- Custom CSS with Dynamic Cache-Buster -->
+    <link rel="stylesheet" href="<?= $baseUrl ?? '' ?>/assets/css/main.css?v=<?= @filemtime(__DIR__ . '/../../../public/assets/css/main.css') ?: time() ?>">
     
     <style>
         [x-cloak] { display: none !important; }
