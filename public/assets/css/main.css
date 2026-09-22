@@ -661,31 +661,24 @@ body {
         font-size: 0.72rem;
         padding: 0.25rem 0.7rem;
     }
-    .hero-scroll-indicator {
-        padding: 0.25rem 0 0;
-        margin-top: 0.5rem;
-        margin-bottom: 0;
-    }
 }
 
 /* ============================================================
    HERO SECTION — Full-Viewport Immersive Layout
-   Uses min-height to fill remaining viewport after header/ticker,
-   with flexbox centering so content sits naturally in the middle.
-   On short viewports where content exceeds space, it just flows.
+   flex-column: content centers via auto-margins on #heroCarousel,
+   scroll indicator pushed to bottom via margin-top: auto.
+   No ugly gaps, no forced centering of the whole block.
    ============================================================ */
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
-    /* Fill remaining viewport: 100svh minus ticker(26px) + header(~52px) + header border(2px) */
     min-height: calc(100svh - 80px);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 1rem;
-    padding-bottom: 1.5rem;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
-    will-change: transform, opacity;
+    flex-direction: column;
+    padding-top: 0.75rem;
+    padding-bottom: 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
 }
 
 /* Fallback for browsers without svh support */
@@ -695,27 +688,57 @@ body {
     }
 }
 
+/* Inner container must stretch to fill the wrapper */
+#heroSectionWrapper > .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hero shell stretches to fill, distributing space */
+.hero-shell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Push carousel down from top (creates balanced top space) */
+#heroCarousel {
+    margin-top: auto;
+}
+
+/* Push scroll indicator to bottom (creates gap between dots and indicator, filling the remaining space) */
+.hero-scroll-indicator {
+    margin-top: auto !important;
+    padding-bottom: calc(74px + env(safe-area-inset-bottom, 8px)) !important;
+}
+
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        /* Desktop: ticker is taller (~34px), header is taller (~60px) */
         min-height: calc(100svh - 96px);
-        padding-top: 1.5rem;
-        padding-bottom: 2.5rem;
+        padding-top: 1rem;
+    }
+    .hero-scroll-indicator {
+        padding-bottom: 1.5rem !important;
     }
 }
 
-/* Small mobile screens where content naturally fills: don't force min-height */
+/* Very short screens: don't force min-height */
 @media (max-height: 580px) {
     #heroSectionWrapper {
         min-height: auto;
-        padding-top: 0.75rem;
-        padding-bottom: 1rem;
+        padding-top: 0.5rem;
     }
-}
-
-#heroSectionWrapper.is-scrolled-away {
-    opacity: 0.45;
-    transform: translateY(-24px) scale(0.98);
+    #heroCarousel {
+        margin-top: 0;
+    }
+    .hero-scroll-indicator {
+        margin-top: 0.5rem !important;
+        padding-bottom: 0 !important;
+    }
 }
 
 /* Animated Scroll Down Indicator */

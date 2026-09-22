@@ -392,9 +392,7 @@
 
 // Smooth Section Handover & Reveal on Scroll or Button Click
 window.smoothScrollToContent = function() {
-    var hero = document.getElementById('heroSectionWrapper');
     var main = document.getElementById('mainContentSection');
-    if (hero) hero.classList.add('is-scrolled-away');
     if (main) {
         main.classList.add('is-revealed');
         main.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -402,27 +400,10 @@ window.smoothScrollToContent = function() {
 };
 
 (function() {
-    var hero = document.getElementById('heroSectionWrapper');
     var main = document.getElementById('mainContentSection');
-    if (!hero || !main) return;
+    if (!main) return;
 
-    var ticking = false;
-    window.addEventListener('scroll', function() {
-        if (!ticking) {
-            window.requestAnimationFrame(function() {
-                var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollY > 40) {
-                    hero.classList.add('is-scrolled-away');
-                    main.classList.add('is-revealed');
-                } else {
-                    hero.classList.remove('is-scrolled-away');
-                }
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }, { passive: true });
-
+    // Reveal mainContentSection when it enters viewport
     if ('IntersectionObserver' in window) {
         var observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
