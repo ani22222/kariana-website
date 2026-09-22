@@ -1,7 +1,7 @@
 <!-- ============================================================
      VAPE-INSPIRED SMOOTH HERO SLIDER & 3D BOOK SHOWCASE (100VH IMMERSIVE)
      ============================================================ -->
-<div class="bg-emerald-deep pt-3 sm:pt-5 pb-2 sm:pb-4 px-3 sm:px-4 relative overflow-hidden min-h-[calc(100svh-94px-68px)] md:min-h-[calc(100vh-94px)] flex flex-col justify-between">
+<div id="heroSectionWrapper" class="bg-emerald-deep pt-2 sm:pt-4 pb-1 sm:pb-2 px-3 sm:px-4 relative overflow-hidden h-[calc(100svh-92px-68px)] md:h-[calc(100vh-92px)] max-h-[calc(100svh-92px-68px)] md:max-h-[calc(100vh-92px)] flex flex-col justify-between">
     <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1">
         
         <!-- Main Vape-Style Hero Shell -->
@@ -154,12 +154,13 @@
         </div>
 
         <!-- Animated Scroll Down Indicator for 100vh Full Screen Viewport -->
-        <div class="hero-scroll-indicator text-center pt-2 sm:pt-4 pb-1 sm:pb-2 z-20">
+        <div class="hero-scroll-indicator text-center pt-1 pb-1 z-20 mb-1">
             <button type="button" 
-                    onclick="document.getElementById('mainContentSection').scrollIntoView({ behavior: 'smooth' });" 
+                    id="heroScrollBtn"
+                    onclick="smoothScrollToContent();" 
                     class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-colors focus:outline-none"
                     aria-label="নিচের সেকশনে যান">
-                <span class="text-xs font-bold tracking-wider text-amber-300/90 group-hover:text-amber-300 mb-1.5 flex items-center gap-1.5 drop-shadow">
+                <span class="text-[11px] sm:text-xs font-bold tracking-wider text-amber-300/90 group-hover:text-amber-300 mb-1 flex items-center gap-1.5 drop-shadow">
                     <svg class="w-3.5 h-3.5 text-amber-400 animate-pulse shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                     </svg>
@@ -362,23 +363,51 @@
     restart();
 })();
 
-// Smooth Entrance Reveal for Main Content Section on Scroll / Click
+// Smooth Section Handover & Reveal on Scroll or Button Click
+window.smoothScrollToContent = function() {
+    var hero = document.getElementById('heroSectionWrapper');
+    var main = document.getElementById('mainContentSection');
+    if (hero) hero.classList.add('is-scrolled-away');
+    if (main) {
+        main.classList.add('is-revealed');
+        main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
 (function() {
-    var mainSection = document.getElementById('mainContentSection');
-    if (!mainSection) return;
+    var hero = document.getElementById('heroSectionWrapper');
+    var main = document.getElementById('mainContentSection');
+    if (!hero || !main) return;
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollY > 40) {
+                    hero.classList.add('is-scrolled-away');
+                    main.classList.add('is-revealed');
+                } else {
+                    hero.classList.remove('is-scrolled-away');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 
     if ('IntersectionObserver' in window) {
         var observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
-                    mainSection.classList.add('is-revealed');
-                    observer.unobserve(mainSection);
+                    main.classList.add('is-revealed');
+                    observer.unobserve(main);
                 }
             });
         }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
-        observer.observe(mainSection);
+        observer.observe(main);
     } else {
-        mainSection.classList.add('is-revealed');
+        main.classList.add('is-revealed');
     }
 })();
 </script>
