@@ -5,8 +5,9 @@
  * Bot: @raselcodebot (Integrity)
  */
 
-define('TELEGRAM_BOT_TOKEN', '8811158752:AAEKrP4XvGXDuw3NQKUGZLw6a-ooisnIK_8');
-define('TELEGRAM_CHAT_ID',   '1827362508');
+$secretCreds = file_exists(__DIR__ . '/telegram_token.php') ? include(__DIR__ . '/telegram_token.php') : [];
+define('TELEGRAM_BOT_TOKEN', $secretCreds['bot_token'] ?? getenv('TELEGRAM_BOT_TOKEN') ?? '');
+define('TELEGRAM_CHAT_ID',   (string)($secretCreds['admin_chat_id'] ?? '1827362508'));
 define('TELEGRAM_API_BASE',  'https://api.telegram.org/bot' . TELEGRAM_BOT_TOKEN);
 
 // Project info

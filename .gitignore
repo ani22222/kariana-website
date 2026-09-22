@@ -26,3 +26,11 @@ storage/logs/*.png
 storage/logs/*.oga
 storage/logs/*.log
 storage/logs/
+
+# Sensitive Telegram Credentials and State
+telegram_token.php
+telegram_state.json
+telegram_accounts.json
+.env
+.env.*
+

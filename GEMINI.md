@@ -27,3 +27,11 @@ Whenever this project or any project is served, always provide all four standard
    - Every project runs on its own dedicated port (Port `8015` for Kariana Website) bound to `0.0.0.0`.
 3. **Link Reporting Protocol**:
    - Always report (1) Localhost link, (2) Local Wi-Fi IP, (3) Cloudflare Public Tunnel Link, and (4) GitHub Repository.
+4. **AI Model Quota & Rate Limit Proactive Alerting Protocol (90-95% Threshold)**:
+   - Continuously monitor model quota and step limits.
+   - When quota usage approaches 90-95% or exhaustion is near, proactively alert the user on Telegram with red emoji (🔴/⚠️) and provide 1-click buttons to immediately switch accounts, re-authorize, or switch to quota-saving models (Flash-Lite) before any interruption occurs.
+5. **24/7 Universal Personal Assistant Protocol on Telegram**:
+   - The bot is a full-fledged personal AI companion, not merely a coding task runner.
+   - Never send generic receipt templates ("কাজ গ্রহণ করা হয়েছে") for casual messages, greetings, or questions.
+   - Provide warm, direct, helpful conversational responses in Bengali via the fast Flash-Lite engine with 1-click action buttons.
+   - User is resting in bed and must be able to control, query, and command everything 100% remotely without touching the PC.

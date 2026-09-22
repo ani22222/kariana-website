@@ -1,10 +1,18 @@
 import sys
 import os
+import io
 import json
 import soundfile as sf
 import speech_recognition as sr
 import tempfile
 import numpy as np
+
+# Force UTF-8 encoding for standard output on Windows
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def transcribe(audio_path):
     if not os.path.exists(audio_path):
@@ -68,4 +76,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     result = transcribe(sys.argv[1])
-    print(json.dumps(result, ensure_ascii=False))
+    print(json.dumps(result, ensure_ascii=True))
