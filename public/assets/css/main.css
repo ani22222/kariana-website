@@ -310,55 +310,54 @@ body {
     100% { transform: scale(1.08); opacity: 1; }
 }
 
-/* Rounded Golden Book Shape Frame (Reference: media_1790102812320.png) */
-.hero-book-3d {
+/* Authentic 3D Book Shape Card (Exact Match: media_1790102812320.png) */
+.hero-book-card {
     position: relative;
     z-index: 5;
     width: 100%;
     height: 100%;
-    border-radius: 24px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #02231b 0%, #064e3b 55%, #022c22 100%);
     border: 2px solid #fbbf24;
-    transform: perspective(1000px) rotateY(-7deg) rotateX(2deg);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.3s ease;
-    box-shadow: 0 0 25px rgba(251, 191, 36, 0.3), 0 20px 45px -10px rgba(0, 0, 0, 0.8), -6px 0 16px -2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), 0 0 25px rgba(251, 191, 36, 0.25);
+    padding: 1.15rem 1rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #ffffff;
+    transform: perspective(1000px) rotateY(-8deg) rotateX(3deg);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, border-color 0.3s ease;
     overflow: hidden;
-    background: #022c22;
 }
 
-/* Inner golden decorative border */
-.hero-book-3d::before {
+/* Inner decorative golden border */
+.hero-book-card::after {
     content: '';
     position: absolute;
     inset: 4px;
-    border: 1px solid rgba(251, 191, 36, 0.55);
-    border-radius: 20px;
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: 18px;
     pointer-events: none;
-    z-index: 4;
+    z-index: 2;
 }
 
-/* Realistic hardcover spine depth & shadow on left edge */
-.hero-book-3d::after {
+/* Realistic hardcover spine depth on left edge */
+.hero-book-card::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(255,255,255,0.18) 3%, rgba(0,0,0,0.2) 6%, transparent 12%);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 22px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(255, 255, 255, 0.14) 4%, rgba(0, 0, 0, 0.15) 8%, transparent 100%);
+    z-index: 6;
     pointer-events: none;
-    z-index: 5;
 }
 
-.hero-book-3d img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    border-radius: 22px;
-}
-
-.hero-art:hover .hero-book-3d {
-    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+.hero-art:hover .hero-book-card {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.025);
     border-color: #fde047;
-    box-shadow: 0 0 35px rgba(251, 191, 36, 0.55), 0 28px 60px -10px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.85), 0 0 35px rgba(251, 191, 36, 0.45);
 }
 
 /* Overlapping Floating Badges (Top-Right & Bottom-Left over the Golden Frame) */
@@ -632,8 +631,16 @@ body {
         width: 14px;
     }
     .hero-art {
-        width: min(168px, 40vw);
-        height: min(225px, 28vh);
+        width: min(180px, 46vw);
+        height: min(240px, 31vh);
+    }
+    .hero-book-card {
+        padding: 0.85rem 0.75rem 0.75rem;
+        border-radius: 20px;
+    }
+    .hero-book-card::after {
+        inset: 3px;
+        border-radius: 16px;
     }
     .hero-shape-ring {
         width: 210px;

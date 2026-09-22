@@ -77,12 +77,40 @@
                                     <?= htmlspecialchars($pills['chipB']) ?>
                                 </span>
 
-                                <!-- 3D Realistic Book Mockup -->
-                                <div class="hero-book-3d">
-                                    <img src="<?= $baseUrl ?? '' ?>/<?= htmlspecialchars(ltrim($coverImg, '/')) ?>" 
-                                         alt="<?= htmlspecialchars($b['title']) ?>" 
-                                         loading="<?= $idx === 0 ? 'eager' : 'lazy' ?>"
-                                         onerror="this.onerror=null; this.src='<?= $baseUrl ?? '' ?>/assets/images/kariana_quran_flagship.jpg';">
+                                <!-- Authentic 3D Book Shape Card (Exact Match: media_1790102812320.png) -->
+                                <div class="hero-book-card relative flex flex-col justify-between select-none">
+                                    <!-- Top Row: Category Tag & Book Index -->
+                                    <div class="flex items-center justify-between z-10">
+                                        <span class="text-[10px] sm:text-[11px] bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold px-2.5 py-0.5 rounded-full shadow-sm border border-amber-300/30">
+                                            কারিয়ানা নূরানী
+                                        </span>
+                                        <span class="text-[11px] sm:text-xs text-amber-300 font-mono font-bold tracking-wider">
+                                            <?= ($idx + 1) ?>/<?= count($booksList) ?>
+                                        </span>
+                                    </div>
+
+                                    <!-- Center Emblem & Dynamic Title -->
+                                    <div class="text-center my-auto py-2 sm:py-3 z-10 px-1">
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto bg-amber-400/15 border-2 border-amber-400/60 rounded-full flex items-center justify-center text-amber-300 mb-2 shadow-[inset_0_0_10px_rgba(251,191,36,0.3)]">
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-black text-xs sm:text-sm md:text-base text-white line-clamp-2 px-1 leading-snug drop-shadow-sm">
+                                            <?= htmlspecialchars($b['title']) ?>
+                                        </h3>
+                                        <span class="text-[10px] sm:text-[11px] text-emerald-200/90 font-medium block mt-1 tracking-wide">
+                                            তাজবীদ কালার কোডেড
+                                        </span>
+                                    </div>
+
+                                    <!-- Bottom Feature Tag & Price in Gold -->
+                                    <div class="pt-2 border-t border-amber-400/30 flex items-center justify-between text-xs z-10">
+                                        <span class="text-emerald-300/90 text-[10px] sm:text-[11px] font-medium">নূরানী পদ্ধতি</span>
+                                        <span class="text-amber-300 font-black text-sm sm:text-base font-mono tracking-tight drop-shadow">
+                                            ৳<?= (int)$discPrice ?>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
