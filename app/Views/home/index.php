@@ -87,28 +87,11 @@
                             </div>
                         </div>
 
-                        <!-- Prominent & Balanced Hero Action Buttons (Enlarged) -->
-                        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-3 pb-1" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                        <!-- Hidden Microdata for Google Schema.org Offer (SEO Preserved) -->
+                        <div class="hidden" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                             <meta itemprop="priceCurrency" content="BDT">
                             <meta itemprop="price" content="<?= $discPrice ?>">
                             <link itemprop="availability" href="https://schema.org/InStock">
-
-                            <a href="https://wa.me/8801711756391?text=<?= urlencode('আসসালামু আলাইকুম, আমি কারিয়ানা ওয়েবসাইট থেকে "' . $b['title'] . '" বইটি অফার মূল্যে (৳' . (int)$discPrice . ') অর্ডার করতে চাই।') ?>" 
-                               target="_blank"
-                               class="bg-gradient-to-r from-gold-rich via-amber-500 to-gold-deep hover:brightness-110 text-white font-extrabold py-3 px-7 sm:py-3.5 sm:px-9 rounded-2xl shadow-[0_8px_30px_rgba(217,119,6,0.45)] hover:shadow-[0_12px_36px_rgba(217,119,6,0.65)] transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center text-sm sm:text-base tracking-wide">
-                                <svg class="w-5 h-5 mr-2 text-emerald-100 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                                </svg>
-                                অর্ডার করুন - ৳<?= \Core\BengaliHelper::toBengaliNumber((int)$discPrice) ?>
-                            </a>
-
-                            <a href="<?= $baseUrl ?? '' ?>/books/<?= htmlspecialchars($b['slug']) ?>" 
-                               class="bg-emerald-950/85 hover:bg-emerald-900 border-2 border-emerald-400/60 hover:border-amber-400 text-white font-bold py-3 px-6 sm:py-3.5 sm:px-7 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center text-sm sm:text-base backdrop-blur-md">
-                                <svg class="w-5 h-5 mr-2 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                                বিস্তারিত দেখুন
-                            </a>
                         </div>
 
                     </div>
@@ -116,30 +99,57 @@
                 <?php endforeach; ?>
             </div>
 
-            <!-- Unified Navigation Controls Bar (Flanking Dots with Prev & Next Buttons) -->
+            <!-- Unified Hero Navigation & Action Controls Bar -->
             <div class="hero-controls-bar">
+                <!-- Sleek Compact Prev Arrow Button -->
                 <button type="button" 
                         class="hero-nav-btn prev group" 
                         id="heroPrev" 
                         onclick="if(window.heroPrev) { window.heroPrev(); } else if(window.heroGo) { window.heroGo(-1, true, true); }" 
                         aria-label="পূর্ববর্তী বই">
-                    <svg class="w-6 h-6 text-amber-300 group-hover:text-white transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-amber-300 group-hover:text-white transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
-                <!-- Slide Indicator Dots -->
-                <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
+                <!-- Centered Action Buttons (Pure Clean Text, Zero Random Price, Dynamic per Active Book) -->
+                <div class="hero-action-group" id="heroActionGroup">
+                    <a id="heroOrderBtn" 
+                       href="https://wa.me/8801711756391?text=<?= urlencode('আসসালামু আলাইকুম, আমি কারিয়ানা ওয়েবসাইট থেকে "' . ($booksList[0]['title'] ?? 'কারিয়ানা কুরআন') . '" বইটি অর্ডার করতে চাই।') ?>" 
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="hero-btn-primary group">
+                        <svg class="w-4 h-4 mr-1.5 text-emerald-100 shrink-0 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                        </svg>
+                        <span>অর্ডার করুন</span>
+                    </a>
 
+                    <a id="heroDetailBtn" 
+                       href="<?= $baseUrl ?? '' ?>/books/<?= htmlspecialchars($booksList[0]['slug'] ?? 'kariana-quran-flagship') ?>" 
+                       class="hero-btn-secondary group">
+                        <svg class="w-4 h-4 mr-1.5 text-amber-300 shrink-0 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span>বিস্তারিত দেখুন</span>
+                    </a>
+                </div>
+
+                <!-- Sleek Compact Next Arrow Button -->
                 <button type="button" 
                         class="hero-nav-btn next group" 
                         id="heroNext" 
                         onclick="if(window.heroNext) { window.heroNext(); } else if(window.heroGo) { window.heroGo(1, true, true); }" 
                         aria-label="পরবর্তী বই">
-                    <svg class="w-6 h-6 text-amber-300 group-hover:text-white transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-amber-300 group-hover:text-white transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
+            </div>
+
+            <!-- Discrete, Refined Slide Indicator Dots (Small & Delicate, Positioned Underneath) -->
+            <div class="hero-dots-container">
+                <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
             </div>
         </div>
 
@@ -164,17 +174,30 @@
     </div>
 </div>
 
-<!-- Vape-Inspired Smooth Slider JavaScript Engine (Dynamic 1 to 10+ Books) -->
+<!-- Vape-Inspired Smooth Slider JavaScript Engine (Dynamic 1 to 10+ Books with 3D Transitions) -->
 <script>
 (function() {
     var slides = document.querySelectorAll('#heroCarousel .hero-slide');
     var dotsBox = document.getElementById('heroDots');
+    var orderBtn = document.getElementById('heroOrderBtn');
+    var detailBtn = document.getElementById('heroDetailBtn');
+    var actionGroup = document.getElementById('heroActionGroup');
     if (!slides.length || !dotsBox) return;
+
+    var booksData = <?= json_encode(array_map(function($b) use ($baseUrl) {
+        return [
+            'title' => $b['title'],
+            'slug'  => $b['slug'],
+            'url'   => ($baseUrl ?? '') . '/books/' . $b['slug'],
+            'waUrl' => 'https://wa.me/8801711756391?text=' . rawurlencode('আসসালামু আলাইকুম, আমি কারিয়ানা ওয়েবসাইট থেকে "' . $b['title'] . '" বইটি অর্ডার করতে চাই।')
+        ];
+    }, $booksList), JSON_UNESCAPED_UNICODE) ?>;
 
     var idx = 0;
     var timer = null;
     var total = slides.length;
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isTransitioning = false;
 
     // Generate Dynamic Dots for 1 to 10+ books
     dotsBox.innerHTML = '';
@@ -191,8 +214,29 @@
     });
     var dots = dotsBox.querySelectorAll('button');
 
+    function updateActionButtons(nextIndex) {
+        if (!booksData || !booksData[nextIndex]) return;
+        var book = booksData[nextIndex];
+
+        if (actionGroup) {
+            actionGroup.classList.add('is-changing');
+        }
+
+        setTimeout(function() {
+            if (orderBtn) {
+                orderBtn.href = book.waUrl;
+            }
+            if (detailBtn) {
+                detailBtn.href = book.url;
+            }
+            if (actionGroup) {
+                actionGroup.classList.remove('is-changing');
+            }
+        }, 150);
+    }
+
     function go(target, user, isRelative) {
-        if (!slides.length) return;
+        if (!slides.length || isTransitioning) return;
         var nextIdx;
         var direction = 1; // 1 = next, -1 = prev
 
@@ -206,6 +250,7 @@
 
         if (nextIdx === idx && user && !isRelative) return;
 
+        isTransitioning = true;
         var currentSlide = slides[idx];
         var nextSlide = slides[nextIdx];
 
@@ -225,14 +270,19 @@
         nextSlide.classList.remove(enterClass);
         nextSlide.classList.add('is-active');
 
+        // Update active dots
         idx = nextIdx;
         dots.forEach(function(d, i) {
             d.classList.toggle('is-active', i === idx);
         });
 
+        // Update dynamic buttons link with micro-animation
+        updateActionButtons(idx);
+
         setTimeout(function() {
             currentSlide.classList.remove(exitClass);
-        }, 520);
+            isTransitioning = false;
+        }, 550);
 
         if (user) restart();
     }
@@ -283,7 +333,7 @@
         shell.addEventListener('pointermove', function(e) {
             if (!dragging || !slides[idx]) return;
             dragX = e.clientX - startX;
-            slides[idx].style.transform = 'translateX(' + (dragX * 0.7) + 'px)';
+            slides[idx].style.transform = 'perspective(1200px) translateX(' + (dragX * 0.7) + 'px) scale(0.98)';
         });
 
         function endDrag(commit) {

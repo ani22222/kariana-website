@@ -112,25 +112,6 @@
     
     <style>
         [x-cloak] { display: none !important; }
-        /* Bottom Nav Styles */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #022c22;
-            display: flex;
-            justify-content: space-around;
-            padding: 0.75rem 0;
-            padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-            z-index: 50;
-            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        @media (min-width: 768px) {
-            .bottom-nav { display: none; }
-            body { padding-bottom: 0 !important; }
-        }
-        body { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
     </style>
 </head>
 <body class="bg-[#f8f5ee] text-slate-800 antialiased flex flex-col min-h-screen">
@@ -329,41 +310,62 @@
         </div>
     </footer>
 
-    <!-- Bottom Navigation Bar (Mobile) - Pure SVGs -->
-    <div class="bottom-nav">
-        <a href="<?= $baseUrl ?? '' ?>/" class="flex flex-col items-center justify-center w-full text-emerald-100 hover:text-amber-300">
-            <svg class="w-5 h-5 mb-0.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span class="text-[10px]">হোম</span>
-        </a>
-        <a href="<?= $baseUrl ?? '' ?>/courses" class="flex flex-col items-center justify-center w-full text-emerald-100 hover:text-amber-300">
-            <svg class="w-5 h-5 mb-0.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-            </svg>
-            <span class="text-[10px]">কোর্স</span>
-        </a>
-        <a href="<?= $baseUrl ?? '' ?>/prayer-times" class="flex flex-col items-center justify-center w-full text-emerald-100 hover:text-amber-300 relative -top-3">
-            <div class="bg-gradient-to-tr from-amber-500 to-amber-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(217,119,6,0.6)] border-4 border-emerald-night">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+    <!-- Modern Mobile Bottom Navigation (Matching Reference UI: media_1790103764775.png) -->
+    <?php
+    $currentUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    $isHome = ($currentUri === '' || $currentUri === '/' || $currentUri === '/index.php');
+    $isCourses = str_starts_with($currentUri, '/courses');
+    $isBooks = str_starts_with($currentUri, '/books');
+    $isPrayer = str_starts_with($currentUri, '/prayer-times') || str_starts_with($currentUri, '/tasbeeh') || str_starts_with($currentUri, '/zakat');
+    $isLogin = str_starts_with($currentUri, '/login') || str_starts_with($currentUri, '/admin') || str_starts_with($currentUri, '/directors/login') || str_starts_with($currentUri, '/teacher/login') || str_starts_with($currentUri, '/manager/login');
+    ?>
+    <div class="bottom-nav-wrapper" role="navigation" aria-label="মোবাইল নেভিগেশন">
+        <nav class="bottom-nav">
+            <div class="bottom-nav-items">
+                <!-- 1. Home (হোম) -->
+                <a href="<?= $baseUrl ?? '' ?>/" class="bottom-nav-item <?= $isHome ? 'is-active' : '' ?>">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>হোম</span>
+                </a>
+
+                <!-- 2. Messages / Courses (কোর্স) -->
+                <a href="<?= $baseUrl ?? '' ?>/courses" class="bottom-nav-item <?= $isCourses ? 'is-active' : '' ?>">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-5 8l-3-3H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-7l-4 4z" />
+                    </svg>
+                    <span>কোর্স</span>
+                </a>
+
+                <!-- 3. Search / Books (বই) -->
+                <a href="<?= $baseUrl ?? '' ?>/books" class="bottom-nav-item <?= $isBooks ? 'is-active' : '' ?>">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span>বই</span>
+                </a>
+
+                <!-- 4. History / Prayer Times (নামাজ) -->
+                <a href="<?= $baseUrl ?? '' ?>/prayer-times" class="bottom-nav-item <?= $isPrayer ? 'is-active' : '' ?>">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>নামাজ</span>
+                </a>
+
+                <!-- 5. Profile / Login (প্রোফাইল) -->
+                <a href="<?= $baseUrl ?? '' ?>/login" class="bottom-nav-item <?= $isLogin ? 'is-active' : '' ?>">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>প্রোফাইল</span>
+                </a>
             </div>
-            <span class="text-[10px] mt-0.5 font-bold text-amber-300">নামাজ</span>
-        </a>
-        <a href="<?= $baseUrl ?? '' ?>/books" class="flex flex-col items-center justify-center w-full text-emerald-100 hover:text-amber-300">
-            <svg class="w-5 h-5 mb-0.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            <span class="text-[10px]">বই</span>
-        </a>
-        <a href="<?= $baseUrl ?? '' ?>/login" class="flex flex-col items-center justify-center w-full text-emerald-100 hover:text-amber-300">
-            <svg class="w-5 h-5 mb-0.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span class="text-[10px]">লগইন</span>
-        </a>
+
+            <!-- Modern iOS Indicator Bar -->
+            <div class="bottom-nav-indicator" aria-hidden="true"></div>
+        </nav>
     </div>
 
     <!-- Dynamic Custom Footer Scripts (e.g. Chat widgets, WhatsApp buttons) -->
