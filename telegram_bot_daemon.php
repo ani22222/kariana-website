@@ -3,6 +3,7 @@
  * =========================================================================
  * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon
  * Bot: @raselcodebot (Integrity)
+ * Multi-Project & Multi-Chat Two-Tier Browser
  * =========================================================================
  */
 
@@ -14,7 +15,8 @@ define('TG_API', 'https://api.telegram.org/bot' . BOT_TOKEN);
 
 define('PROJECT_ROOT', __DIR__);
 define('DEFAULT_CONV_ID', '94596634-65c0-432c-a4d3-6aa058846c61');
-define('DEFAULT_PROJECT_NAME', 'Kariana Website (কারিয়ানা)');
+define('DEFAULT_PROJECT_NAME', 'Kariana Website');
+define('DEFAULT_CHAT_TITLE', 'Telegram Bot Remote Integration');
 define('STATE_FILE', PROJECT_ROOT . '/telegram_state.json');
 define('AGENT_API_BAT', 'C:\\Users\\UseR\\.gemini\\antigravity\\bin\\agentapi.bat');
 define('CONV_DB_PATH', 'C:/Users/UseR/.gemini/antigravity/conversation_summaries.db');
@@ -35,6 +37,7 @@ function loadState(): array {
     return [
         'active_conv_id'    => DEFAULT_CONV_ID,
         'active_proj_name'  => DEFAULT_PROJECT_NAME,
+        'active_chat_title' => DEFAULT_CHAT_TITLE,
         'chat_id'           => '1827362508',
         'last_update_id'    => 0,
         'is_busy'           => false
@@ -118,7 +121,100 @@ function answerCallback(string $callbackQueryId, string $text = ''): void {
 }
 
 // ---------------------------------------------------------
-// System & Project Checkers
+// Database & Workspace Queries
+// ---------------------------------------------------------
+
+function getWorkspaces(): array {
+    $workspaces = [];
+    if (!file_exists(CONV_DB_PATH)) return $workspaces;
+
+    try {
+        $db = new PDO('sqlite:' . CONV_DB_PATH);
+        $stmt = $db->query("SELECT workspace_uris, COUNT(conversation_id) as chat_count, MAX(last_modified_time) as latest 
+                            FROM conversation_summaries 
+                            WHERE (parent_conversation_id IS NULL OR parent_conversation_id = '') 
+                            AND workspace_uris IS NOT NULL AND workspace_uris != '[]' 
+                            GROUP BY workspace_uris 
+                            ORDER BY latest DESC LIMIT 10");
+
+        while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ws = json_decode($r['workspace_uris'], true);
+            $wsName = (!empty($ws) && isset($ws[0])) ? basename(urldecode(str_replace('file:///', '', $ws[0]))) : 'General Workspace';
+            $hash = substr(md5($r['workspace_uris']), 0, 8);
+            $workspaces[$hash] = [
+                'name'       => $wsName,
+                'raw_uri'    => $r['workspace_uris'],
+                'chat_count' => (int)$r['chat_count'],
+                'latest'     => $r['latest']
+            ];
+        }
+    } catch (Exception $e) {
+        echo "[DB ERROR] " . $e->getMessage() . "\n";
+    }
+    return $workspaces;
+}
+
+function getConversationTitle(string $convId, string $dbPreview): string {
+    if (!empty(trim($dbPreview))) {
+        $clean = trim(str_replace(["\r", "\n", "`", "*"], ' ', $dbPreview));
+        if (mb_strlen($clean) > 35) $clean = mb_substr($clean, 0, 35) . '...';
+        return $clean;
+    }
+    // Fallback: Read first user message from transcript
+    $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
+    if (file_exists($transcriptFile)) {
+        $fp = @fopen($transcriptFile, 'r');
+        if ($fp) {
+            while (!feof($fp)) {
+                $line = fgets($fp);
+                if ($line === false) break;
+                $json = json_decode($line, true);
+                if (($json['type'] ?? '') === 'USER_INPUT' && !empty($json['content'])) {
+                    $text = trim(preg_replace('/<[^>]+>/', '', $json['content']));
+                    $text = trim(str_replace(["\r", "\n", "`", "*"], ' ', $text));
+                    fclose($fp);
+                    if (mb_strlen($text) > 35) $text = mb_substr($text, 0, 35) . '...';
+                    return $text;
+                }
+            }
+            fclose($fp);
+        }
+    }
+    return 'সাধারণ চ্যাট (General Chat)';
+}
+
+function getChatsForWorkspace(string $rawUri, int $limit = 8): array {
+    $chats = [];
+    if (!file_exists(CONV_DB_PATH)) return $chats;
+
+    try {
+        $db = new PDO('sqlite:' . CONV_DB_PATH);
+        $stmt = $db->prepare("SELECT conversation_id, preview, last_modified_time, step_count 
+                              FROM conversation_summaries 
+                              WHERE (parent_conversation_id IS NULL OR parent_conversation_id = '') 
+                              AND workspace_uris = ? 
+                              ORDER BY last_modified_time DESC LIMIT " . $limit);
+        $stmt->execute([$rawUri]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($rows as $r) {
+            $convId = $r['conversation_id'];
+            $title = getConversationTitle($convId, $r['preview'] ?? '');
+            $chats[] = [
+                'id'         => $convId,
+                'title'      => $title,
+                'steps'      => (int)($r['step_count'] ?? 0),
+                'time'       => $r['last_modified_time'] ?? ''
+            ];
+        }
+    } catch (Exception $e) {
+        echo "[DB ERROR] " . $e->getMessage() . "\n";
+    }
+    return $chats;
+}
+
+// ---------------------------------------------------------
+// System Checkers
 // ---------------------------------------------------------
 
 function isAntigravityRunning(): bool {
@@ -141,39 +237,6 @@ function isServerRunning(int $port = 8015): bool {
     return false;
 }
 
-function getRecentProjects(int $limit = 6): array {
-    $projects = [];
-    if (file_exists(CONV_DB_PATH)) {
-        try {
-            $db = new PDO('sqlite:' . CONV_DB_PATH);
-            $stmt = $db->query("SELECT conversation_id, preview, last_modified_time, workspace_uris 
-                                FROM conversation_summaries 
-                                WHERE parent_conversation_id IS NULL OR parent_conversation_id = '' 
-                                ORDER BY last_modified_time DESC 
-                                LIMIT " . $limit);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($rows as $r) {
-                $ws = json_decode($r['workspace_uris'] ?? '[]', true);
-                $wsName = (!empty($ws) && isset($ws[0])) ? basename(urldecode(str_replace('file:///', '', $ws[0]))) : 'Workspace';
-                $preview = trim(str_replace(["\r", "\n", "`", "*"], ' ', $r['preview'] ?? ''));
-                if (mb_strlen($preview) > 35) {
-                    $preview = mb_substr($preview, 0, 35) . '...';
-                }
-                if (empty($preview)) $preview = 'General Task';
-                $projects[] = [
-                    'id'      => $r['conversation_id'],
-                    'name'    => $wsName,
-                    'preview' => $preview,
-                    'time'    => $r['last_modified_time']
-                ];
-            }
-        } catch (Exception $e) {
-            echo "[DB ERROR] " . $e->getMessage() . "\n";
-        }
-    }
-    return $projects;
-}
-
 function getStandardLinksText(): string {
     return "\n\n🔗 *স্ট্যান্ডার্ড অ্যাক্সেস লিংকসমূহ:*\n"
          . "🖥️ *Localhost:* [http://localhost:8015](" . LINK_LOCAL . ")\n"
@@ -187,25 +250,28 @@ function getStandardLinksText(): string {
 // ---------------------------------------------------------
 
 function renderMainMenu(string $chatId, array $state): void {
-    $agyOnline = isAntigravityRunning() ? "🟢 চালু আছে (Active)" : "🟡 নিষ্ক্রিয় / ব্যাকগ্রাউন্ড";
-    $srvOnline = isServerRunning(8015) ? "🟢 রানিং (Port 8015)" : "🔴 বন্ধ";
+    $agyOnline = isAntigravityRunning() ? "🟢 চালু আছে (Active)" : "🟡 ব্যাকগ্রাউন্ড";
+    $srvOnline = isServerRunning(8015) ? "🟢 চালু (Port 8015)" : "🔴 অফলাইন";
+
+    $activeTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
 
     $text  = "✨ *অ্যান্টিগ্রাভিটি রিমোট কন্ট্রোল ড্যাশবোর্ড*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
     $text .= "💻 *Antigravity IDE:* {$agyOnline}\n";
     $text .= "🌐 *ওয়েব সার্ভার:* {$srvOnline}\n";
-    $text .= "🎯 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
-    $text .= "🆔 *কনভার্সেশন ID:* `{$state['active_conv_id']}`\n\n";
-    $text .= "👇 *নিচের অপশনগুলো থেকে এক ক্লিকে সিলেক্ট করুন অথবা সরাসরি নতুন প্রম্পট লিখুন:*";
+    $text .= "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
+    $text .= "💬 *সক্রিয় চ্যাট:* `{$activeTitle}`\n";
+    $text .= "🆔 *Conversation ID:* `{$state['active_conv_id']}`\n\n";
+    $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা যেকোনো মেসেজ লিখে সরাসরি পাঠান:*";
 
     $keyboard = [
         [
-            ['text' => '📁 সাম্প্রতিক প্রজেক্টসমূহ', 'callback_data' => 'menu_recent'],
+            ['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces'],
             ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
         ],
         [
             ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status'],
-            ['text' => '➕ নতুন প্রজেক্ট/টাস্ক', 'callback_data' => 'menu_new_task']
+            ['text' => '➕ নতুন চ্যাট শুরু করুন', 'callback_data' => 'menu_new_task']
         ],
         [
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
@@ -215,26 +281,71 @@ function renderMainMenu(string $chatId, array $state): void {
     sendMsg($chatId, $text, $keyboard);
 }
 
-function renderRecentProjectsMenu(string $chatId, array $state): void {
-    $projects = getRecentProjects(6);
-    $text  = "📁 *সাম্প্রতিক প্রজেক্টসমূহ (Recent Projects)*\n";
+// Level 1: List all Workspaces/Projects with chat count
+function renderWorkspacesMenu(string $chatId, array $state): void {
+    $workspaces = getWorkspaces();
+    $text  = "📁 *সাম্প্রতিক প্রজেক্টসমূহ (Workspaces)*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
-    $text .= "যেকোনো প্রজেক্টে ক্লিক করলেই সেটি অ্যাক্টিভ হয়ে যাবে এবং আপনার পরবর্তী মেসেজ সরাসরি সেখানে চলে যাবে:\n\n";
+    $text .= "যেকোনো প্রজেক্টে ক্লিক করলে তার ভেতরের **সবগুলো চ্যাট (Multiple Chats)** দেখতে পাবেন:\n\n";
 
     $keyboard = [];
-    foreach ($projects as $idx => $p) {
-        $icon = ($p['id'] === $state['active_conv_id']) ? "✅ " : "📂 ";
-        $btnText = $icon . ($idx + 1) . ". " . $p['name'] . ": " . $p['preview'];
-        if (mb_strlen($btnText) > 40) {
-            $btnText = mb_substr($btnText, 0, 38) . "..";
-        }
+    $idx = 1;
+    foreach ($workspaces as $hash => $ws) {
+        $isActive = (stripos($state['active_proj_name'], $ws['name']) !== false);
+        $icon = $isActive ? "✅ " : "📂 ";
+        $btnText = "{$icon}{$idx}. {$ws['name']} ({$ws['chat_count']}টি চ্যাট)";
+        if (mb_strlen($btnText) > 38) $btnText = mb_substr($btnText, 0, 36) . "..";
+
         $keyboard[] = [
-            ['text' => $btnText, 'callback_data' => 'switch_' . substr($p['id'], 0, 18)]
+            ['text' => $btnText, 'callback_data' => 'ws_' . $hash]
         ];
+        $idx++;
     }
 
     $keyboard[] = [
         ['text' => '🔙 মেইন মেনুতে ফিরুন', 'callback_data' => 'menu_home']
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+// Level 2: List all chats inside the selected Workspace
+function renderWorkspaceChatsMenu(string $chatId, string $wsHash, array $state): void {
+    $workspaces = getWorkspaces();
+    if (!isset($workspaces[$wsHash])) {
+        sendMsg($chatId, "⚠️ প্রজেক্ট খুঁজে পাওয়া যায়নি। আবার চেষ্টা করুন।");
+        renderWorkspacesMenu($chatId, $state);
+        return;
+    }
+
+    $ws = $workspaces[$wsHash];
+    $chats = getChatsForWorkspace($ws['raw_uri']);
+
+    $text  = "📂 *প্রজেক্ট:* `{$ws['name']}`\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "এই প্রজেক্টে মোট *" . count($chats) . "* টি চ্যাট পাওয়া গেছে।\n";
+    $text .= "যেকোনো চ্যাটে ক্লিক করলে সাথে সাথে সেখানে সুইচ হবে:\n\n";
+
+    $keyboard = [];
+    foreach ($chats as $idx => $c) {
+        $isActive = ($c['id'] === $state['active_conv_id']);
+        $icon = $isActive ? "🟢 " : "💬 ";
+        $btnText = "{$icon}" . ($idx + 1) . ". {$c['title']}";
+        if (mb_strlen($btnText) > 38) $btnText = mb_substr($btnText, 0, 36) . "..";
+
+        // Callback with short conv id (first 16 chars)
+        $shortId = substr($c['id'], 0, 16);
+        $keyboard[] = [
+            ['text' => $btnText, 'callback_data' => 'chat_' . $shortId]
+        ];
+    }
+
+    $keyboard[] = [
+        ['text' => '➕ এই প্রজেক্টে নতুন চ্যাট', 'callback_data' => 'newchat_' . $wsHash]
+    ];
+    $keyboard[] = [
+        ['text' => '🔙 প্রজেক্ট তালিকায় ফিরুন', 'callback_data' => 'menu_workspaces'],
+        ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
     ];
 
     sendMsg($chatId, $text, $keyboard);
@@ -253,7 +364,8 @@ function renderStatusView(string $chatId, array $state): void {
     $text .= "🐘 *PHP Server:* {$srvOnline}\n";
     $text .= "🌿 *Git Branch:* `{$gitBranch}`\n";
     $text .= "📝 *লাস্ট Commit:* `{$gitCommit}`\n";
-    $text .= "🎯 *অ্যাক্টিভ কনভার্সেশন:* `{$state['active_proj_name']}`\n";
+    $text .= "🎯 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
+    $text .= "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n";
     $text .= getStandardLinksText();
 
     $keyboard = [
@@ -273,37 +385,37 @@ function renderStatusView(string $chatId, array $state): void {
 function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$state): void {
     $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
     $projName = $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
+    $chatTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
 
     // 1. Initial Status Message
     $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
               . "━━━━━━━━━━━━━━━━━━━━\n"
-              . "🎯 *টার্গেট প্রজেক্ট:* `{$projName}`\n"
+              . "🎯 *প্রজেক্ট:* `{$projName}`\n"
+              . "💬 *চ্যাট:* `{$chatTitle}`\n"
               . "📝 *আপনার প্রম্পট:* _{$prompt}_\n\n"
               . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু করছে...";
     
     $sent = sendMsg($chatId, $initText);
     $statusMsgId = $sent['result']['message_id'] ?? null;
 
-    // 2. Measure current transcript size/lines before sending
+    // 2. Measure current transcript lines before sending
     $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
     $initialLineCount = 0;
     if (file_exists($transcriptFile)) {
-        $fp = fopen($transcriptFile, 'r');
-        while (!feof($fp)) {
-            if (fgets($fp) !== false) $initialLineCount++;
+        $fp = @fopen($transcriptFile, 'r');
+        if ($fp) {
+            while (!feof($fp)) {
+                if (fgets($fp) !== false) $initialLineCount++;
+            }
+            fclose($fp);
         }
-        fclose($fp);
     }
 
     // 3. Send message to Antigravity via agentapi.bat
-    $tempPromptFile = PROJECT_ROOT . '/scratch/last_tg_prompt.txt';
-    file_put_contents($tempPromptFile, $prompt);
-
-    // Call agentapi send-message
     $escapedPrompt = str_replace('"', '\"', $prompt);
     $cmd = '"' . AGENT_API_BAT . '" send-message ' . escapeshellarg($convId) . ' ' . escapeshellarg($prompt);
     
-    echo "[AGENTAPI] Sending message to {$convId}...\n";
+    echo "[AGENTAPI] Sending prompt to {$convId}...\n";
     $out = [];
     $code = 0;
     exec($cmd . ' 2>&1', $out, $code);
@@ -339,7 +451,6 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
             continue;
         }
 
-        // Check new lines from $initialLineCount to end
         for ($i = $initialLineCount; $i < $totalLines; $i++) {
             $line = $lines[$i];
             $json = json_decode($line, true);
@@ -349,40 +460,27 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
             $status = $json['status'] ?? '';
             $source = $json['source'] ?? '';
 
-            // Check tool execution
+            // Tool executions
             if (!empty($json['tool_calls'])) {
                 foreach ($json['tool_calls'] as $tc) {
                     $toolName = $tc['name'] ?? 'tool';
                     $toolSummary = $tc['args']['toolSummary'] ?? $toolName;
-                    $statusUpdate = "🛠️ *টুল রান হচ্ছে:* `{$toolName}` ({$toolSummary})";
+                    $statusUpdate = "🛠️ `{$toolName}` ({$toolSummary})";
                     if ($statusUpdate !== $lastReportedStatus && $statusMsgId) {
                         $lastReportedStatus = $statusUpdate;
                         $updateMsg = "⏳ *কাজ চলমান রয়েছে...*\n"
                                    . "━━━━━━━━━━━━━━━━━━━━\n"
                                    . "🎯 *প্রজেক্ট:* `{$projName}`\n"
+                                   . "💬 *চ্যাট:* `{$chatTitle}`\n"
                                    . "📝 *প্রম্পট:* _{$prompt}_\n\n"
-                                   . "🔄 *বর্তমান অবস্থা:* {$statusUpdate}\n"
+                                   . "🔄 *বর্তমান অ্যাকশন:* {$statusUpdate}\n"
                                    . "⏱️ *অতিবাহিত সময়:* " . (time() - $startTime) . "s";
                         editMsg($chatId, $statusMsgId, $updateMsg);
                     }
                 }
             }
 
-            // Check generic command/file outputs
-            if ($type === 'GENERIC' && !empty($json['content'])) {
-                $statusUpdate = "⚙️ কমান্ড/ফাইল প্রসেসিং সম্পন্ন...";
-                if ($statusUpdate !== $lastReportedStatus && $statusMsgId) {
-                    $lastReportedStatus = $statusUpdate;
-                    $updateMsg = "⏳ *কাজ চলমান রয়েছে...*\n"
-                               . "━━━━━━━━━━━━━━━━━━━━\n"
-                               . "🎯 *প্রজেক্ট:* `{$projName}`\n"
-                               . "🔄 *বর্তমান অবস্থা:* {$statusUpdate}\n"
-                               . "⏱️ *অতিবাহিত সময়:* " . (time() - $startTime) . "s";
-                    editMsg($chatId, $statusMsgId, $updateMsg);
-                }
-            }
-
-            // Check if final planner response has arrived with text content
+            // Planner response final output
             if ($source === 'MODEL' && $type === 'PLANNER_RESPONSE' && $status === 'DONE') {
                 if (!empty($json['content'])) {
                     $finalResponseText = $json['content'];
@@ -395,11 +493,11 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 
     // 5. Send completion summary
     if ($completed && !empty($finalResponseText)) {
-        // Strip markdown that might break telegram, keep clean
         $cleanText = mb_substr($finalResponseText, 0, 3000);
         $finalMsg = "✅ *কাজ সম্পন্ন হয়েছে! (Task Complete)*\n"
                   . "━━━━━━━━━━━━━━━━━━━━\n"
-                  . "🎯 *প্রজেক্ট:* `{$projName}`\n\n"
+                  . "🎯 *প্রজেক্ট:* `{$projName}`\n"
+                  . "💬 *চ্যাট:* `{$chatTitle}`\n\n"
                   . $cleanText
                   . getStandardLinksText();
 
@@ -412,10 +510,9 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 
         sendMsg($chatId, $finalMsg, $keyboard);
     } else {
-        // Antigravity is still thinking or long-running
-        $ongoingMsg = "🚀 *টাস্কটি Antigravity-তে চলমান অবস্থায় প্রসেস হচ্ছে!*\n"
+        $ongoingMsg = "🚀 *টাস্কটি Antigravity-তে প্রসেস হচ্ছে!*\n"
                     . "━━━━━━━━━━━━━━━━━━━━\n"
-                    . "আপনার নির্দেশ অনুযায়ী ব্যাকগ্রাউন্ডে কাজ চলছে। আপনি নিশ্চিন্তে বিশ্রাম নিন। IDE-তে সরাসরি কাজ দেখা যাচ্ছে।"
+                    . "আপনার নির্দেশ অনুযায়ী ব্যাকগ্রাউন্ডে কাজ চলমান। আপনি নিশ্চিন্তে বিশ্রাম নিন।"
                     . getStandardLinksText();
         
         $keyboard = [
@@ -433,8 +530,9 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 // ---------------------------------------------------------
 
 echo "=====================================================\n";
-echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট চালু হচ্ছে\n";
+echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ২.০ চালু\n";
 echo "  Bot: @raselcodebot\n";
+echo "  Multi-Project & Multi-Chat Active\n";
 echo "=====================================================\n";
 
 $state = loadState();
@@ -464,39 +562,62 @@ while (true) {
                     if ($data === 'menu_home') {
                         answerCallback($cbId, 'মেইন মেনু লোড হচ্ছে...');
                         renderMainMenu($chatId, $state);
-                    } elseif ($data === 'menu_recent') {
-                        answerCallback($cbId, 'রিসেন্ট প্রজেক্ট লোড হচ্ছে...');
-                        renderRecentProjectsMenu($chatId, $state);
+                    } elseif ($data === 'menu_workspaces') {
+                        answerCallback($cbId, 'প্রজেক্ট তালিকা লোড হচ্ছে...');
+                        renderWorkspacesMenu($chatId, $state);
                     } elseif ($data === 'select_kariana') {
                         $state['active_conv_id'] = DEFAULT_CONV_ID;
                         $state['active_proj_name'] = DEFAULT_PROJECT_NAME;
+                        $state['active_chat_title'] = DEFAULT_CHAT_TITLE;
                         saveState($state);
                         answerCallback($cbId, 'কারিয়ানা প্রজেক্ট সিলেক্ট হয়েছে!');
-                        sendMsg($chatId, "✅ *কারিয়ানা কুরআন প্রজেক্ট সক্রিয় করা হয়েছে!*\n\nএখন আপনি যেকোনো মেসেজ পাঠালে তা সরাসরি কারিয়ানা প্রজেক্টে যাবে।");
+                        sendMsg($chatId, "✅ *কারিয়ানা কুরআন প্রজেক্ট সক্রিয় করা হয়েছে!*\n\nএখন যেকোনো মেসেজ পাঠালে তা সরাসরি কারিয়ানা প্রজেক্টে যাবে।");
                         renderMainMenu($chatId, $state);
                     } elseif ($data === 'menu_status') {
-                        answerCallback($cbId, 'স্ট্যাটাস আনা হচ্ছে...');
+                        answerCallback($cbId, 'স্ট্যাটাস লোড হচ্ছে...');
                         renderStatusView($chatId, $state);
                     } elseif ($data === 'menu_new_task') {
                         answerCallback($cbId, 'নতুন টাস্ক');
-                        sendMsg($chatId, "➕ *নতুন টাস্ক শুরু করতে:*\nসরাসরি আপনার কাঙ্ক্ষিত কাজের বিস্তারিত লিখে পাঠান। স্বয়ংক্রিয়ভাবে অ্যান্টিগ্রাভিটিতে এক্সিকিউট হবে!");
+                        sendMsg($chatId, "➕ *নতুন টাস্ক শুরু করতে:*\nআপনার নির্দেশ লিখে পাঠান, সরাসরি অ্যান্টিগ্রাভিটিতে এক্সিকিউট হবে!");
                     } elseif ($data === 'prompt_help') {
                         answerCallback($cbId);
-                        sendMsg($chatId, "💬 *প্রম্পট দেওয়ার নিয়ম:*\nআপনি শুয়ে শুয়ে মোবাইলের ভয়েস টাইপিং বা টেক্সট লিখে যেকোনো মেসেজ দিন, সাথে সাথে তা কম্পিউটারের অ্যান্টিগ্রাভিটিতে পৌঁছে যাবে!");
-                    } elseif (strpos($data, 'switch_') === 0) {
-                        $prefix = substr($data, 7);
+                        sendMsg($chatId, "💬 *প্রম্পট দেওয়ার নিয়ম:*\nমোবাইলে ভয়েস বা টেক্সটে যা লিখবেন, সাথে সাথে কম্পিউটারের অ্যান্টিগ্রাভিটিতে কাজ হতে থাকবে!");
+                    } elseif (strpos($data, 'ws_') === 0) {
+                        // User clicked a workspace/project! Open its chats list!
+                        $hash = substr($data, 3);
+                        answerCallback($cbId, 'চ্যাটগুলো লোড হচ্ছে...');
+                        renderWorkspaceChatsMenu($chatId, $hash, $state);
+                    } elseif (strpos($data, 'chat_') === 0) {
+                        // User clicked a specific chat inside a workspace!
+                        $shortId = substr($data, 5);
                         // Find matching conversation
-                        $recent = getRecentProjects(10);
-                        foreach ($recent as $p) {
-                            if (strpos($p['id'], $prefix) === 0) {
-                                $state['active_conv_id'] = $p['id'];
-                                $state['active_proj_name'] = $p['name'] . ' (' . $p['preview'] . ')';
+                        if (file_exists(CONV_DB_PATH)) {
+                            $db = new PDO('sqlite:' . CONV_DB_PATH);
+                            $stmt = $db->prepare("SELECT conversation_id, preview, workspace_uris FROM conversation_summaries WHERE conversation_id LIKE ? LIMIT 1");
+                            $stmt->execute([$shortId . '%']);
+                            $conv = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                            if ($conv) {
+                                $ws = json_decode($conv['workspace_uris'], true);
+                                $wsName = (!empty($ws) && isset($ws[0])) ? basename(urldecode(str_replace('file:///', '', $ws[0]))) : 'Workspace';
+                                $chatTitle = getConversationTitle($conv['conversation_id'], $conv['preview'] ?? '');
+
+                                $state['active_conv_id'] = $conv['conversation_id'];
+                                $state['active_proj_name'] = $wsName;
+                                $state['active_chat_title'] = $chatTitle;
                                 saveState($state);
-                                answerCallback($cbId, 'প্রজেক্ট সুইচ সম্পন্ন!');
-                                sendMsg($chatId, "🎯 *সক্রিয় প্রজেক্ট পরিবর্তন করা হয়েছে:*\n\n📁 *{$state['active_proj_name']}*\n🆔 `{$state['active_conv_id']}`\n\n💬 এখন আপনি যা লিখবেন, তা এই প্রজেক্টের কনভার্সেশনে যাবে!");
-                                break;
+
+                                answerCallback($cbId, 'চ্যাট সুইচ সম্পন্ন!');
+                                sendMsg($chatId, "🎯 *সক্রিয় চ্যাট পরিবর্তন করা হয়েছে:*\n\n📁 *প্রজেক্ট:* `{$wsName}`\n💬 *চ্যাট:* `{$chatTitle}`\n🆔 `{$conv['conversation_id']}`\n\n💬 এখন আপনি যা লিখবেন, তা এই নির্দিষ্ট চ্যাটে কাজ করবে!");
+                                renderMainMenu($chatId, $state);
+                            } else {
+                                answerCallback($cbId, 'চ্যাট পাওয়া যায়নি');
                             }
                         }
+                    } elseif (strpos($data, 'newchat_') === 0) {
+                        $hash = substr($data, 8);
+                        answerCallback($cbId, 'নতুন চ্যাট ফিচার');
+                        sendMsg($chatId, "➕ *নতুন চ্যাট তৈরি করতে:*\nআপনার নতুন নির্দেশটি লিখে পাঠান।");
                     }
                     continue;
                 }
@@ -516,7 +637,7 @@ while (true) {
                     if ($text === '/start' || $text === '🏠 মেইন মেনু' || $text === '/menu') {
                         renderMainMenu($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {
-                        renderRecentProjectsMenu($chatId, $state);
+                        renderWorkspacesMenu($chatId, $state);
                     } elseif ($text === '📊 লাইভ স্ট্যাটাস ও লিংক' || $text === '/status') {
                         renderStatusView($chatId, $state);
                     } elseif ($text === '🔄 রিফ্রেশ') {
