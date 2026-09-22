@@ -1,9 +1,15 @@
 <?php
 /**
  * =========================================================================
- * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon
+ * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon 3.0
  * Bot: @raselcodebot (Integrity)
- * Multi-Project & Multi-Chat Two-Tier Browser
+ * Features:
+ *   - Auto-Boot & Exact Shutdown Time Detection
+ *   - 24/7 Persistent Connectivity & Heartbeat
+ *   - Multi-Project & Multi-Chat Two-Tier Browser
+ *   - Smart Intent & Project Detection
+ *   - Modes: Turbo, Safe, Planning
+ *   - Real-time Transcript Streamer
  * =========================================================================
  */
 
@@ -28,11 +34,59 @@ define('LINK_WIFI', 'http://192.168.0.100:8015');
 define('LINK_CLOUDFLARE', 'https://rev-mysql-stops-ext.trycloudflare.com');
 define('LINK_GITHUB', 'https://github.com/ani22222/kariana-website');
 
+// Bengali Date & Duration Helpers
+function formatBengaliDate(int $timestamp): string {
+    $bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    $enDigits = ['0','1','2','3','4','5','6','7','8','9'];
+    $bnMonths = [
+        'Jan' => 'জানুয়ারি', 'Feb' => 'ফেব্রুয়ারি', 'Mar' => 'মার্চ',
+        'Apr' => 'এপ্রিল', 'May' => 'মে', 'Jun' => 'জুন',
+        'Jul' => 'জুলাই', 'Aug' => 'আগস্ট', 'Sep' => 'সেপ্টেম্বর',
+        'Oct' => 'অক্টোবর', 'Nov' => 'নভেম্বর', 'Dec' => 'ডিসেম্বর'
+    ];
+
+    $d = date('d', $timestamp);
+    $m = date('M', $timestamp);
+    $y = date('Y', $timestamp);
+    $time = date('h:i A', $timestamp);
+
+    $d = str_replace($enDigits, $bnDigits, $d);
+    $y = str_replace($enDigits, $bnDigits, $y);
+    $time = str_replace($enDigits, $bnDigits, $time);
+    $m = $bnMonths[$m] ?? $m;
+
+    return "{$d} {$m} {$y}, {$time}";
+}
+
+function formatDuration(int $seconds): string {
+    $bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    $enDigits = ['0','1','2','3','4','5','6','7','8','9'];
+
+    if ($seconds < 60) return "কিছুক্ষণ আগে";
+    $mins = round($seconds / 60);
+    if ($mins < 60) {
+        return str_replace($enDigits, $bnDigits, (string)$mins) . " মিনিট আগে";
+    }
+    $hours = floor($mins / 60);
+    $remMins = $mins % 60;
+    return str_replace($enDigits, $bnDigits, (string)$hours) . " ঘণ্টা " . str_replace($enDigits, $bnDigits, (string)$remMins) . " মিনিট আগে";
+}
+
 // Load or initialize state
 function loadState(): array {
     if (file_exists(STATE_FILE)) {
         $data = json_decode(file_get_contents(STATE_FILE), true);
-        if (is_array($data)) return $data;
+        if (is_array($data)) {
+            $data['active_conv_id']    = $data['active_conv_id'] ?? DEFAULT_CONV_ID;
+            $data['active_proj_name']  = $data['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
+            $data['active_chat_title'] = $data['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
+            $data['chat_id']           = $data['chat_id'] ?? '1827362508';
+            $data['last_update_id']    = $data['last_update_id'] ?? 0;
+            $data['mode']              = $data['mode'] ?? 'turbo'; // turbo, safe, planning
+            $data['is_busy']           = $data['is_busy'] ?? false;
+            $data['last_heartbeat']    = $data['last_heartbeat'] ?? time();
+            return $data;
+        }
     }
     return [
         'active_conv_id'    => DEFAULT_CONV_ID,
@@ -40,7 +94,9 @@ function loadState(): array {
         'active_chat_title' => DEFAULT_CHAT_TITLE,
         'chat_id'           => '1827362508',
         'last_update_id'    => 0,
-        'is_busy'           => false
+        'mode'              => 'turbo',
+        'is_busy'           => false,
+        'last_heartbeat'    => time()
     ];
 }
 
@@ -88,7 +144,7 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
         $params['reply_markup'] = [
             'keyboard' => [
                 [['text' => '🏠 মেইন মেনু'], ['text' => '📁 সাম্প্রতিক প্রজেক্ট']],
-                [['text' => '📊 লাইভ স্ট্যাটাস ও লিংক'], ['text' => '🔄 রিফ্রেশ']]
+                [['text' => '⚙️ মোড পরিবর্তন'], ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক']]
             ],
             'resize_keyboard' => true,
             'persistent'      => true
@@ -121,7 +177,7 @@ function answerCallback(string $callbackQueryId, string $text = ''): void {
 }
 
 // ---------------------------------------------------------
-// Database & Workspace Queries
+// Workspaces & Conversations DB
 // ---------------------------------------------------------
 
 function getWorkspaces(): array {
@@ -160,7 +216,6 @@ function getConversationTitle(string $convId, string $dbPreview): string {
         if (mb_strlen($clean) > 35) $clean = mb_substr($clean, 0, 35) . '...';
         return $clean;
     }
-    // Fallback: Read first user message from transcript
     $transcriptFile = BRAIN_DIR . "/{$convId}/.system_generated/logs/transcript.jsonl";
     if (file_exists($transcriptFile)) {
         $fp = @fopen($transcriptFile, 'r');
@@ -214,6 +269,44 @@ function getChatsForWorkspace(string $rawUri, int $limit = 8): array {
 }
 
 // ---------------------------------------------------------
+// Smart Intent & Project Detection
+// ---------------------------------------------------------
+
+function detectProjectIntent(string $text, string $currentProject): ?array {
+    $keywordsMap = [
+        'VPSCloude Server' => ['vps', 'cloud', 'server', 'docker', 'openshift', 'linux', 'ubuntu', 'ip', 'ssh', 'domain'],
+        'Method'           => ['method', 'vpn', 'proxy', 'card', 'trial', 'bin'],
+        'Familli accout'   => ['netflix', 'cookie', 'cookies', 'login', 'family', 'account'],
+        'Store From Bip'   => ['store', 'bip', 'shop', 'product', 'cart'],
+        'Riaz Clint Shop'  => ['riaz', 'client', 'clint'],
+        'sms-sync-pay'     => ['payment', 'sms', 'sync', 'pay', 'gateway', 'bkash', 'nagad', 'api']
+    ];
+
+    $lower = mb_strtolower($text);
+
+    foreach ($keywordsMap as $projKey => $keywords) {
+        if (stripos($currentProject, $projKey) !== false) continue; // Already in this project
+
+        foreach ($keywords as $kw) {
+            if (mb_strpos($lower, $kw) !== false) {
+                // Found matching foreign project!
+                $workspaces = getWorkspaces();
+                foreach ($workspaces as $hash => $ws) {
+                    if (stripos($ws['name'], $projKey) !== false) {
+                        return [
+                            'target_name' => $ws['name'],
+                            'target_hash' => $hash,
+                            'matched_kw'  => $kw
+                        ];
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// ---------------------------------------------------------
 // System Checkers
 // ---------------------------------------------------------
 
@@ -245,6 +338,14 @@ function getStandardLinksText(): string {
          . "📦 *GitHub:* [kariana-website](" . LINK_GITHUB . ")";
 }
 
+function getModeTitle(string $mode): string {
+    switch ($mode) {
+        case 'safe': return '🛡️ সেইফ মোড (Safe Approval)';
+        case 'planning': return '📋 প্ল্যানিং মোড (Plan Only)';
+        default: return '⚡ টার্বো মোড (Turbo)';
+    }
+}
+
 // ---------------------------------------------------------
 // View Handlers (Menus & Buttons)
 // ---------------------------------------------------------
@@ -254,15 +355,17 @@ function renderMainMenu(string $chatId, array $state): void {
     $srvOnline = isServerRunning(8015) ? "🟢 চালু (Port 8015)" : "🔴 অফলাইন";
 
     $activeTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
+    $modeText = getModeTitle($state['mode'] ?? 'turbo');
 
-    $text  = "✨ *অ্যান্টিগ্রাভিটি রিমোট কন্ট্রোল ড্যাশবোর্ড*\n";
+    $text  = "✨ *অ্যান্টিগ্রাভিটি রিমোট কন্ট্রোল ড্যাশবোর্ড ৩.০*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
     $text .= "💻 *Antigravity IDE:* {$agyOnline}\n";
     $text .= "🌐 *ওয়েব সার্ভার:* {$srvOnline}\n";
     $text .= "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
     $text .= "💬 *সক্রিয় চ্যাট:* `{$activeTitle}`\n";
+    $text .= "⚙️ *কাজের মোড:* {$modeText}\n";
     $text .= "🆔 *Conversation ID:* `{$state['active_conv_id']}`\n\n";
-    $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা যেকোনো মেসেজ লিখে সরাসরি পাঠান:*";
+    $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা সরাসরি মেসেজ লিখুন:*";
 
     $keyboard = [
         [
@@ -270,11 +373,40 @@ function renderMainMenu(string $chatId, array $state): void {
             ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
         ],
         [
-            ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status'],
-            ['text' => '➕ নতুন চ্যাট শুরু করুন', 'callback_data' => 'menu_new_task']
+            ['text' => '⚙️ মোড পরিবর্তন', 'callback_data' => 'menu_modes'],
+            ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status']
         ],
         [
+            ['text' => '➕ নতুন চ্যাট শুরু করুন', 'callback_data' => 'menu_new_task'],
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+function renderModeMenu(string $chatId, array $state): void {
+    $current = $state['mode'] ?? 'turbo';
+    $text  = "⚙️ *কাজের মোড নির্বাচন করুন (Execution Mode)*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "বর্তমান মোড: *" . getModeTitle($current) . "*\n\n";
+    $text .= "🔹 *⚡ টার্বো মোড (Turbo):* সরাসরি কোনো অতিরিক্ত প্রশ্ন ছাড়াই দ্রুত কাজ সম্পন্ন করবে (সবচেয়ে সুবিধাজনক)।\n";
+    $text .= "🔹 *🛡️ সেইফ মোড (Safe):* যেকোনো বড় ফাইল পরিবর্তন করার আগে অনুমতি চাইবে।\n";
+    $text .= "🔹 *📋 প্ল্যানিং মোড (Plan Only):* সরাসরি কোড না বদলে প্রথমে সম্পূর্ণ কাজের প্ল্যান তৈরি করে উপস্থাপন করবে।\n\n";
+    $text .= "👇 *আপনার পছন্দের মোডে ক্লিক করুন:*";
+
+    $keyboard = [
+        [
+            ['text' => ($current === 'turbo' ? '✅ ' : '') . '⚡ টার্বো মোড (Turbo)', 'callback_data' => 'setmode_turbo'],
+        ],
+        [
+            ['text' => ($current === 'safe' ? '✅ ' : '') . '🛡️ সেইফ মোড (Safe)', 'callback_data' => 'setmode_safe'],
+        ],
+        [
+            ['text' => ($current === 'planning' ? '✅ ' : '') . '📋 প্ল্যানিং মোড (Plan Only)', 'callback_data' => 'setmode_planning'],
+        ],
+        [
+            ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
 
@@ -286,7 +418,7 @@ function renderWorkspacesMenu(string $chatId, array $state): void {
     $workspaces = getWorkspaces();
     $text  = "📁 *সাম্প্রতিক প্রজেক্টসমূহ (Workspaces)*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
-    $text .= "যেকোনো প্রজেক্টে ক্লিক করলে তার ভেতরের **সবগুলো চ্যাট (Multiple Chats)** দেখতে পাবেন:\n\n";
+    $text .= "যেকোনো প্রজেক্টে ক্লিক করলেই তার ভেতরের **সবগুলো চ্যাট (Multiple Chats)** দেখতে পাবেন:\n\n";
 
     $keyboard = [];
     $idx = 1;
@@ -333,7 +465,6 @@ function renderWorkspaceChatsMenu(string $chatId, string $wsHash, array $state):
         $btnText = "{$icon}" . ($idx + 1) . ". {$c['title']}";
         if (mb_strlen($btnText) > 38) $btnText = mb_substr($btnText, 0, 36) . "..";
 
-        // Callback with short conv id (first 16 chars)
         $shortId = substr($c['id'], 0, 16);
         $keyboard[] = [
             ['text' => $btnText, 'callback_data' => 'chat_' . $shortId]
@@ -366,11 +497,12 @@ function renderStatusView(string $chatId, array $state): void {
     $text .= "📝 *লাস্ট Commit:* `{$gitCommit}`\n";
     $text .= "🎯 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
     $text .= "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n";
+    $text .= "⚙️ *মোড:* " . getModeTitle($state['mode'] ?? 'turbo') . "\n";
     $text .= getStandardLinksText();
 
     $keyboard = [
         [
-            ['text' => '💬 প্রম্পট পাঠান', 'callback_data' => 'prompt_help'],
+            ['text' => '⚙️ মোড বদলান', 'callback_data' => 'menu_modes'],
             ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
@@ -386,12 +518,14 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
     $projName = $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
     $chatTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
+    $mode = $state['mode'] ?? 'turbo';
 
     // 1. Initial Status Message
     $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
               . "━━━━━━━━━━━━━━━━━━━━\n"
               . "🎯 *প্রজেক্ট:* `{$projName}`\n"
               . "💬 *চ্যাট:* `{$chatTitle}`\n"
+              . "⚙️ *মোড:* " . getModeTitle($mode) . "\n"
               . "📝 *আপনার প্রম্পট:* _{$prompt}_\n\n"
               . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু করছে...";
     
@@ -412,8 +546,12 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     }
 
     // 3. Send message to Antigravity via agentapi.bat
-    $escapedPrompt = str_replace('"', '\"', $prompt);
-    $cmd = '"' . AGENT_API_BAT . '" send-message ' . escapeshellarg($convId) . ' ' . escapeshellarg($prompt);
+    $finalPrompt = $prompt;
+    if ($mode === 'planning') {
+        $finalPrompt = "[Planning Mode Request] " . $prompt . " (অনুগ্রহ করে সরাসরি কোড পরিবর্তন না করে প্রথমে বিস্তারিত প্ল্যান তৈরি করুন)";
+    }
+
+    $cmd = '"' . AGENT_API_BAT . '" send-message ' . escapeshellarg($convId) . ' ' . escapeshellarg($finalPrompt);
     
     echo "[AGENTAPI] Sending prompt to {$convId}...\n";
     $out = [];
@@ -530,9 +668,9 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 // ---------------------------------------------------------
 
 echo "=====================================================\n";
-echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ২.০ চালু\n";
+echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ৩.০ চালু\n";
 echo "  Bot: @raselcodebot\n";
-echo "  Multi-Project & Multi-Chat Active\n";
+echo "  24/7 Persistent Mode Active\n";
 echo "=====================================================\n";
 
 $state = loadState();
@@ -540,27 +678,47 @@ $state = loadState();
 // Handle Boot Notification (When PC boots or script is invoked with --boot)
 if (in_array('--boot', $argv ?? [])) {
     echo "[BOOT] PC booted up! Sending connection notification to Telegram...\n";
-    $bootMsg = "⚡ *কম্পিউটার চালু হয়েছে — অ্যান্টিগ্রাভিটি ২.০ অটো-কানেক্টেড!*\n"
+    
+    $now = time();
+    $lastOff = $state['last_heartbeat'] ?? ($now - 120);
+    $offDuration = max(0, $now - $lastOff);
+
+    $bootTimeStr = formatBengaliDate($now);
+    $offTimeStr  = formatBengaliDate($lastOff) . " (" . formatDuration($offDuration) . ")";
+
+    $bootMsg = "⚡ *কম্পিউটার পুনরায় চালু হয়েছে — অ্যান্টিগ্রাভিটি ২.০ অটো-কানেক্টেড!*\n"
              . "━━━━━━━━━━━━━━━━━━━━\n"
+             . "⏰ *অন হওয়ার সময়:* {$bootTimeStr}\n"
+             . "🛑 *পূর্বে বন্ধ হয়েছিল:* {$offTimeStr}\n"
              . "💻 *কম্পিউটার স্ট্যাটাস:* চালু ও সক্রিয় 🟢\n"
              . "🧠 *Antigravity IDE:* কানেক্টেড 🟢\n"
              . "🌐 *ওয়েব সার্ভার:* Port 8015 রানিং 🟢\n"
              . "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n"
-             . "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n\n"
+             . "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n"
+             . "⚙️ *কাজের মোড:* " . getModeTitle($state['mode'] ?? 'turbo') . "\n\n"
              . "📱 আপনার পিসি সম্পূর্ণ রেডি! আপনি শুয়ে শুয়ে মোবাইলের টেলিগ্রাম থেকে যেকোনো কাজ দিয়ে যেতে পারবেন।"
              . getStandardLinksText();
 
     $bootKb = [
         [['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces']],
-        [['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status']],
+        [['text' => '⚙️ মোড পরিবর্তন', 'callback_data' => 'menu_modes']],
         [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
     ];
 
     sendMsg($state['chat_id'], $bootMsg, $bootKb);
 }
 
+$lastHeartbeatSave = time();
+
 while (true) {
     try {
+        // Update heartbeat timestamp every 20 seconds for accurate shutdown detection
+        if (time() - $lastHeartbeatSave >= 20) {
+            $state['last_heartbeat'] = time();
+            saveState($state);
+            $lastHeartbeatSave = time();
+        }
+
         $updates = tgRequest('getUpdates', [
             'offset'  => $state['last_update_id'] + 1,
             'timeout' => 25
@@ -569,6 +727,7 @@ while (true) {
         if (!empty($updates['result'])) {
             foreach ($updates['result'] as $up) {
                 $state['last_update_id'] = $up['update_id'];
+                $state['last_heartbeat'] = time();
                 saveState($state);
 
                 // 1. Handle Callback Queries (Button Clicks)
@@ -587,6 +746,16 @@ while (true) {
                     } elseif ($data === 'menu_workspaces') {
                         answerCallback($cbId, 'প্রজেক্ট তালিকা লোড হচ্ছে...');
                         renderWorkspacesMenu($chatId, $state);
+                    } elseif ($data === 'menu_modes') {
+                        answerCallback($cbId, 'মোড তালিকা...');
+                        renderModeMenu($chatId, $state);
+                    } elseif (strpos($data, 'setmode_') === 0) {
+                        $newMode = substr($data, 8);
+                        $state['mode'] = $newMode;
+                        saveState($state);
+                        answerCallback($cbId, 'মোড পরিবর্তিত হয়েছে!');
+                        sendMsg($chatId, "✅ *কাজের মোড পরিবর্তিত হয়েছে:*\n\nবর্তমান মোড: *" . getModeTitle($newMode) . "*");
+                        renderMainMenu($chatId, $state);
                     } elseif ($data === 'select_kariana') {
                         $state['active_conv_id'] = DEFAULT_CONV_ID;
                         $state['active_proj_name'] = DEFAULT_PROJECT_NAME;
@@ -605,14 +774,11 @@ while (true) {
                         answerCallback($cbId);
                         sendMsg($chatId, "💬 *প্রম্পট দেওয়ার নিয়ম:*\nমোবাইলে ভয়েস বা টেক্সটে যা লিখবেন, সাথে সাথে কম্পিউটারের অ্যান্টিগ্রাভিটিতে কাজ হতে থাকবে!");
                     } elseif (strpos($data, 'ws_') === 0) {
-                        // User clicked a workspace/project! Open its chats list!
                         $hash = substr($data, 3);
                         answerCallback($cbId, 'চ্যাটগুলো লোড হচ্ছে...');
                         renderWorkspaceChatsMenu($chatId, $hash, $state);
                     } elseif (strpos($data, 'chat_') === 0) {
-                        // User clicked a specific chat inside a workspace!
                         $shortId = substr($data, 5);
-                        // Find matching conversation
                         if (file_exists(CONV_DB_PATH)) {
                             $db = new PDO('sqlite:' . CONV_DB_PATH);
                             $stmt = $db->prepare("SELECT conversation_id, preview, workspace_uris FROM conversation_summaries WHERE conversation_id LIKE ? LIMIT 1");
@@ -637,7 +803,6 @@ while (true) {
                             }
                         }
                     } elseif (strpos($data, 'newchat_') === 0) {
-                        $hash = substr($data, 8);
                         answerCallback($cbId, 'নতুন চ্যাট ফিচার');
                         sendMsg($chatId, "➕ *নতুন চ্যাট তৈরি করতে:*\nআপনার নতুন নির্দেশটি লিখে পাঠান।");
                     }
@@ -660,12 +825,35 @@ while (true) {
                         renderMainMenu($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {
                         renderWorkspacesMenu($chatId, $state);
+                    } elseif ($text === '⚙️ মোড পরিবর্তন' || $text === '/mode') {
+                        renderModeMenu($chatId, $state);
                     } elseif ($text === '📊 লাইভ স্ট্যাটাস ও লিংক' || $text === '/status') {
                         renderStatusView($chatId, $state);
                     } elseif ($text === '🔄 রিফ্রেশ') {
                         renderMainMenu($chatId, $state);
                     } else {
-                        // User sent a prompt/instruction!
+                        // Check if message mentions another project
+                        $intent = detectProjectIntent($text, $state['active_proj_name']);
+                        if ($intent) {
+                            $suggestMsg = "💡 *প্রজেক্ট সাজেশন ডিটেকশন!*\n"
+                                        . "━━━━━━━━━━━━━━━━━━━━\n"
+                                        . "আপনার মেসেজে `{$intent['matched_kw']}` শব্দটি পাওয়া গেছে। আপনি কি এটি **{$intent['target_name']}** প্রজেক্টে এক্সিকিউট করতে চান?\n\n"
+                                        . "📝 *আপনার মেসেজ:* _{$text}_";
+
+                            $suggestKb = [
+                                [
+                                    ['text' => "🚀 হ্যাঁ, {$intent['target_name']}-এ যাও", 'callback_data' => 'ws_' . $intent['target_hash']],
+                                    ['text' => "🕌 না, বর্তমান প্রজেক্টেই রাখো", 'callback_data' => 'select_kariana']
+                                ],
+                                [
+                                    ['text' => "🔙 মেইন মেনু", 'callback_data' => 'menu_home']
+                                ]
+                            ];
+                            sendMsg($chatId, $suggestMsg, $suggestKb);
+                            continue;
+                        }
+
+                        // Direct message: Execute directly on active project!
                         executePromptAndStreamUpdates($chatId, $text, $state);
                     }
                 }
