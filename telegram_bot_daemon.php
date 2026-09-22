@@ -1,15 +1,9 @@
 <?php
 /**
  * =========================================================================
- * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon 3.0
+ * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon 4.0
  * Bot: @raselcodebot (Integrity)
- * Features:
- *   - Auto-Boot & Exact Shutdown Time Detection
- *   - 24/7 Persistent Connectivity & Heartbeat
- *   - Multi-Project & Multi-Chat Two-Tier Browser
- *   - Smart Intent & Project Detection
- *   - Modes: Turbo, Safe, Planning
- *   - Real-time Transcript Streamer
+ * Full Multi-Purpose Developer Remote Control Center
  * =========================================================================
  */
 
@@ -144,7 +138,7 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
         $params['reply_markup'] = [
             'keyboard' => [
                 [['text' => '🏠 মেইন মেনু'], ['text' => '📁 সাম্প্রতিক প্রজেক্ট']],
-                [['text' => '⚙️ মোড পরিবর্তন'], ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক']]
+                [['text' => '📊 পিসি হেলথ ও রিসোর্স'], ['text' => '⚙️ মোড পরিবর্তন']]
             ],
             'resize_keyboard' => true,
             'persistent'      => true
@@ -285,11 +279,10 @@ function detectProjectIntent(string $text, string $currentProject): ?array {
     $lower = mb_strtolower($text);
 
     foreach ($keywordsMap as $projKey => $keywords) {
-        if (stripos($currentProject, $projKey) !== false) continue; // Already in this project
+        if (stripos($currentProject, $projKey) !== false) continue;
 
         foreach ($keywords as $kw) {
             if (mb_strpos($lower, $kw) !== false) {
-                // Found matching foreign project!
                 $workspaces = getWorkspaces();
                 foreach ($workspaces as $hash => $ws) {
                     if (stripos($ws['name'], $projKey) !== false) {
@@ -307,8 +300,36 @@ function detectProjectIntent(string $text, string $currentProject): ?array {
 }
 
 // ---------------------------------------------------------
-// System Checkers
+// Multi-Purpose System Health & PC Remote Functions
 // ---------------------------------------------------------
+
+function getSystemMetrics(): array {
+    $metrics = [
+        'cpu'        => '0%',
+        'ram_used'   => '0 GB',
+        'ram_total'  => '0 GB',
+        'disk_free'  => '0 GB',
+        'disk_total' => '0 GB',
+        'uptime'     => '0m'
+    ];
+
+    $psScript = PROJECT_ROOT . '/get_health.ps1';
+    if (file_exists($psScript)) {
+        $out = trim(shell_exec('powershell.exe -ExecutionPolicy Bypass -File "' . $psScript . '" 2>NUL') ?? '');
+        if ($out && strpos($out, '|') !== false) {
+            $p = explode('|', $out);
+            if (count($p) >= 6) {
+                $metrics['cpu']        = $p[0] . '%';
+                $metrics['ram_used']   = $p[1] . ' GB';
+                $metrics['ram_total']  = $p[2] . ' GB';
+                $metrics['disk_free']  = $p[3] . ' GB';
+                $metrics['disk_total'] = $p[4] . ' GB';
+                $metrics['uptime']     = $p[5];
+            }
+        }
+    }
+    return $metrics;
+}
 
 function isAntigravityRunning(): bool {
     $out = [];
@@ -347,7 +368,7 @@ function getModeTitle(string $mode): string {
 }
 
 // ---------------------------------------------------------
-// View Handlers (Menus & Buttons)
+// View Handlers (Multi-Purpose Dashboard)
 // ---------------------------------------------------------
 
 function renderMainMenu(string $chatId, array $state): void {
@@ -357,15 +378,14 @@ function renderMainMenu(string $chatId, array $state): void {
     $activeTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
     $modeText = getModeTitle($state['mode'] ?? 'turbo');
 
-    $text  = "✨ *অ্যান্টিগ্রাভিটি রিমোট কন্ট্রোল ড্যাশবোর্ড ৩.০*\n";
+    $text  = "✨ *অ্যান্টিগ্রাভিটি মাল্টি-পারপাস রিমোট সেন্টার ৪.০*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
     $text .= "💻 *Antigravity IDE:* {$agyOnline}\n";
     $text .= "🌐 *ওয়েব সার্ভার:* {$srvOnline}\n";
     $text .= "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
     $text .= "💬 *সক্রিয় চ্যাট:* `{$activeTitle}`\n";
-    $text .= "⚙️ *কাজের মোড:* {$modeText}\n";
-    $text .= "🆔 *Conversation ID:* `{$state['active_conv_id']}`\n\n";
-    $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা সরাসরি মেসেজ লিখুন:*";
+    $text .= "⚙️ *কাজের মোড:* {$modeText}\n\n";
+    $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা যেকোনো মেসেজ লিখুন:*";
 
     $keyboard = [
         [
@@ -373,12 +393,44 @@ function renderMainMenu(string $chatId, array $state): void {
             ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
         ],
         [
-            ['text' => '⚙️ মোড পরিবর্তন', 'callback_data' => 'menu_modes'],
-            ['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status']
+            ['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health'],
+            ['text' => '⚙️ কাজের মোড পরিবর্তন', 'callback_data' => 'menu_modes']
         ],
         [
-            ['text' => '➕ নতুন চ্যাট শুরু করুন', 'callback_data' => 'menu_new_task'],
+            ['text' => '🌐 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status'],
+            ['text' => '🔄 সার্ভার রিস্টার্ট (Port 8015)', 'callback_data' => 'action_restart_srv']
+        ],
+        [
+            ['text' => '🔒 পিসি স্ক্রিন লক করুন', 'callback_data' => 'action_lock_pc'],
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+function renderSystemHealthView(string $chatId, array $state): void {
+    $m = getSystemMetrics();
+    $agyOnline = isAntigravityRunning() ? "🟢 Active" : "🔴 Closed";
+    $srvOnline = isServerRunning(8015) ? "🟢 Active (Port 8015)" : "🔴 Offline";
+
+    $text  = "📊 *পিসি সিস্টেম ও রিসোর্স লাইভ মনিটর*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "⚡ *CPU লোড:* `{$m['cpu']}`\n";
+    $text .= "🧠 *RAM মেমোরি:* `{$m['ram_used']}` / `{$m['ram_total']}`\n";
+    $text .= "💾 *Disk C: ড্রাইভ:* `{$m['disk_free']}` ফ্রি / `{$m['disk_total']}` মোট\n";
+    $text .= "⏱️ *পিসি রানিং টাইম:* `{$m['uptime']}`\n\n";
+    $text .= "💻 *Antigravity 2.0:* {$agyOnline}\n";
+    $text .= "🐘 *PHP Web Server:* {$srvOnline}\n";
+    $text .= "📁 *অ্যাক্টিভ প্রজেক্ট:* `{$state['active_proj_name']}`\n";
+
+    $keyboard = [
+        [
+            ['text' => '🔄 রিফ্রেশ মেমোরি', 'callback_data' => 'menu_system_health'],
+            ['text' => '🔒 পিসি লক করুন', 'callback_data' => 'action_lock_pc']
+        ],
+        [
+            ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
 
@@ -502,7 +554,10 @@ function renderStatusView(string $chatId, array $state): void {
 
     $keyboard = [
         [
-            ['text' => '⚙️ মোড বদলান', 'callback_data' => 'menu_modes'],
+            ['text' => '📊 পিসি হেলথ', 'callback_data' => 'menu_system_health'],
+            ['text' => '⚙️ মোড বদলান', 'callback_data' => 'menu_modes']
+        ],
+        [
             ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
@@ -668,9 +723,9 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 // ---------------------------------------------------------
 
 echo "=====================================================\n";
-echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ৩.০ চালু\n";
+echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ৪.০ চালু\n";
 echo "  Bot: @raselcodebot\n";
-echo "  24/7 Persistent Mode Active\n";
+echo "  Full Multi-Purpose Remote Center Active\n";
 echo "=====================================================\n";
 
 $state = loadState();
@@ -701,7 +756,7 @@ if (in_array('--boot', $argv ?? [])) {
 
     $bootKb = [
         [['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces']],
-        [['text' => '⚙️ মোড পরিবর্তন', 'callback_data' => 'menu_modes']],
+        [['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health']],
         [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
     ];
 
@@ -743,6 +798,21 @@ while (true) {
                     if ($data === 'menu_home') {
                         answerCallback($cbId, 'মেইন মেনু লোড হচ্ছে...');
                         renderMainMenu($chatId, $state);
+                    } elseif ($data === 'menu_system_health') {
+                        answerCallback($cbId, 'সিস্টেম হেলথ আনা হচ্ছে...');
+                        renderSystemHealthView($chatId, $state);
+                    } elseif ($data === 'action_lock_pc') {
+                        answerCallback($cbId, 'পিসি লক করা হচ্ছে...');
+                        exec('rundll32.exe user32.dll,LockWorkStation');
+                        sendMsg($chatId, "🔒 *কম্পিউটার সফলভাবে লক করা হয়েছে!*\n\nপিসির স্ক্রিন এখন লকড। আনলক করতে উইন্ডোজ পাসওয়ার্ড লাগবে।");
+                    } elseif ($data === 'action_restart_srv') {
+                        answerCallback($cbId, 'সার্ভার রিস্টার্ট হচ্ছে...');
+                        exec('powershell.exe -Command "Get-CimInstance Win32_Process -Filter \"Name=\'php.exe\'\" | Where-Object { $_.CommandLine -like \"*:8015*\" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"');
+                        sleep(1);
+                        exec('start /b php -S 0.0.0.0:8015 router.php > storage\logs\php_server.log 2>&1');
+                        sleep(1);
+                        $online = isServerRunning(8015) ? "🟢 রানিং (Port 8015)" : "🔴 বন্ধ";
+                        sendMsg($chatId, "🔄 *পিএইচপি ওয়েব সার্ভার রিস্টার্ট সম্পন্ন!*\n\nস্ট্যাটাস: {$online}" . getStandardLinksText());
                     } elseif ($data === 'menu_workspaces') {
                         answerCallback($cbId, 'প্রজেক্ট তালিকা লোড হচ্ছে...');
                         renderWorkspacesMenu($chatId, $state);
@@ -825,6 +895,8 @@ while (true) {
                         renderMainMenu($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {
                         renderWorkspacesMenu($chatId, $state);
+                    } elseif ($text === '📊 পিসি হেলথ ও রিসোর্স' || $text === '/health') {
+                        renderSystemHealthView($chatId, $state);
                     } elseif ($text === '⚙️ মোড পরিবর্তন' || $text === '/mode') {
                         renderModeMenu($chatId, $state);
                     } elseif ($text === '📊 লাইভ স্ট্যাটাস ও লিংক' || $text === '/status') {
