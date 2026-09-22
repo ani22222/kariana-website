@@ -1,7 +1,7 @@
 <!-- ============================================================
      VAPE-INSPIRED SMOOTH HERO SLIDER & 3D BOOK SHOWCASE (100VH IMMERSIVE)
      ============================================================ -->
-<div id="heroSectionWrapper" class="bg-emerald-deep pt-1 sm:pt-4 pb-1 sm:pb-2 px-2 sm:px-4 relative overflow-hidden h-[calc(100svh-88px-76px)] md:h-[calc(100vh-92px)] max-h-[calc(100svh-88px-76px)] md:max-h-[calc(100vh-92px)] flex flex-col justify-between">
+<div id="heroSectionWrapper" class="bg-emerald-deep pt-1 sm:pt-4 px-2 sm:px-4 relative overflow-hidden flex flex-col justify-between">
     <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1 h-full">
         
         <!-- Main Vape-Style Hero Shell -->
