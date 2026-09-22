@@ -16,9 +16,9 @@ define('ADMIN_CHAT_ID', (string)($secretCreds['admin_chat_id'] ?? '1827362508'))
 define('TG_API', 'https://api.telegram.org/bot' . BOT_TOKEN);
 
 define('PROJECT_ROOT', __DIR__);
-define('DEFAULT_CONV_ID', 'b5d31c4a-85e9-4609-b28a-3786eed9a1a3');
+define('DEFAULT_CONV_ID', '6bd0f2a8-a3d2-459d-99a3-872c0091d281');
 define('DEFAULT_PROJECT_NAME', 'Kariana Website');
-define('DEFAULT_CHAT_TITLE', 'হিরো সেকশন ও ফুলস্ক্রিন ফিক্স');
+define('DEFAULT_CHAT_TITLE', 'Telegram Ad Security Concern');
 define('DEFAULT_MODEL', 'Gemini 3.8 Flash (High)');
 
 define('STATE_FILE', PROJECT_ROOT . '/telegram_state.json');
@@ -947,27 +947,10 @@ function sendQuotaAlert(string $chatId, array $state, int $stepCount, string $re
 }
 
 function checkModelQuotaAlert(array &$state): void {
-    $convId = $state['active_conv_id'] ?? DEFAULT_CONV_ID;
-    if (!file_exists(CONV_DB_PATH)) return;
-
-    try {
-        $db = new PDO('sqlite:' . CONV_DB_PATH);
-        $stmt = $db->prepare("SELECT step_count FROM conversation_summaries WHERE conversation_id = ? LIMIT 1");
-        $stmt->execute([$convId]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $steps = (int)($row['step_count'] ?? 0);
-
-        $alertKey = 'quota_alert_' . substr($convId, 0, 8);
-        if ($steps >= 80 && empty($state[$alertKey])) {
-            botLog("[QUOTA ALERT] Triggering 95% quota alert for conv {$convId} (steps: {$steps})");
-            sendQuotaAlert($state['chat_id'], $state, $steps, 'সেশন ব্যবহার ৯৫% ছুঁয়েছে (৮০+ স্টেপ অতিক্রম)');
-            $state[$alertKey] = true;
-            saveState($state);
-        }
-    } catch (Exception $e) {
-        // ignore
-    }
+    // Antigravity sessions naturally have high step counts (thousands of steps)
+    // Only alert when actual API quota limit / rate limit error occurs
 }
+
 
 // Account & Quota Management Menu
 function renderAccountsMenu(string $chatId, array $state): void {
