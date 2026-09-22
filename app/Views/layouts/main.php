@@ -108,10 +108,71 @@
     </script>
     
     <!-- Custom CSS with Dynamic Cache-Buster -->
-    <link rel="stylesheet" href="<?= $baseUrl ?? '' ?>/assets/css/main.css?v=<?= @filemtime(__DIR__ . '/../../../public/assets/css/main.css') ?: time() ?>">
+    <link rel="stylesheet" href="<?= $baseUrl ?? '' ?>/assets/css/main.css?v=<?= time() ?>">
     
     <style>
         [x-cloak] { display: none !important; }
+        
+        :root {
+            --top-header-height: 76px;
+        }
+        @media (min-width: 768px) {
+            :root {
+                --top-header-height: 96px;
+            }
+        }
+        
+        /* Enforce Standalone 100% Full-Screen Hero Viewport on Mobile */
+        #heroSectionWrapper {
+            height: calc(100svh - var(--top-header-height, 76px)) !important;
+            min-height: calc(100svh - var(--top-header-height, 76px)) !important;
+            max-height: calc(100svh - var(--top-header-height, 76px)) !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+            padding-bottom: 74px !important;
+        }
+        @media (min-width: 768px) {
+            #heroSectionWrapper {
+                height: calc(100vh - var(--top-header-height, 96px)) !important;
+                min-height: calc(100vh - var(--top-header-height, 96px)) !important;
+                max-height: calc(100vh - var(--top-header-height, 96px)) !important;
+                padding-bottom: 16px !important;
+            }
+        }
+        
+        /* Enforce Royal Islamic Emerald & Gold Capsule Dock on Mobile */
+        .bottom-nav-wrapper {
+            position: fixed !important;
+            bottom: 8px !important;
+            left: 0 !important;
+            right: 0 !important;
+            padding: 0 12px !important;
+            z-index: 50 !important;
+            pointer-events: none !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+        .bottom-nav {
+            pointer-events: auto !important;
+            width: 100% !important;
+            max-width: 440px !important;
+            background: linear-gradient(135deg, rgba(3, 44, 34, 0.98) 0%, rgba(1, 26, 20, 0.99) 100%) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-radius: 26px !important;
+            border: 1.5px solid rgba(251, 191, 36, 0.5) !important;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65), 0 0 16px rgba(251, 191, 36, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+            padding: 0.45rem 0.55rem 0.2rem !important;
+            padding-bottom: calc(0.2rem + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        @media (min-width: 768px) {
+            .bottom-nav-wrapper {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-[#f8f5ee] text-slate-800 antialiased flex flex-col min-h-screen">
@@ -125,11 +186,11 @@
     <?php endif; ?>
 
     <!-- Top Breaking News / Prayer Ticker -->
-    <div class="bg-emerald-night text-white text-sm py-1.5 px-4 border-b border-gold-deep/30">
+    <div id="topTickerBar" class="bg-emerald-night text-white text-xs sm:text-sm py-1 sm:py-1.5 px-3 sm:px-4 border-b border-gold-deep/30 flex items-center h-[26px] sm:h-auto overflow-hidden">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-2 space-x-reverse overflow-hidden whitespace-nowrap">
-                <span class="bg-gold-rich text-white px-2 py-0.5 rounded text-xs font-bold shrink-0 animate-pulse">আপডেট</span>
-                <marquee scrollamount="4" class="text-emerald-light ml-3 text-[13px]">
+                <span class="bg-gold-rich text-white px-2 py-0.5 rounded text-[11px] font-bold shrink-0 animate-pulse">আপডেট</span>
+                <marquee scrollamount="4" class="text-emerald-light ml-3 text-[12px] sm:text-[13px]">
                     আজকের নামাজের সময়সূচি: ফজর - ৪:৪০ | যোহর - ১২:১৫ | আসর - ৪:৩০ | মাগরিব - ৬:১০ | ইশা - ৭:৩০ (ঢাকা) &nbsp;&nbsp;|&nbsp;&nbsp; কারিয়ানা কুরআন বাংলা অর্থসহ - স্পেশাল অফার ৳১০০০
                 </marquee>
             </div>
@@ -153,17 +214,17 @@
     </div>
 
     <!-- Main Header -->
-    <header class="bg-emerald-deep islamic-pattern sticky top-0 z-40 shadow-lg border-b-2 border-gold-rich">
-        <div class="container mx-auto px-4 py-3">
+    <header id="mainHeaderBar" class="bg-emerald-deep islamic-pattern sticky top-0 z-40 shadow-lg border-b-2 border-gold-rich">
+        <div class="container mx-auto px-3 sm:px-4 py-1.5 sm:py-3">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <a href="<?= $baseUrl ?? '' ?>/" class="flex items-center group">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 border-2 border-gold-shimmer shadow-[0_0_15px_rgba(251,191,36,0.3)] transition transform group-hover:scale-105">
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center p-1 border-2 border-gold-shimmer shadow-[0_0_15px_rgba(251,191,36,0.3)] transition transform group-hover:scale-105">
                         <img src="<?= $baseUrl ?? '' ?>/assets/images/logo.png" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=Kariana&background=064e3b&color=fff'">
                     </div>
-                    <div class="ml-3">
-                        <h1 class="text-2xl font-bold text-white tracking-tight drop-shadow-md">ক্ব-রিয়ানা</h1>
-                        <p class="text-[11px] text-amber-300 font-medium tracking-wider">কুরআন শিক্ষা সোসাইটি</p>
+                    <div class="ml-2.5 sm:ml-3">
+                        <h1 class="text-lg sm:text-2xl font-bold text-white tracking-tight drop-shadow-md leading-tight">ক্ব-রিয়ানা</h1>
+                        <p class="text-[10px] sm:text-[11px] text-amber-300 font-medium tracking-wider">কুরআন শিক্ষা সোসাইটি</p>
                     </div>
                 </a>
 
