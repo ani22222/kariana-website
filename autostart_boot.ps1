@@ -45,11 +45,11 @@ if (-not $serverRunning) {
     Start-Sleep -Seconds 2
 }
 
-# 4. Ensure Telegram Bot Daemon is running
+# 4. Ensure Telegram Bot Daemon is running with full file logging
 $runningDaemon = Get-CimInstance Win32_Process -Filter "Name = 'php.exe'" -ErrorAction SilentlyContinue |
     Where-Object { $_.CommandLine -like "*telegram_bot_daemon.php*" }
 
 if (-not $runningDaemon) {
     Write-Host "[BOOT] Starting Telegram Bot Daemon with boot notification..."
-    Start-Process "php" -ArgumentList "telegram_bot_daemon.php --boot" -WorkingDirectory $projectDir -WindowStyle Hidden
+    Start-Process "cmd.exe" -ArgumentList "/c php telegram_bot_daemon.php --boot >> storage\logs\telegram_bot.log 2>&1" -WorkingDirectory $projectDir -WindowStyle Hidden
 }

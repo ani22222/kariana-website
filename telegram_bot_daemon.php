@@ -14,9 +14,9 @@ define('BOT_TOKEN', '8811158752:AAEKrP4XvGXDuw3NQKUGZLw6a-ooisnIK_8');
 define('TG_API', 'https://api.telegram.org/bot' . BOT_TOKEN);
 
 define('PROJECT_ROOT', __DIR__);
-define('DEFAULT_CONV_ID', '94596634-65c0-432c-a4d3-6aa058846c61');
+define('DEFAULT_CONV_ID', 'b5d31c4a-85e9-4609-b28a-3786eed9a1a3');
 define('DEFAULT_PROJECT_NAME', 'Kariana Website');
-define('DEFAULT_CHAT_TITLE', 'Telegram Bot Remote Integration');
+define('DEFAULT_CHAT_TITLE', 'হিরো সেকশন ও ফুলস্ক্রিন ফিক্স');
 define('DEFAULT_MODEL', 'Gemini 3.8 Flash (High)');
 
 define('STATE_FILE', PROJECT_ROOT . '/telegram_state.json');
@@ -30,6 +30,18 @@ define('LINK_LOCAL', 'http://localhost:8015');
 define('LINK_WIFI', 'http://192.168.0.100:8015');
 define('LINK_CLOUDFLARE', 'https://rev-mysql-stops-ext.trycloudflare.com');
 define('LINK_GITHUB', 'https://github.com/ani22222/kariana-website');
+
+// Logging to file & console
+function botLog(string $msg): void {
+    $time = date('Y-m-d H:i:s');
+    $entry = "[{$time}] {$msg}\n";
+    echo $entry;
+    $logFile = PROJECT_ROOT . '/storage/logs/telegram_bot.log';
+    if (!is_dir(dirname($logFile))) {
+        @mkdir(dirname($logFile), 0777, true);
+    }
+    @file_put_contents($logFile, $entry, FILE_APPEND);
+}
 
 // Bengali Date & Duration Helpers
 function formatBengaliDate(int $timestamp): string {
@@ -73,6 +85,32 @@ function formatDuration(int $seconds): string {
 // Accounts & State Management
 // ---------------------------------------------------------
 
+function getLatestActiveConversation(): ?array {
+    if (!file_exists(CONV_DB_PATH)) return null;
+    try {
+        $db = new PDO('sqlite:' . CONV_DB_PATH);
+        $stmt = $db->query("SELECT conversation_id, preview, last_modified_time, workspace_uris 
+                            FROM conversation_summaries 
+                            WHERE (parent_conversation_id IS NULL OR parent_conversation_id = '') 
+                            ORDER BY last_modified_time DESC LIMIT 1");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $ws = json_decode($row['workspace_uris'], true);
+            $wsName = (!empty($ws) && isset($ws[0])) ? basename(urldecode(str_replace('file:///', '', $ws[0]))) : 'Kariana Website';
+            $title = getConversationTitle($row['conversation_id'], $row['preview'] ?? '');
+            return [
+                'id'       => $row['conversation_id'],
+                'title'    => $title,
+                'project'  => $wsName,
+                'time'     => $row['last_modified_time']
+            ];
+        }
+    } catch (Exception $e) {
+        botLog("[DB ERROR getLatestActiveConversation] " . $e->getMessage());
+    }
+    return null;
+}
+
 function loadAccounts(): array {
     if (file_exists(ACCOUNTS_FILE)) {
         $data = json_decode(file_get_contents(ACCOUNTS_FILE), true);
@@ -106,15 +144,19 @@ function saveAccounts(array $accounts): void {
 }
 
 function loadState(): array {
+    $latest = getLatestActiveConversation();
     if (file_exists(STATE_FILE)) {
         $data = json_decode(file_get_contents(STATE_FILE), true);
         if (is_array($data)) {
-            $data['active_conv_id']    = $data['active_conv_id'] ?? DEFAULT_CONV_ID;
-            $data['active_proj_name']  = $data['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
-            $data['active_chat_title'] = $data['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
+            // If active_conv_id is missing or obsolete default, sync with latest
+            if (empty($data['active_conv_id']) || $data['active_conv_id'] === '94596634-65c0-432c-a4d3-6aa058846c61') {
+                $data['active_conv_id']    = $latest['id'] ?? DEFAULT_CONV_ID;
+                $data['active_proj_name']  = $latest['project'] ?? DEFAULT_PROJECT_NAME;
+                $data['active_chat_title'] = $latest['title'] ?? DEFAULT_CHAT_TITLE;
+            }
             $data['chat_id']           = $data['chat_id'] ?? '1827362508';
             $data['last_update_id']    = $data['last_update_id'] ?? 0;
-            $data['mode']              = $data['mode'] ?? 'turbo'; // turbo, safe, planning
+            $data['mode']              = $data['mode'] ?? 'turbo';
             $data['selected_model']    = $data['selected_model'] ?? DEFAULT_MODEL;
             $data['active_account']    = $data['active_account'] ?? 'acc_1';
             $data['is_busy']           = $data['is_busy'] ?? false;
@@ -123,9 +165,9 @@ function loadState(): array {
         }
     }
     return [
-        'active_conv_id'    => DEFAULT_CONV_ID,
-        'active_proj_name'  => DEFAULT_PROJECT_NAME,
-        'active_chat_title' => DEFAULT_CHAT_TITLE,
+        'active_conv_id'    => $latest['id'] ?? DEFAULT_CONV_ID,
+        'active_proj_name'  => $latest['project'] ?? DEFAULT_PROJECT_NAME,
+        'active_chat_title' => $latest['title'] ?? DEFAULT_CHAT_TITLE,
         'chat_id'           => '1827362508',
         'last_update_id'    => 0,
         'mode'              => 'turbo',
@@ -180,8 +222,10 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
         $params['reply_markup'] = [
             'keyboard' => [
                 [['text' => '🏠 মেইন মেনু'], ['text' => '📁 সাম্প্রতিক প্রজেক্ট']],
+                [['text' => '📸 পিসির স্ক্রিনশট'], ['text' => '📱 ওয়েবসাইট লাইভ ভিউ']],
                 [['text' => '🧠 এআই মডেল নির্বাচন'], ['text' => '👤 অ্যাকাউন্ট ও কোটা']],
-                [['text' => '📊 পিসি হেলথ ও রিসোর্স'], ['text' => '⚙️ মোড পরিবর্তন']]
+                [['text' => '📊 পিসি হেলথ ও রিসোর্স'], ['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস']],
+                [['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট'], ['text' => '⚙️ মোড পরিবর্তন']]
             ],
             'resize_keyboard' => true,
             'persistent'      => true
@@ -211,6 +255,33 @@ function answerCallback(string $callbackQueryId, string $text = ''): void {
         'text'              => $text,
         'show_alert'        => false
     ]);
+}
+
+function sendPhoto(string $chatId, string $photoPath, string $caption = ''): array {
+    $url = TG_API . '/sendPhoto';
+    $ch = curl_init($url);
+    $cfile = new CURLFile($photoPath, 'image/png', 'screenshot.png');
+    $params = [
+        'chat_id'    => $chatId,
+        'photo'      => $cfile,
+        'caption'    => $caption,
+        'parse_mode' => 'Markdown'
+    ];
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $params,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 40,
+        CURLOPT_SSL_VERIFYPEER => false,
+    ]);
+    $res = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+    if ($err) {
+        echo "[CURL ERROR sendPhoto] " . $err . "\n";
+        return ['ok' => false, 'error' => $err];
+    }
+    return json_decode($res, true) ?? ['ok' => false];
 }
 
 // ---------------------------------------------------------
@@ -440,8 +511,20 @@ function renderMainMenu(string $chatId, array $state): void {
 
     $keyboard = [
         [
+            ['text' => '🎯 অ্যাক্টিভ চ্যাট সিঙ্ক', 'callback_data' => 'action_sync_active_chat'],
+            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+        ],
+        [
+            ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot'],
+            ['text' => '🚀 Antigravity ওপেন', 'callback_data' => 'action_open_agy']
+        ],
+        [
             ['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces'],
             ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
+        ],
+        [
+            ['text' => '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস', 'callback_data' => 'menu_agy_status'],
+            ['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট', 'callback_data' => 'menu_troubleshoot']
         ],
         [
             ['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models'],
@@ -452,11 +535,134 @@ function renderMainMenu(string $chatId, array $state): void {
             ['text' => '⚙️ কাজের মোড পরিবর্তন', 'callback_data' => 'menu_modes']
         ],
         [
+            ['text' => '🛑 পিসি শাটডাউন', 'callback_data' => 'action_shutdown_pc'],
+            ['text' => '🔄 পিসি রিস্টার্ট', 'callback_data' => 'action_restart_pc']
+        ],
+        [
             ['text' => '🔄 সার্ভার রিস্টার্ট (8015)', 'callback_data' => 'action_restart_srv'],
             ['text' => '🔒 পিসি স্ক্রিন লক', 'callback_data' => 'action_lock_pc']
         ],
         [
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+// ---------------------------------------------------------
+// Antigravity File Audit & Diagnostics
+// ---------------------------------------------------------
+
+function auditAntigravityFiles(): array {
+    $info = [];
+
+    // 1. GEMINI.md
+    $geminiFile = PROJECT_ROOT . '/GEMINI.md';
+    if (file_exists($geminiFile)) {
+        $gText = file_get_contents($geminiFile);
+        preg_match('/Dedicated Port\*\*:\s*`(\d+)`/', $gText, $mPort);
+        preg_match('/GitHub Repository\*\*:\s*`([^`]+)`/', $gText, $mGit);
+        $info['gemini_status'] = "পোর্ট " . ($mPort[1] ?? '8015') . " সক্রিয় ও রুলস লোডেড 🟢";
+    } else {
+        $info['gemini_status'] = "ফাইল পাওয়া যায়নি 🔴";
+    }
+
+    // 2. task.md
+    $taskFile = BRAIN_DIR . '/' . DEFAULT_CONV_ID . '/task.md';
+    $doneTasks = 0;
+    $totalTasks = 0;
+    if (file_exists($taskFile)) {
+        $lines = file($taskFile);
+        foreach ($lines as $l) {
+            if (strpos($l, '- [x]') !== false) { $doneTasks++; $totalTasks++; }
+            elseif (strpos($l, '- [ ]') !== false) { $totalTasks++; }
+            elseif (strpos($l, '- [/]') !== false) { $totalTasks++; }
+        }
+        $info['task_status'] = "{$doneTasks}/{$totalTasks} টি টাস্ক সম্পন্ন";
+    } else {
+        $info['task_status'] = "টাস্ক ফাইল প্রস্তুত";
+    }
+
+    // 3. transcript.jsonl
+    $transFile = BRAIN_DIR . '/' . DEFAULT_CONV_ID . '/.system_generated/logs/transcript.jsonl';
+    $steps = 0;
+    if (file_exists($transFile)) {
+        $fp = @fopen($transFile, 'r');
+        if ($fp) {
+            while (!feof($fp)) {
+                if (fgets($fp) !== false) $steps++;
+            }
+            fclose($fp);
+            $info['steps'] = "{$steps} টি স্টেপ রেকর্ডকৃত";
+        } else {
+            $info['steps'] = "রানিং";
+        }
+    } else {
+        $info['steps'] = "N/A";
+    }
+
+    // 4. Git status
+    $gitCommit = trim(shell_exec('git -C "' . PROJECT_ROOT . '" log -1 --pretty=format:"%h - %s" 2>NUL') ?? 'N/A');
+    $info['git_last'] = $gitCommit;
+
+    return $info;
+}
+
+function renderAntigravityStatusView(string $chatId, array $state): void {
+    $audit = auditAntigravityFiles();
+    $agyOnline = isAntigravityRunning() ? "🟢 Active" : "🔴 Closed";
+    $srvOnline = isServerRunning(8015) ? "🟢 Active (Port 8015)" : "🔴 Offline";
+
+    $text  = "🔍 *অ্যান্টিগ্রাভিটি মেইন ফাইল ও প্রজেক্ট স্ট্যাটাস অডিট*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "📄 *GEMINI.md রুলস:* `{$audit['gemini_status']}`\n";
+    $text .= "📋 *টাস্ক প্রগ্রেস (task.md):* `{$audit['task_status']}`\n";
+    $text .= "🧠 *সেশন ইতিহাস:* `{$audit['steps']}`\n";
+    $text .= "📝 *সর্বশেষ গিট কমিট:* `{$audit['git_last']}`\n\n";
+    $text .= "💻 *Antigravity IDE:* {$agyOnline}\n";
+    $text .= "🐘 *ওয়েব সার্ভার:* {$srvOnline}\n";
+    $text .= "🎯 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
+    $text .= "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n";
+    $text .= "🤖 *এআই মডেল:* `{$state['selected_model']}`\n";
+    $text .= getStandardLinksText();
+
+    $keyboard = [
+        [
+            ['text' => '🔄 রিফ্রেশ অডিট', 'callback_data' => 'menu_agy_status'],
+            ['text' => '🛠️ কুইক ফিক্স ও ট্রাবলশুট', 'callback_data' => 'menu_troubleshoot']
+        ],
+        [
+            ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+function renderTroubleshootView(string $chatId, array $state): void {
+    $text  = "🛠️ *কুইক ফিক্স ও রিমোট ট্রাবলশুট সেন্টার*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "কম্পিউটারে কোনো লিমিটেশন, পোর্ট ব্লক বা এরর দেখা দিলে মোবাইল থেকেই ১-ক্লিকে ফিক্স করুন:\n\n";
+    $text .= "🔹 *পোর্ট ৮০১৫ ফিক্স:* কোনো কারণে পোর্ট ব্লক বা ক্র্যাশ করলে ফ্রেশ রিস্টার্ট দেবে।\n";
+    $text .= "🔹 *ক্যাশ ও লগ ক্লিন:* টেম্পোরারি ফাইল ক্লিন করে ডিস্ক স্পেস ও মেমোরি খালি করবে।\n";
+    $text .= "🔹 *গিট সিঙ্ক চেক:* গিটহাবের সাথে বর্তমান কোড সিঙ্ক ঠিক আছে কিনা চেক করবে।\n";
+    $text .= "🔹 *মডেল কোটা ফিক্স:* কোটা শেষ হয়ে থাকলে Flash-Lite মডেলে কনভার্ট করে কাজ চালু রাখবে।\n\n";
+    $text .= "👇 *প্রয়োজনীয় ফিক্সে ক্লিক করুন:*";
+
+    $keyboard = [
+        [
+            ['text' => '🚀 পোর্ট ৮০১৫ অটো-ফিক্স ও রিস্টার্ট', 'callback_data' => 'action_fix_port'],
+        ],
+        [
+            ['text' => '🧹 ক্যাশ ও টেম্প ক্লিন', 'callback_data' => 'action_clean_cache'],
+            ['text' => '📦 গিট সিঙ্ক ভেরিফাই', 'callback_data' => 'action_git_sync']
+        ],
+        [
+            ['text' => '⚡ কোটা ফিক্স (Switch Flash-Lite)', 'callback_data' => 'model_gemini_lite']
+        ],
+        [
+            ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
 
@@ -741,11 +947,11 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 
     $cmd = '"' . AGENT_API_BAT . '" send-message ' . escapeshellarg($convId) . ' ' . escapeshellarg($finalPrompt);
     
-    echo "[AGENTAPI] Sending prompt to {$convId}...\n";
+    botLog("[AGENTAPI] Sending prompt to {$convId}...");
     $out = [];
     $code = 0;
     exec($cmd . ' 2>&1', $out, $code);
-    echo "[AGENTAPI] Code: {$code}, Output: " . implode(" ", $out) . "\n";
+    botLog("[AGENTAPI] Code: {$code}, Output: " . implode(" ", $out));
 
     if ($code !== 0) {
         // Check for Quota or Rate Limit errors
@@ -912,6 +1118,11 @@ if (in_array('--boot', $argv ?? [])) {
         }
     }
 
+    $accData = loadAccounts();
+    $activeAccId = $state['active_account'] ?? 'acc_1';
+    $accName = $accData['accounts'][$activeAccId]['name'] ?? 'Main Account';
+    $quotaStatus = $accData['accounts'][$activeAccId]['quota_status'] ?? 'স্বাভাবিক 🟢';
+
     $bootMsg = "⚡ *কম্পিউটার পুনরায় চালু হয়েছে — অ্যান্টিগ্রাভিটি ২.০ অটো-কানেক্টেড!*\n"
              . "━━━━━━━━━━━━━━━━━━━━\n"
              . "⏰ *অন হওয়ার সময়:* {$bootTimeStr}\n"
@@ -929,6 +1140,7 @@ if (in_array('--boot', $argv ?? [])) {
              . getStandardLinksText();
 
     $bootKb = [
+        [['text' => '🎯 বর্তমান অ্যাক্টিভ চ্যাট সিঙ্ক', 'callback_data' => 'action_sync_active_chat'], ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']],
         [['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces']],
         [['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models'], ['text' => '👤 অ্যাকাউন্ট ও কোটা', 'callback_data' => 'menu_accounts']],
         [['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health'], ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
@@ -1015,8 +1227,64 @@ while (true) {
                                    . "৩. নতুন অ্যাকাউন্ট যুক্ত হলে টেলিগ্রাম স্বয়ংক্রিয়ভাবে সিঙ্ক হয়ে যাবে এবং বট ২৪ ঘণ্টা কানেক্টেড থাকবে!";
                         sendMsg($chatId, $reauthMsg);
                     } elseif ($data === 'action_add_acc') {
-                        answerCallback($cbId, 'নতুন অ্যাকাউন্ট...');
-                        sendMsg($chatId, "➕ *নতুন অ্যাকাউন্ট যুক্ত করার নিয়ম:*\nআপনার দ্বিতীয় জিমেইল বা ব্যাকআপ অ্যাকাউন্টের নাম লিখে পাঠান (যেমন: `অ্যাকাউন্ট নাম: রাফসান জিমেইল`)। বট স্বয়ংক্রিয়ভাবে প্রোফাইল স্লট তৈরি করে দেবে!");
+                    } elseif ($data === 'action_sync_active_chat') {
+                        answerCallback($cbId, 'অ্যাক্টিভ চ্যাট সিঙ্ক হচ্ছে...');
+                        $latest = getLatestActiveConversation();
+                        if ($latest) {
+                            $state['active_conv_id'] = $latest['id'];
+                            $state['active_proj_name'] = $latest['project'];
+                            $state['active_chat_title'] = $latest['title'];
+                            saveState($state);
+                            botLog("[SYNC] Active conversation synced to: {$latest['id']} ({$latest['title']})");
+                            sendMsg($chatId, "🎯 *সর্বশেষ সক্রিয় চ্যাট সফলভাবে সিঙ্ক হয়েছে!*\n━━━━━━━━━━━━━━━━━━━━\n📁 *প্রজেক্ট:* `{$latest['project']}`\n💬 *চ্যাট:* `{$latest['title']}`\n🆔 `{$latest['id']}`\n\nএখন আপনি টেলিগ্রাম থেকে যা লিখবেন, তা সরাসরি এই সক্রিয় চ্যাটে কাজ করবে!");
+                        } else {
+                            sendMsg($chatId, "⚠️ সক্রিয় চ্যাট পাওয়া যায়নি।");
+                        }
+                        renderMainMenu($chatId, $state);
+                    } elseif ($data === 'action_pc_screenshot') {
+                        answerCallback($cbId, 'পিসি স্ক্রিনশট নেওয়া হচ্ছে...');
+                        botLog("[SCREENSHOT] Capturing desktop screenshot...");
+                        $psOut = trim(shell_exec('powershell.exe -ExecutionPolicy Bypass -File "' . PROJECT_ROOT . '/take_screenshot.ps1" 2>&1') ?? '');
+                        $shotPath = PROJECT_ROOT . '/storage/logs/pc_screenshot.png';
+                        $sent = false;
+                        if (file_exists($shotPath) && filesize($shotPath) > 10000 && stripos($psOut, 'invalid') === false) {
+                            $res = sendPhoto($chatId, $shotPath, "🖥️ *পিসির লাইভ স্ক্রিনশট*\n⏰ " . date('d M Y, h:i A'));
+                            if ($res['ok'] ?? false) $sent = true;
+                        }
+                        if (!$sent) {
+                            // Fallback to web screenshot
+                            botLog("[SCREENSHOT] Desktop session not available, sending mobile web render fallback");
+                            exec('node "' . PROJECT_ROOT . '/screenshot_verify.js" 2>&1');
+                            $webShot = PROJECT_ROOT . '/storage/logs/verify_mobile.png';
+                            if (!file_exists($webShot)) {
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/final_mobile.png';
+                            }
+                            if (!file_exists($webShot)) {
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                            }
+                            sendMsg($chatId, "🔒 *পিসি স্ক্রিন স্ট্যাটাস:* কম্পিউটার স্ক্রিন বর্তমানে লকড / হেডলেস সেশনে রয়েছে।\n\n📱 ওয়েবসাইটের লাইভ মোবাইল প্রিভিউ নিচে পাঠানো হলো:");
+                            if (file_exists($webShot)) {
+                                sendPhoto($chatId, $webShot, "📱 *কারিয়ানা মোবাইল লাইভ ভিউ* (Port 8015)\n" . getStandardLinksText());
+                            }
+                        }
+                    } elseif ($data === 'action_web_screenshot') {
+                        answerCallback($cbId, 'ওয়েবসাইট প্রিভিউ প্রস্তুত হচ্ছে...');
+                        botLog("[WEB_SCREENSHOT] Generating live web screenshot...");
+                        exec('node "' . PROJECT_ROOT . '/screenshot_verify.js" 2>&1');
+                        $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/final_mobile.png';
+                        if (!file_exists($webShot)) {
+                            $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                        }
+                        if (file_exists($webShot)) {
+                            sendPhoto($chatId, $webShot, "📱 *কারিয়ানা ওয়েবসাইট লাইভ রেন্ডারিং*\n" . getStandardLinksText());
+                        } else {
+                            sendMsg($chatId, "⚠️ প্রিভিউ তৈরি হতে পারছে না, সার্ভার চালু আছে কিনা চেক করুন।");
+                        }
+                    } elseif ($data === 'action_open_agy') {
+                        answerCallback($cbId, 'Antigravity ওপেন হচ্ছে...');
+                        exec('powershell.exe -Command "Start-Process \'C:\Users\UseR\AppData\Local\Programs\antigravity\Antigravity.exe\'"');
+                        botLog("[AGY] Started Antigravity.exe");
+                        sendMsg($chatId, "🚀 *Google Antigravity IDE চালু করার নির্দেশ দেওয়া হয়েছে!*\n\nকিছুক্ষণের মধ্যে এটি স্ক্রিনে ওপেন হয়ে যাবে।");
                     } elseif ($data === 'menu_system_health') {
                         answerCallback($cbId, 'সিস্টেম হেলথ আনা হচ্ছে...');
                         renderSystemHealthView($chatId, $state);
@@ -1024,6 +1292,28 @@ while (true) {
                         answerCallback($cbId, 'পিসি লক করা হচ্ছে...');
                         exec('rundll32.exe user32.dll,LockWorkStation');
                         sendMsg($chatId, "🔒 *কম্পিউটার সফলভাবে লক করা হয়েছে!*\n\nপিসির স্ক্রিন এখন লকড। আনলক করতে উইন্ডোজ পাসওয়ার্ড লাগবে।");
+                    } elseif ($data === 'action_shutdown_pc') {
+                        answerCallback($cbId, '🛑 শাটডাউন কমান্ড সক্রিয় হচ্ছে...');
+                        botLog("[POWER] Shutdown initiated from Telegram");
+                        $cancelKb = [
+                            [['text' => '❌ শাটডাউন বাতিল করুন', 'callback_data' => 'action_cancel_shutdown']]
+                        ];
+                        sendMsg($chatId, "🛑 *কম্পিউটার শাটডাউন হতে যাচ্ছে!*\n━━━━━━━━━━━━━━━━━━━━\n⏱️ ১০ সেকেন্ডের মধ্যে পিসি পাওয়ার অফ হবে।\n\nযদি ভুলবশত ক্লিক করে থাকেন তবে নিচের বাটনে চাপ দিয়ে এখনই বাতিল করুন:", $cancelKb);
+                        exec('shutdown /s /t 10 /c "Antigravity Remote Shutdown via Telegram"');
+                    } elseif ($data === 'action_restart_pc') {
+                        answerCallback($cbId, '🔄 রিস্টার্ট কমান্ড সক্রিয় হচ্ছে...');
+                        botLog("[POWER] Restart initiated from Telegram");
+                        $cancelKb = [
+                            [['text' => '❌ রিস্টার্ট বাতিল করুন', 'callback_data' => 'action_cancel_shutdown']]
+                        ];
+                        sendMsg($chatId, "🔄 *কম্পিউটার রিস্টার্ট হতে যাচ্ছে!*\n━━━━━━━━━━━━━━━━━━━━\n⏱️ ১০ সেকেন্ডের মধ্যে পিসি রিস্টার্ট হবে এবং বুট হওয়ার সাথে সাথেই বট আবার আপনাকে স্বয়ংক্রিয়ভাবে আপডেট পাঠাবে!\n\nবাতিল করতে চাইলে নিচের বাটনে চাপ দিন:", $cancelKb);
+                        exec('shutdown /r /t 10 /c "Antigravity Remote Restart via Telegram"');
+                    } elseif ($data === 'action_cancel_shutdown') {
+                        answerCallback($cbId, '✅ বাতিল করা হয়েছে');
+                        botLog("[POWER] Shutdown/Restart canceled from Telegram");
+                        exec('shutdown /a');
+                        sendMsg($chatId, "✅ *পিসি শাটডাউন / রিস্টার্ট সফলভাবে বাতিল করা হয়েছে!*\n\nকম্পিউটার ও অ্যান্টিগ্রাভিটি সম্পূর্ণ সচল রয়েছে 🟢");
+                        renderMainMenu($chatId, $state);
                     } elseif ($data === 'action_restart_srv') {
                         answerCallback($cbId, 'সার্ভার রিস্টার্ট হচ্ছে...');
                         exec('powershell.exe -Command "Get-CimInstance Win32_Process -Filter \"Name=\'php.exe\'\" | Where-Object { $_.CommandLine -like \"*:8015*\" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"');
@@ -1056,6 +1346,41 @@ while (true) {
                     } elseif ($data === 'menu_status') {
                         answerCallback($cbId, 'স্ট্যাটাস লোড হচ্ছে...');
                         renderStatusView($chatId, $state);
+                    } elseif ($data === 'menu_agy_status') {
+                        answerCallback($cbId, 'স্ট্যাটাস অডিট হচ্ছে...');
+                        renderAntigravityStatusView($chatId, $state);
+                    } elseif ($data === 'menu_troubleshoot') {
+                        answerCallback($cbId, 'ট্রাবলশুট সেন্টার...');
+                        renderTroubleshootView($chatId, $state);
+                    } elseif ($data === 'action_fix_port') {
+                        answerCallback($cbId, 'পোর্ট ফিক্স করা হচ্ছে...');
+                        exec('powershell.exe -Command "Get-CimInstance Win32_Process -Filter \"Name=\'php.exe\'\" | Where-Object { $_.CommandLine -like \"*:8015*\" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"');
+                        sleep(1);
+                        exec('start /b php -S 0.0.0.0:8015 router.php > storage\logs\php_server.log 2>&1');
+                        sleep(1);
+                        $running = isServerRunning(8015);
+                        $statusText = $running ? "🟢 সফলভাবে পোর্ট ৮০১৫ ফিক্সড ও সার্ভার রানিং!" : "⚠️ সার্ভার চালু হতে কিছুটা সময় নিচ্ছে, অনুগ্রহ করে চেক করুন।";
+                        sendMsg($chatId, "🛠️ *পোর্ট ৮০১৫ অটো-ফিক্স রিপোর্ট:*\n\n{$statusText}" . getStandardLinksText());
+                    } elseif ($data === 'action_clean_cache') {
+                        answerCallback($cbId, 'ক্যাশ ও লগ পরিষ্কার করা হচ্ছে...');
+                        $logDir = PROJECT_ROOT . '/storage/logs';
+                        $cleanedCount = 0;
+                        if (is_dir($logDir)) {
+                            foreach (glob($logDir . '/*.log') as $f) {
+                                if (basename($f) !== 'php_server.log') {
+                                    @unlink($f);
+                                    $cleanedCount++;
+                                }
+                            }
+                        }
+                        sendMsg($chatId, "🧹 *ক্লিনআপ সম্পন্ন!*\n\nসিস্টেম লগ এবং ক্যাশ পরিষ্কার করা হয়েছে ({$cleanedCount} টি ফাইল রিসেট)। মেমোরি রিফ্রেশ হয়েছে 🟢");
+                    } elseif ($data === 'action_git_sync') {
+                        answerCallback($cbId, 'গিট স্ট্যাটাস চেক করা হচ্ছে...');
+                        $gitStatus = trim(shell_exec('git -C "' . PROJECT_ROOT . '" status -s 2>NUL') ?? '');
+                        $gitBranch = trim(shell_exec('git -C "' . PROJECT_ROOT . '" branch --show-current 2>NUL') ?? 'main');
+                        $gitLast = trim(shell_exec('git -C "' . PROJECT_ROOT . '" log -1 --pretty=format:"%h - %s" 2>NUL') ?? '');
+                        $statusDesc = empty($gitStatus) ? "✅ সমস্ত ফাইল গিটহাবে সিঙ্কড ও আপ-টু-ডেট (Working tree clean)!" : "📝 পেন্ডিং ফাইলসমূহ:\n```\n" . substr($gitStatus, 0, 500) . "\n```";
+                        sendMsg($chatId, "📦 *গিটহাব রিপোজিটরি সিঙ্ক স্ট্যাটাস*\n━━━━━━━━━━━━━━━━━━━━\n🌿 *ব্রাঞ্চ:* `{$gitBranch}`\n📌 *লেটেস্ট কমিট:* `{$gitLast}`\n\n{$statusDesc}\n🔗 [GitHub Repository](" . LINK_GITHUB . ")");
                     } elseif ($data === 'prompt_help') {
                         answerCallback($cbId);
                         sendMsg($chatId, "💬 *প্রম্পট দেওয়ার নিয়ম:*\nমোবাইলে ভয়েস বা টেক্সটে যা লিখবেন, সাথে সাথে কম্পিউটারের অ্যান্টিগ্রাভিটিতে কাজ হতে থাকবে!");
@@ -1105,7 +1430,7 @@ while (true) {
                     $text = trim($msg['text'] ?? '');
                     if (empty($text)) continue;
 
-                    echo "[MESSAGE] From {$chatId}: {$text}\n";
+                    botLog("[MESSAGE] From {$chatId}: {$text}");
 
                     if ($text === '/start' || $text === '🏠 মেইন মেনু' || $text === '/menu') {
                         renderMainMenu($chatId, $state);
@@ -1121,6 +1446,44 @@ while (true) {
                         renderModeMenu($chatId, $state);
                     } elseif ($text === '📊 লাইভ স্ট্যাটাস ও লিংক' || $text === '/status') {
                         renderStatusView($chatId, $state);
+                    } elseif ($text === '🔍 অ্যান্টিগ্রাভিটি স্ট্যাটাস' || $text === '/audit' || $text === '/agy') {
+                        renderAntigravityStatusView($chatId, $state);
+                    } elseif ($text === '🛠️ কুইক ফিক্স ও ট্রাবলশুট' || $text === '🛠️ কুইক ফিক্স' || $text === '/troubleshoot' || $text === '/fix') {
+                        renderTroubleshootView($chatId, $state);
+                    } elseif ($text === '📸 পিসির স্ক্রিনশট' || $text === '/screenshot' || $text === '/screen') {
+                        botLog("[SCREENSHOT] Text command triggered screenshot");
+                        $psOut = trim(shell_exec('powershell.exe -ExecutionPolicy Bypass -File "' . PROJECT_ROOT . '/take_screenshot.ps1" 2>&1') ?? '');
+                        $shotPath = PROJECT_ROOT . '/storage/logs/pc_screenshot.png';
+                        $sent = false;
+                        if (file_exists($shotPath) && filesize($shotPath) > 10000 && stripos($psOut, 'invalid') === false) {
+                            $res = sendPhoto($chatId, $shotPath, "🖥️ *পিসির লাইভ স্ক্রিনশট*\n⏰ " . date('d M Y, h:i A'));
+                            if ($res['ok'] ?? false) $sent = true;
+                        }
+                        if (!$sent) {
+                            exec('node "' . PROJECT_ROOT . '/screenshot_verify.js" 2>&1');
+                            $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                            sendMsg($chatId, "🔒 *পিসি স্ক্রিন স্ট্যাটাস:* ডেস্কটপ বর্তমানে লক স্ক্রিনে বা হেডলেস সেশনে রয়েছে।\n\n📱 ওয়েবসাইটের লাইভ মোবাইল প্রিভিউ নিচে পাঠানো হলো:");
+                            if (file_exists($webShot)) {
+                                sendPhoto($chatId, $webShot, "📱 *কারিয়ানা মোবাইল লাইভ ভিউ* (Port 8015)\n" . getStandardLinksText());
+                            }
+                        }
+                    } elseif ($text === '📱 ওয়েবসাইট লাইভ ভিউ' || $text === '/web' || $text === '/preview') {
+                        botLog("[WEB] Text command triggered website preview");
+                        exec('node "' . PROJECT_ROOT . '/screenshot_verify.js" 2>&1');
+                        $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                        if (file_exists($webShot)) {
+                            sendPhoto($chatId, $webShot, "📱 *কারিয়ানা ওয়েবসাইট লাইভ রেন্ডারিং*\n" . getStandardLinksText());
+                        } else {
+                            sendMsg($chatId, "⚠️ প্রিভিউ তৈরি হতে পারছে না, সার্ভার চালু আছে কিনা চেক করুন।");
+                        }
+                    } elseif ($text === '🛑 পিসি শাটডাউন' || $text === '/shutdown') {
+                        $cancelKb = [[['text' => '❌ শাটডাউন বাতিল করুন', 'callback_data' => 'action_cancel_shutdown']]];
+                        sendMsg($chatId, "🛑 *কম্পিউটার শাটডাউন হতে যাচ্ছে!*\n━━━━━━━━━━━━━━━━━━━━\n⏱️ ১০ সেকেন্ডের মধ্যে পিসি পাওয়ার অফ হবে।\n\nবাতিল করতে চাইলে নিচের বাটনে চাপ দিন:", $cancelKb);
+                        exec('shutdown /s /t 10 /c "Antigravity Remote Shutdown via Telegram"');
+                    } elseif ($text === '🔄 পিসি রিস্টার্ট' || $text === '/restart') {
+                        $cancelKb = [[['text' => '❌ রিস্টার্ট বাতিল করুন', 'callback_data' => 'action_cancel_shutdown']]];
+                        sendMsg($chatId, "🔄 *কম্পিউটার রিস্টার্ট হতে যাচ্ছে!*\n━━━━━━━━━━━━━━━━━━━━\n⏱️ ১০ সেকেন্ডের মধ্যে পিসি রিস্টার্ট হবে।\n\nবাতিল করতে চাইলে নিচের বাটনে চাপ দিন:", $cancelKb);
+                        exec('shutdown /r /t 10 /c "Antigravity Remote Restart via Telegram"');
                     } elseif ($text === '🔄 রিফ্রেশ') {
                         renderMainMenu($chatId, $state);
                     } else {
@@ -1164,7 +1527,20 @@ while (true) {
                             continue;
                         }
 
+                        // Auto-sync to latest conversation if currently set to old conversation
+                        $latest = getLatestActiveConversation();
+                        if ($latest && !empty($latest['id'])) {
+                            if (empty($state['active_conv_id']) || $state['active_conv_id'] === '94596634-65c0-432c-a4d3-6aa058846c61') {
+                                $state['active_conv_id'] = $latest['id'];
+                                $state['active_proj_name'] = $latest['project'];
+                                $state['active_chat_title'] = $latest['title'];
+                                saveState($state);
+                                botLog("[AUTO-BIND] Bound active conv to {$latest['id']} ({$latest['title']})");
+                            }
+                        }
+
                         // Direct message: Execute directly on active project!
+                        botLog("[PROMPT] Forwarding prompt to {$state['active_conv_id']}: {$text}");
                         executePromptAndStreamUpdates($chatId, $text, $state);
                     }
                 }
