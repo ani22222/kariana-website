@@ -537,6 +537,28 @@ echo "=====================================================\n";
 
 $state = loadState();
 
+// Handle Boot Notification (When PC boots or script is invoked with --boot)
+if (in_array('--boot', $argv ?? [])) {
+    echo "[BOOT] PC booted up! Sending connection notification to Telegram...\n";
+    $bootMsg = "⚡ *কম্পিউটার চালু হয়েছে — অ্যান্টিগ্রাভিটি ২.০ অটো-কানেক্টেড!*\n"
+             . "━━━━━━━━━━━━━━━━━━━━\n"
+             . "💻 *কম্পিউটার স্ট্যাটাস:* চালু ও সক্রিয় 🟢\n"
+             . "🧠 *Antigravity IDE:* কানেক্টেড 🟢\n"
+             . "🌐 *ওয়েব সার্ভার:* Port 8015 রানিং 🟢\n"
+             . "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+             . "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n\n"
+             . "📱 আপনার পিসি সম্পূর্ণ রেডি! আপনি শুয়ে শুয়ে মোবাইলের টেলিগ্রাম থেকে যেকোনো কাজ দিয়ে যেতে পারবেন।"
+             . getStandardLinksText();
+
+    $bootKb = [
+        [['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces']],
+        [['text' => '📊 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status']],
+        [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
+    ];
+
+    sendMsg($state['chat_id'], $bootMsg, $bootKb);
+}
+
 while (true) {
     try {
         $updates = tgRequest('getUpdates', [
