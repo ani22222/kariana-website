@@ -597,106 +597,91 @@ body {
 /* Responsive Mobile Polish for Hero Slider and Touch Viewports (< 640px) */
 @media (max-width: 640px) {
     #heroCarousel {
-        min-height: min(215px, 27vh);
+        min-height: auto;
     }
     .hero-controls-bar {
-        gap: 0.25rem;
-        margin-top: 0.1rem;
-        padding: 0.1rem;
+        gap: 0.45rem;
+        margin-top: 0.85rem;
+        padding: 0.25rem;
     }
     .hero-action-group {
-        gap: 0.25rem;
+        gap: 0.45rem;
     }
     .hero-btn-primary {
-        font-size: 0.70rem;
-        padding: 0.30rem 0.65rem;
+        font-size: 0.82rem;
+        padding: 0.42rem 0.85rem;
     }
     .hero-btn-secondary {
-        font-size: 0.70rem;
-        padding: 0.30rem 0.62rem;
+        font-size: 0.82rem;
+        padding: 0.42rem 0.82rem;
     }
     .hero-nav-btn, .hero-arrow {
-        width: 28px;
-        height: 28px;
+        width: 34px;
+        height: 34px;
     }
     .hero-dots {
-        padding: 2px 6px;
-        gap: 4px;
+        padding: 3px 8px;
+        gap: 5px;
     }
     .hero-dots button {
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
     }
     .hero-dots button.is-active {
-        width: 12px;
+        width: 16px;
     }
     .hero-art {
-        width: min(165px, 44vw);
-        height: min(205px, 26vh);
+        width: min(200px, 52vw);
+        height: min(265px, 35vh);
     }
     .hero-book-card {
-        padding: 0.65rem 0.6rem 0.55rem;
-        border-radius: 16px;
+        padding: 0.95rem 0.85rem 0.8rem;
+        border-radius: 20px;
     }
     .hero-book-card::after {
-        inset: 2.5px;
-        border-radius: 14px;
+        inset: 3px;
+        border-radius: 17px;
     }
     .hero-shape-ring {
-        width: 175px;
-        height: 175px;
+        width: 210px;
+        height: 210px;
     }
     .hero-slide {
-        padding: 0.05rem 0.25rem;
+        padding: 0.2rem 0.5rem;
     }
     .chip-a {
-        right: -6px;
-        top: -6px;
-        font-size: 0.62rem;
-        padding: 0.18rem 0.55rem;
+        right: -8px;
+        top: -8px;
+        font-size: 0.72rem;
+        padding: 0.25rem 0.7rem;
     }
     .chip-b {
-        left: -6px;
-        bottom: -6px;
-        font-size: 0.62rem;
-        padding: 0.18rem 0.55rem;
+        left: -8px;
+        bottom: -8px;
+        font-size: 0.72rem;
+        padding: 0.25rem 0.7rem;
     }
     .hero-scroll-indicator {
-        padding: 0.1rem 0;
-        margin-bottom: 0.1rem;
-    }
-    .scroll-indicator-mouse {
-        width: 15px;
-        height: 24px;
-        padding-top: 2px;
-    }
-    .scroll-indicator-wheel {
-        width: 2.5px;
-        height: 4.5px;
+        padding: 0.35rem 0 0.2rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.25rem;
     }
 }
 
-/* Standalone 100% Full-Screen Hero Viewport */
+/* Natural Cohesive Hero Section */
 #heroSectionWrapper {
-    height: calc(100svh - var(--top-header-height, 76px));
-    max-height: calc(100svh - var(--top-header-height, 76px));
-    min-height: calc(100svh - var(--top-header-height, 76px));
+    position: relative;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
-    padding-bottom: 74px;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     will-change: transform, opacity;
 }
 
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        height: calc(100vh - var(--top-header-height, 96px));
-        max-height: calc(100vh - var(--top-header-height, 96px));
-        min-height: calc(100vh - var(--top-header-height, 96px));
-        padding-bottom: 16px;
+        padding-top: 2rem;
+        padding-bottom: 3.5rem;
     }
 }
 

@@ -113,36 +113,6 @@
     <style>
         [x-cloak] { display: none !important; }
         
-        :root {
-            --top-header-height: 76px;
-        }
-        @media (min-width: 768px) {
-            :root {
-                --top-header-height: 96px;
-            }
-        }
-        
-        /* Enforce Standalone 100% Full-Screen Hero Viewport on Mobile */
-        #heroSectionWrapper {
-            height: calc(100svh - var(--top-header-height, 76px)) !important;
-            min-height: calc(100svh - var(--top-header-height, 76px)) !important;
-            max-height: calc(100svh - var(--top-header-height, 76px)) !important;
-            overflow: hidden !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
-            box-sizing: border-box !important;
-            padding-bottom: 74px !important;
-        }
-        @media (min-width: 768px) {
-            #heroSectionWrapper {
-                height: calc(100vh - var(--top-header-height, 96px)) !important;
-                min-height: calc(100vh - var(--top-header-height, 96px)) !important;
-                max-height: calc(100vh - var(--top-header-height, 96px)) !important;
-                padding-bottom: 16px !important;
-            }
-        }
-        
         /* Enforce Royal Islamic Emerald & Gold Capsule Dock on Mobile */
         .bottom-nav-wrapper {
             position: fixed !important;

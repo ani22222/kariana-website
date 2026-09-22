@@ -1,11 +1,11 @@
 <!-- ============================================================
      VAPE-INSPIRED SMOOTH HERO SLIDER & 3D BOOK SHOWCASE (100VH IMMERSIVE)
      ============================================================ -->
-<div id="heroSectionWrapper" class="bg-emerald-deep pt-1 sm:pt-4 px-2 sm:px-4 relative overflow-hidden flex flex-col justify-between">
-    <div class="container mx-auto max-w-4xl flex flex-col justify-between flex-1 h-full">
+<div id="heroSectionWrapper" class="bg-emerald-deep pt-3 sm:pt-6 pb-4 sm:pb-8 px-3 sm:px-4 relative overflow-hidden">
+    <div class="container mx-auto max-w-4xl relative z-10 flex flex-col items-center">
         
         <!-- Main Vape-Style Hero Shell -->
-        <div class="hero-shell relative" id="heroShell">
+        <div class="hero-shell relative w-full" id="heroShell">
             <!-- Background Ambient Glow & Geometric Rings -->
             <div class="hero-bg-shapes" aria-hidden="true">
                 <div class="hero-shape-orb-1"></div>
@@ -90,23 +90,23 @@
                                     </div>
 
                                     <!-- Center Emblem & Dynamic Title -->
-                                    <div class="text-center my-auto py-1 sm:py-3 z-10 px-1">
-                                        <div class="w-10 h-10 sm:w-14 sm:h-14 mx-auto bg-amber-400/15 border-2 border-amber-400/60 rounded-full flex items-center justify-center text-amber-300 mb-1 sm:mb-2 shadow-[inset_0_0_10px_rgba(251,191,36,0.3)]">
-                                            <svg class="w-5 h-5 sm:w-7 sm:h-7 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="text-center my-auto py-2 sm:py-3 z-10 px-1">
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto bg-amber-400/15 border-2 border-amber-400/60 rounded-full flex items-center justify-center text-amber-300 mb-1.5 sm:mb-2 shadow-[inset_0_0_10px_rgba(251,191,36,0.3)]">
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                             </svg>
                                         </div>
                                         <h3 class="font-black text-xs sm:text-sm md:text-base text-white line-clamp-2 px-1 leading-snug drop-shadow-sm">
                                             <?= htmlspecialchars($b['title']) ?>
                                         </h3>
-                                        <span class="text-[9px] sm:text-[11px] text-emerald-200/90 font-medium block mt-0.5 sm:mt-1 tracking-wide">
+                                        <span class="text-[10px] sm:text-[11px] text-emerald-200/90 font-medium block mt-1 tracking-wide">
                                             তাজবীদ কালার কোডেড
                                         </span>
                                     </div>
 
                                     <!-- Bottom Feature Tag & Price in Gold -->
                                     <div class="pt-1.5 sm:pt-2 border-t border-amber-400/30 flex items-center justify-between text-xs z-10">
-                                        <span class="text-emerald-300/90 text-[9px] sm:text-[11px] font-medium">নূরানী পদ্ধতি</span>
+                                        <span class="text-emerald-300/90 text-[10px] sm:text-[11px] font-medium">নূরানী পদ্ধতি</span>
                                         <span class="text-amber-300 font-black text-xs sm:text-base font-mono tracking-tight drop-shadow">
                                             ৳<?= (int)$discPrice ?>
                                         </span>
@@ -179,25 +179,24 @@
             <div class="hero-dots-container">
                 <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
             </div>
-        </div>
 
-        <!-- Animated Scroll Down Indicator for 100vh Full Screen Viewport -->
-        <div class="hero-scroll-indicator text-center pt-0.5 pb-0.5 z-20 mb-0.5 sm:mb-1">
-            <button type="button" 
-                    id="heroScrollBtn"
-                    onclick="smoothScrollToContent();" 
-                    class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-colors focus:outline-none"
-                    aria-label="নিচের সেকশনে যান">
-                <span class="text-[10px] sm:text-xs font-bold tracking-wider text-amber-300/90 group-hover:text-amber-300 mb-0.5 flex items-center gap-1 drop-shadow">
-                    <svg class="w-3 h-3 text-amber-400 animate-pulse shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                    নিচে স্ক্রল করুন
-                </span>
-                <div class="scroll-indicator-mouse group-hover:border-amber-400 transition-colors">
-                    <div class="scroll-indicator-wheel"></div>
-                </div>
-            </button>
+            <!-- Refined Touch-Friendly Scroll Down Indicator (Clean & Natural, Zero Awkward Gaps) -->
+            <div class="hero-scroll-indicator text-center mt-3 sm:mt-5 z-20">
+                <button type="button" 
+                        id="heroScrollBtn"
+                        onclick="smoothScrollToContent();" 
+                        class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-all focus:outline-none"
+                        aria-label="নিচের সেকশনে যান">
+                    <span class="text-xs font-bold tracking-wider text-amber-300/90 group-hover:text-amber-300 mb-1 flex items-center gap-1.5 drop-shadow">
+                        নিচে স্ক্রল করুন
+                    </span>
+                    <div class="w-6 h-6 rounded-full bg-emerald-900/80 border border-amber-400/50 flex items-center justify-center group-hover:border-amber-300 group-hover:bg-emerald-800 transition-all shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-amber-300 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </button>
+            </div>
         </div>
 
     </div>
