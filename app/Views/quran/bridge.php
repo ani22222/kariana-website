@@ -7,7 +7,10 @@
     <!-- Header Hero -->
     <div class="max-w-4xl mx-auto text-center space-y-4 mb-12">
         <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-night text-xs font-bold tracking-wider">
-            <i class="fas fa-quran text-gold-rich mr-2"></i> ডিজিটাল কুরআনুল কারীম ওয়েব রিডার
+            <svg class="w-4 h-4 text-gold-rich mr-2 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            ডিজিটাল কুরআনুল কারীম ওয়েব রিডার
         </span>
         <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-night">
             ক্ব-রিয়ানা কুরআন <span class="text-gold-deep">ওয়েব রিডার লঞ্চপ্যাড</span>
@@ -28,8 +31,11 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <span class="text-xs bg-emerald-800/80 px-3 py-1 rounded-full border border-emerald-600 text-emerald-100">
-                    <i class="fas fa-font mr-1 text-gold-rich"></i> AAR-SQ-003 ফন্ট
+                <span class="text-xs bg-emerald-800/80 px-3 py-1 rounded-full border border-emerald-600 text-emerald-100 flex items-center">
+                    <svg class="w-3.5 h-3.5 mr-1 text-gold-rich inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v18m6-9h6m-3-3v6" />
+                    </svg>
+                    AAR-SQ-003 ফন্ট
                 </span>
             </div>
         </div>
@@ -71,7 +77,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 text-left border-t border-slate-200/60">
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-night flex items-center justify-center font-bold flex-shrink-0">
-                        <i class="fas fa-palette"></i>
+                        <svg class="w-5 h-5 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 015-5c1.1 0 2.1.4 2.8 1.1L12 14.5l1.2-1.4c.7-.7 1.7-1.1 2.8-1.1a5 5 0 015 5 4 4 0 01-4 4H7z" />
+                        </svg>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">তাজবীদ কালার কোডিং</h4>
@@ -81,7 +89,9 @@
 
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-night flex items-center justify-center font-bold flex-shrink-0">
-                        <i class="fas fa-map-signs"></i>
+                        <svg class="w-5 h-5 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">১২টি সাঙ্কেতিক চিহ্ন</h4>
@@ -91,7 +101,9 @@
 
                 <div class="flex items-start space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-night flex items-center justify-center font-bold flex-shrink-0">
-                        <i class="fas fa-volume-up"></i>
+                        <svg class="w-5 h-5 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">সহীহ অডিও তিলাওয়াত</h4>
