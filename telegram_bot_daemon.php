@@ -1,9 +1,9 @@
 <?php
 /**
  * =========================================================================
- * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon 4.0
+ * Kariana Website & Antigravity Remote Controller — Telegram Bot Daemon 5.0
  * Bot: @raselcodebot (Integrity)
- * Full Multi-Purpose Developer Remote Control Center
+ * Full Multi-Purpose, AI Model Switcher, Account Quota Manager & 24/7 Daemon
  * =========================================================================
  */
 
@@ -17,7 +17,10 @@ define('PROJECT_ROOT', __DIR__);
 define('DEFAULT_CONV_ID', '94596634-65c0-432c-a4d3-6aa058846c61');
 define('DEFAULT_PROJECT_NAME', 'Kariana Website');
 define('DEFAULT_CHAT_TITLE', 'Telegram Bot Remote Integration');
+define('DEFAULT_MODEL', 'Gemini 3.8 Flash (High)');
+
 define('STATE_FILE', PROJECT_ROOT . '/telegram_state.json');
+define('ACCOUNTS_FILE', PROJECT_ROOT . '/telegram_accounts.json');
 define('AGENT_API_BAT', 'C:\\Users\\UseR\\.gemini\\antigravity\\bin\\agentapi.bat');
 define('CONV_DB_PATH', 'C:/Users/UseR/.gemini/antigravity/conversation_summaries.db');
 define('BRAIN_DIR', 'C:/Users/UseR/.gemini/antigravity/brain');
@@ -66,7 +69,42 @@ function formatDuration(int $seconds): string {
     return str_replace($enDigits, $bnDigits, (string)$hours) . " ঘণ্টা " . str_replace($enDigits, $bnDigits, (string)$remMins) . " মিনিট আগে";
 }
 
-// Load or initialize state
+// ---------------------------------------------------------
+// Accounts & State Management
+// ---------------------------------------------------------
+
+function loadAccounts(): array {
+    if (file_exists(ACCOUNTS_FILE)) {
+        $data = json_decode(file_get_contents(ACCOUNTS_FILE), true);
+        if (is_array($data)) return $data;
+    }
+    return [
+        'active_account' => 'acc_1',
+        'accounts' => [
+            'acc_1' => [
+                'id'           => 'acc_1',
+                'name'         => 'মেইন অ্যাকাউন্ট (Account 1)',
+                'profile'      => 'default',
+                'status'       => 'সক্রিয় 🟢',
+                'model'        => 'Gemini 3.8 Flash (High)',
+                'quota_status' => 'স্বাভাবিক 🟢'
+            ],
+            'acc_2' => [
+                'id'           => 'acc_2',
+                'name'         => 'ব্যাকআপ অ্যাকাউন্ট (Account 2)',
+                'profile'      => 'profile_2',
+                'status'       => 'স্ট্যান্ডবাই 🟡',
+                'model'        => 'Claude Sonnet 4.6 (Thinking)',
+                'quota_status' => 'উপলব্ধ 🟢'
+            ]
+        ]
+    ];
+}
+
+function saveAccounts(array $accounts): void {
+    file_put_contents(ACCOUNTS_FILE, json_encode($accounts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
+
 function loadState(): array {
     if (file_exists(STATE_FILE)) {
         $data = json_decode(file_get_contents(STATE_FILE), true);
@@ -77,6 +115,8 @@ function loadState(): array {
             $data['chat_id']           = $data['chat_id'] ?? '1827362508';
             $data['last_update_id']    = $data['last_update_id'] ?? 0;
             $data['mode']              = $data['mode'] ?? 'turbo'; // turbo, safe, planning
+            $data['selected_model']    = $data['selected_model'] ?? DEFAULT_MODEL;
+            $data['active_account']    = $data['active_account'] ?? 'acc_1';
             $data['is_busy']           = $data['is_busy'] ?? false;
             $data['last_heartbeat']    = $data['last_heartbeat'] ?? time();
             return $data;
@@ -89,6 +129,8 @@ function loadState(): array {
         'chat_id'           => '1827362508',
         'last_update_id'    => 0,
         'mode'              => 'turbo',
+        'selected_model'    => DEFAULT_MODEL,
+        'active_account'    => 'acc_1',
         'is_busy'           => false,
         'last_heartbeat'    => time()
     ];
@@ -138,6 +180,7 @@ function sendMsg(string $chatId, string $text, ?array $inlineKeyboard = null, bo
         $params['reply_markup'] = [
             'keyboard' => [
                 [['text' => '🏠 মেইন মেনু'], ['text' => '📁 সাম্প্রতিক প্রজেক্ট']],
+                [['text' => '🧠 এআই মডেল নির্বাচন'], ['text' => '👤 অ্যাকাউন্ট ও কোটা']],
                 [['text' => '📊 পিসি হেলথ ও রিসোর্স'], ['text' => '⚙️ মোড পরিবর্তন']]
             ],
             'resize_keyboard' => true,
@@ -368,22 +411,30 @@ function getModeTitle(string $mode): string {
 }
 
 // ---------------------------------------------------------
-// View Handlers (Multi-Purpose Dashboard)
+// View Handlers (Multi-Purpose Dashboard 5.0)
 // ---------------------------------------------------------
 
 function renderMainMenu(string $chatId, array $state): void {
-    $agyOnline = isAntigravityRunning() ? "🟢 চালু আছে (Active)" : "🟡 ব্যাকগ্রাউন্ড";
-    $srvOnline = isServerRunning(8015) ? "🟢 চালু (Port 8015)" : "🔴 অফলাইন";
+    $agyOnline = isAntigravityRunning() ? "🟢 Active" : "🟡 Background";
+    $srvOnline = isServerRunning(8015) ? "🟢 Active (Port 8015)" : "🔴 Offline";
 
     $activeTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
     $modeText = getModeTitle($state['mode'] ?? 'turbo');
+    $modelText = $state['selected_model'] ?? DEFAULT_MODEL;
 
-    $text  = "✨ *অ্যান্টিগ্রাভিটি মাল্টি-পারপাস রিমোট সেন্টার ৪.০*\n";
+    $accData = loadAccounts();
+    $activeAccId = $state['active_account'] ?? 'acc_1';
+    $accName = $accData['accounts'][$activeAccId]['name'] ?? 'Main Account';
+    $quotaStatus = $accData['accounts'][$activeAccId]['quota_status'] ?? 'স্বাভাবিক 🟢';
+
+    $text  = "✨ *অ্যান্টিগ্রাভিটি মাল্টি-পারপাস রিমোট সেন্টার ৫.০*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
     $text .= "💻 *Antigravity IDE:* {$agyOnline}\n";
     $text .= "🌐 *ওয়েব সার্ভার:* {$srvOnline}\n";
     $text .= "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
     $text .= "💬 *সক্রিয় চ্যাট:* `{$activeTitle}`\n";
+    $text .= "🧠 *এআই মডেল:* `{$modelText}`\n";
+    $text .= "👤 *অ্যাকাউন্ট:* `{$accName}` ({$quotaStatus})\n";
     $text .= "⚙️ *কাজের মোড:* {$modeText}\n\n";
     $text .= "👇 *নিচের অপশনগুলো বেছে নিন অথবা যেকোনো মেসেজ লিখুন:*";
 
@@ -393,17 +444,89 @@ function renderMainMenu(string $chatId, array $state): void {
             ['text' => '🕌 কারিয়ানা প্রজেক্ট', 'callback_data' => 'select_kariana']
         ],
         [
+            ['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models'],
+            ['text' => '👤 অ্যাকাউন্ট ও কোটা', 'callback_data' => 'menu_accounts']
+        ],
+        [
             ['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health'],
             ['text' => '⚙️ কাজের মোড পরিবর্তন', 'callback_data' => 'menu_modes']
         ],
         [
-            ['text' => '🌐 লাইভ স্ট্যাটাস ও লিংক', 'callback_data' => 'menu_status'],
-            ['text' => '🔄 সার্ভার রিস্টার্ট (Port 8015)', 'callback_data' => 'action_restart_srv']
+            ['text' => '🔄 সার্ভার রিস্টার্ট (8015)', 'callback_data' => 'action_restart_srv'],
+            ['text' => '🔒 পিসি স্ক্রিন লক', 'callback_data' => 'action_lock_pc']
         ],
         [
-            ['text' => '🔒 পিসি স্ক্রিন লক করুন', 'callback_data' => 'action_lock_pc'],
             ['text' => '🔄 রিফ্রেশ ড্যাশবোর্ড', 'callback_data' => 'menu_home']
         ]
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+// AI Model Selector Menu
+function renderModelsMenu(string $chatId, array $state): void {
+    $current = $state['selected_model'] ?? DEFAULT_MODEL;
+
+    $text  = "🧠 *এআই মডেল নির্বাচন করুন (Select AI Model)*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "বর্তমান সক্রিয় মডেল: *{$current}*\n\n";
+    $text .= "🔹 *Gemini 3.8 Flash (High):* সুপার ফাস্ট, উচ্চ রেট লিমিট ও সবচেয়ে বেশি কোটা সাশ্রয়ী (দৈনন্দিন কাজের জন্য সেরা)।\n";
+    $text .= "🔹 *Claude Sonnet 4.6 (Thinking):* গভীর যুক্তি, আর্কিটেকচার ও নিখুঁত কোডিংয়ের জন্য শক্তিশালী।\n";
+    $text .= "🔹 *Gemini 3.8 Pro:* জটিল লজিক ও প্রফেশনাল মাল্টি-স্টেপ টাস্কের জন্য।\n";
+    $text .= "🔹 *Gemini 3.8 Flash-Lite:* অতি-দ্রুত এবং কোটা একদম বাঁচাতে চাইলে এটি সেরা।\n";
+    $text .= "🔹 *Kimi-K3:* ওপেনশিফ্ট এআই মডেল গেটওয়ে মোড।\n\n";
+    $text .= "👇 *আপনার পছন্দের মডেলে ক্লিক করুন:*";
+
+    $models = [
+        'Gemini 3.8 Flash (High)'     => 'model_gemini_flash',
+        'Claude Sonnet 4.6 (Thinking)' => 'model_claude_sonnet',
+        'Gemini 3.8 Pro'              => 'model_gemini_pro',
+        'Gemini 3.8 Flash-Lite'       => 'model_gemini_lite',
+        'Kimi-K3 (OpenShift Gateway)' => 'model_kimi_k3'
+    ];
+
+    $keyboard = [];
+    foreach ($models as $name => $cb) {
+        $icon = ($name === $current) ? "✅ " : "⚡ ";
+        $keyboard[] = [
+            ['text' => "{$icon}{$name}", 'callback_data' => $cb]
+        ];
+    }
+    $keyboard[] = [
+        ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
+    ];
+
+    sendMsg($chatId, $text, $keyboard);
+}
+
+// Account & Quota Management Menu
+function renderAccountsMenu(string $chatId, array $state): void {
+    $accData = loadAccounts();
+    $activeId = $state['active_account'] ?? 'acc_1';
+
+    $text  = "👤 *অ্যাকাউন্ট ও কোটা ম্যানেজমেন্ট (Account & Quota)*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "মোবাইলে টেলিগ্রাম চালাতে চালাতে কোনো অ্যাকাউন্টের লিমিট শেষ হয়ে গেলে আপনি সাথে সাথে অন্য অ্যাকাউন্টে সুইচ করতে পারবেন।\n\n";
+    $text .= "🟢 *বট স্ট্যাটাস:* ২৪ ঘণ্টা নন-স্টপ কানেক্টেড (কখনো ডিসকানেক্ট হবে না)\n\n";
+    $text .= "*নিবন্ধিত অ্যাকাউন্টসমূহ:*\n";
+
+    $keyboard = [];
+    foreach ($accData['accounts'] as $accId => $acc) {
+        $isActive = ($accId === $activeId);
+        $icon = $isActive ? "✅ " : "🔄 ";
+        $btnText = "{$icon}{$acc['name']} ({$acc['quota_status']})";
+        
+        $keyboard[] = [
+            ['text' => $btnText, 'callback_data' => 'switchacc_' . $accId]
+        ];
+    }
+
+    $keyboard[] = [
+        ['text' => '🚪 বর্তমান অ্যাকাউন্ট লগআউট / রি-অথ', 'callback_data' => 'action_logout_reauth'],
+        ['text' => '➕ নতুন অ্যাকাউন্ট যুক্ত করুন', 'callback_data' => 'action_add_acc']
+    ];
+    $keyboard[] = [
+        ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
     ];
 
     sendMsg($chatId, $text, $keyboard);
@@ -541,23 +664,31 @@ function renderStatusView(string $chatId, array $state): void {
     $gitCommit = trim(shell_exec('git -C "' . PROJECT_ROOT . '" log -1 --pretty=format:"%h - %s" 2>NUL') ?? 'N/A');
     $gitBranch = trim(shell_exec('git -C "' . PROJECT_ROOT . '" branch --show-current 2>NUL') ?? 'master');
 
+    $accData = loadAccounts();
+    $activeAccId = $state['active_account'] ?? 'acc_1';
+    $accName = $accData['accounts'][$activeAccId]['name'] ?? 'Main Account';
+    $quotaStatus = $accData['accounts'][$activeAccId]['quota_status'] ?? 'স্বাভাবিক 🟢';
+
     $text  = "📊 *কারিয়ানা ওয়েবসাইট — সিস্টেম ও লাইভ স্ট্যাটাস*\n";
     $text .= "━━━━━━━━━━━━━━━━━━━━\n";
     $text .= "💻 *Antigravity:* {$agyOnline}\n";
     $text .= "🐘 *PHP Server:* {$srvOnline}\n";
     $text .= "🌿 *Git Branch:* `{$gitBranch}`\n";
     $text .= "📝 *লাস্ট Commit:* `{$gitCommit}`\n";
-    $text .= "🎯 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
+    $text .= "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n";
     $text .= "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n";
-    $text .= "⚙️ *মোড:* " . getModeTitle($state['mode'] ?? 'turbo') . "\n";
+    $text .= "🧠 *মডেল:* `{$state['selected_model']}`\n";
+    $text .= "👤 *অ্যাকাউন্ট:* `{$accName}` ({$quotaStatus})\n";
+    $text .= "⚙ *মোড:* " . getModeTitle($state['mode'] ?? 'turbo') . "\n";
     $text .= getStandardLinksText();
 
     $keyboard = [
         [
-            ['text' => '📊 পিসি হেলথ', 'callback_data' => 'menu_system_health'],
-            ['text' => '⚙️ মোড বদলান', 'callback_data' => 'menu_modes']
+            ['text' => '🧠 মডেল পরিবর্তন', 'callback_data' => 'menu_models'],
+            ['text' => '👤 অ্যাকাউন্ট সুইচ', 'callback_data' => 'menu_accounts']
         ],
         [
+            ['text' => '📊 পিসি হেলথ', 'callback_data' => 'menu_system_health'],
             ['text' => '🔙 মেইন মেনু', 'callback_data' => 'menu_home']
         ]
     ];
@@ -574,12 +705,14 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     $projName = $state['active_proj_name'] ?? DEFAULT_PROJECT_NAME;
     $chatTitle = $state['active_chat_title'] ?? DEFAULT_CHAT_TITLE;
     $mode = $state['mode'] ?? 'turbo';
+    $model = $state['selected_model'] ?? DEFAULT_MODEL;
 
     // 1. Initial Status Message
     $initText = "⏳ *কাজ গ্রহণ করা হয়েছে!*\n"
               . "━━━━━━━━━━━━━━━━━━━━\n"
               . "🎯 *প্রজেক্ট:* `{$projName}`\n"
               . "💬 *চ্যাট:* `{$chatTitle}`\n"
+              . "🧠 *মডেল:* `{$model}`\n"
               . "⚙️ *মোড:* " . getModeTitle($mode) . "\n"
               . "📝 *আপনার প্রম্পট:* _{$prompt}_\n\n"
               . "🔄 *স্ট্যাটাস:* Antigravity প্রসেসিং শুরু করছে...";
@@ -615,7 +748,32 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
     echo "[AGENTAPI] Code: {$code}, Output: " . implode(" ", $out) . "\n";
 
     if ($code !== 0) {
-        $errText = "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . implode("\n", $out) . "`\n\nসরাসরি Antigravity IDE-তে চেক করুন।";
+        // Check for Quota or Rate Limit errors
+        $errString = implode("\n", $out);
+        $isQuotaError = (stripos($errString, 'quota') !== false || stripos($errString, 'rate') !== false || stripos($errString, 'limit') !== false || stripos($errString, '429') !== false);
+
+        if ($isQuotaError) {
+            $errText = "⚠️ *কোটা / রেট লিমিট সতর্কতা!*\n"
+                     . "━━━━━━━━━━━━━━━━━━━━\n"
+                     . "বর্তমান অ্যাকাউন্টের লিমিট শেষ হয়েছে।\n"
+                     . "🟢 *টেলিগ্রাম বট ২৪ ঘণ্টা নন-স্টপ কানেক্টেড রয়েছে!*\n\n"
+                     . "👇 *নিচের বাটনে চাপ দিয়ে ব্যাকআপ অ্যাকাউন্টে সুইচ করুন অথবা মডেল পরিবর্তন করুন:*";
+
+            $errKb = [
+                [['text' => '🔄 ব্যাকআপ অ্যাকাউন্ট ২-এ সুইচ করুন', 'callback_data' => 'switchacc_acc_2']],
+                [['text' => '🚀 মডেল Flash-Lite-এ বদলান', 'callback_data' => 'model_gemini_lite']],
+                [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
+            ];
+
+            if ($statusMsgId) {
+                editMsg($chatId, $statusMsgId, $errText, $errKb);
+            } else {
+                sendMsg($chatId, $errText, $errKb);
+            }
+            return;
+        }
+
+        $errText = "⚠️ *মেসেজ পাঠাতে সমস্যা হয়েছে:*\n`" . $errString . "`\n\nসরাসরি Antigravity IDE-তে চেক করুন।";
         if ($statusMsgId) {
             editMsg($chatId, $statusMsgId, $errText);
         } else {
@@ -665,6 +823,7 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
                                    . "━━━━━━━━━━━━━━━━━━━━\n"
                                    . "🎯 *প্রজেক্ট:* `{$projName}`\n"
                                    . "💬 *চ্যাট:* `{$chatTitle}`\n"
+                                   . "🧠 *মডেল:* `{$model}`\n"
                                    . "📝 *প্রম্পট:* _{$prompt}_\n\n"
                                    . "🔄 *বর্তমান অ্যাকশন:* {$statusUpdate}\n"
                                    . "⏱️ *অতিবাহিত সময়:* " . (time() - $startTime) . "s";
@@ -690,7 +849,8 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
         $finalMsg = "✅ *কাজ সম্পন্ন হয়েছে! (Task Complete)*\n"
                   . "━━━━━━━━━━━━━━━━━━━━\n"
                   . "🎯 *প্রজেক্ট:* `{$projName}`\n"
-                  . "💬 *চ্যাট:* `{$chatTitle}`\n\n"
+                  . "💬 *চ্যাট:* `{$chatTitle}`\n"
+                  . "🧠 *মডেল:* `{$model}`\n\n"
                   . $cleanText
                   . getStandardLinksText();
 
@@ -723,9 +883,10 @@ function executePromptAndStreamUpdates(string $chatId, string $prompt, array &$s
 // ---------------------------------------------------------
 
 echo "=====================================================\n";
-echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ৪.০ চালু\n";
+echo "  কারিয়ানা ও অ্যান্টিগ্রাভিটি টেলিগ্রাম বট ৫.০ চালু\n";
 echo "  Bot: @raselcodebot\n";
-echo "  Full Multi-Purpose Remote Center Active\n";
+echo "  AI Model Switcher & Quota Manager Active\n";
+echo "  24/7 Persistent Connectivity Active\n";
 echo "=====================================================\n";
 
 $state = loadState();
@@ -741,12 +902,25 @@ if (in_array('--boot', $argv ?? [])) {
     $bootTimeStr = formatBengaliDate($now);
     $offTimeStr  = formatBengaliDate($lastOff) . " (" . formatDuration($offDuration) . ")";
 
+    // Detect shutdown reason (Power Outage vs Normal)
+    $powerReason = "🔄 স্বাভাবিক রিস্টার্ট / শাটডাউন";
+    $eventsScript = PROJECT_ROOT . '/check_power_events.ps1';
+    if (file_exists($eventsScript)) {
+        $evOut = trim(shell_exec('powershell.exe -ExecutionPolicy Bypass -File "' . $eventsScript . '" 2>NUL') ?? '');
+        if (strpos($evOut, 'PowerOutage') !== false) {
+            $powerReason = "⚡ বিদ্যুৎ বিভ্রাট বা হঠাৎ পাওয়ার অফ (Power Cut / Sudden Off)";
+        }
+    }
+
     $bootMsg = "⚡ *কম্পিউটার পুনরায় চালু হয়েছে — অ্যান্টিগ্রাভিটি ২.০ অটো-কানেক্টেড!*\n"
              . "━━━━━━━━━━━━━━━━━━━━\n"
              . "⏰ *অন হওয়ার সময়:* {$bootTimeStr}\n"
              . "🛑 *পূর্বে বন্ধ হয়েছিল:* {$offTimeStr}\n"
+             . "⚠️ *বন্ধ হওয়ার কারণ:* {$powerReason}\n"
              . "💻 *কম্পিউটার স্ট্যাটাস:* চালু ও সক্রিয় 🟢\n"
              . "🧠 *Antigravity IDE:* কানেক্টেড 🟢\n"
+             . "🤖 *এআই মডেল:* `{$state['selected_model']}`\n"
+             . "👤 *অ্যাকাউন্ট:* `{$accName}` ({$quotaStatus})\n"
              . "🌐 *ওয়েব সার্ভার:* Port 8015 রানিং 🟢\n"
              . "📁 *বর্তমান প্রজেক্ট:* `{$state['active_proj_name']}`\n"
              . "💬 *সক্রিয় চ্যাট:* `{$state['active_chat_title']}`\n"
@@ -756,8 +930,8 @@ if (in_array('--boot', $argv ?? [])) {
 
     $bootKb = [
         [['text' => '📁 সাম্প্রতিক প্রজেক্ট ও চ্যাটসমূহ', 'callback_data' => 'menu_workspaces']],
-        [['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health']],
-        [['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
+        [['text' => '🧠 এআই মডেল পরিবর্তন', 'callback_data' => 'menu_models'], ['text' => '👤 অ্যাকাউন্ট ও কোটা', 'callback_data' => 'menu_accounts']],
+        [['text' => '📊 পিসি হেলথ ও রিসোর্স', 'callback_data' => 'menu_system_health'], ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']]
     ];
 
     sendMsg($state['chat_id'], $bootMsg, $bootKb);
@@ -798,6 +972,51 @@ while (true) {
                     if ($data === 'menu_home') {
                         answerCallback($cbId, 'মেইন মেনু লোড হচ্ছে...');
                         renderMainMenu($chatId, $state);
+                    } elseif ($data === 'menu_models') {
+                        answerCallback($cbId, 'মডেল তালিকা...');
+                        renderModelsMenu($chatId, $state);
+                    } elseif ($data === 'menu_accounts') {
+                        answerCallback($cbId, 'অ্যাকাউন্ট ও কোটা...');
+                        renderAccountsMenu($chatId, $state);
+                    } elseif (strpos($data, 'model_') === 0) {
+                        $modelMap = [
+                            'model_gemini_flash'  => 'Gemini 3.8 Flash (High)',
+                            'model_claude_sonnet' => 'Claude Sonnet 4.6 (Thinking)',
+                            'model_gemini_pro'    => 'Gemini 3.8 Pro',
+                            'model_gemini_lite'   => 'Gemini 3.8 Flash-Lite',
+                            'model_kimi_k3'       => 'Kimi-K3 (OpenShift Gateway)'
+                        ];
+                        $selectedModel = $modelMap[$data] ?? DEFAULT_MODEL;
+                        $state['selected_model'] = $selectedModel;
+                        saveState($state);
+                        answerCallback($cbId, 'মডেল পরিবর্তন সফল!');
+                        sendMsg($chatId, "✅ *এআই মডেল সফলভাবে পরিবর্তন করা হয়েছে!*\n\nবর্তমান সক্রিয় মডেল: *{$selectedModel}*\n\nএখন থেকে আপনার সব প্রম্পট এই মডেলে এক্সিকিউট হবে।");
+                        renderMainMenu($chatId, $state);
+                    } elseif (strpos($data, 'switchacc_') === 0) {
+                        $accId = substr($data, 10);
+                        $accData = loadAccounts();
+                        if (isset($accData['accounts'][$accId])) {
+                            $state['active_account'] = $accId;
+                            $state['selected_model'] = $accData['accounts'][$accId]['model'];
+                            saveState($state);
+                            answerCallback($cbId, 'অ্যাকাউন্ট সুইচ সম্পন্ন!');
+                            sendMsg($chatId, "✅ *অ্যাকাউন্ট সুইচ সফল!*\n\nসক্রিয় অ্যাকাউন্ট: *{$accData['accounts'][$accId]['name']}*\nমডেল: *{$state['selected_model']}*\nকোটা স্ট্যাটাস: *{$accData['accounts'][$accId]['quota_status']}*\n\nএখন আপনি নির্বিঘ্নে কাজ চালিয়ে যেতে পারেন!");
+                            renderMainMenu($chatId, $state);
+                        } else {
+                            answerCallback($cbId, 'অ্যাকাউন্ট পাওয়া যায়নি');
+                        }
+                    } elseif ($data === 'action_logout_reauth') {
+                        answerCallback($cbId, 'রি-অথরাইজেশন...');
+                        $reauthMsg = "🚪 *অ্যাকাউন্ট লগআউট ও রি-অথরাইজেশন*\n"
+                                   . "━━━━━━━━━━━━━━━━━━━━\n"
+                                   . "আপনি যদি অ্যান্টিগ্রাভিটিতে সম্পূর্ণ নতুন জিমেইল অ্যাকাউন্ট লগইন করতে চান:\n\n"
+                                   . "১. কম্পিউটারের অ্যান্টিগ্রাভিটি ওপেন করে প্রোফাইল থেকে Logout দিন।\n"
+                                   . "২. অথবা মোবাইল থেকেই নতুন Google OAuth অথরাইজেশন সম্পন্ন করুন।\n"
+                                   . "৩. নতুন অ্যাকাউন্ট যুক্ত হলে টেলিগ্রাম স্বয়ংক্রিয়ভাবে সিঙ্ক হয়ে যাবে এবং বট ২৪ ঘণ্টা কানেক্টেড থাকবে!";
+                        sendMsg($chatId, $reauthMsg);
+                    } elseif ($data === 'action_add_acc') {
+                        answerCallback($cbId, 'নতুন অ্যাকাউন্ট...');
+                        sendMsg($chatId, "➕ *নতুন অ্যাকাউন্ট যুক্ত করার নিয়ম:*\nআপনার দ্বিতীয় জিমেইল বা ব্যাকআপ অ্যাকাউন্টের নাম লিখে পাঠান (যেমন: `অ্যাকাউন্ট নাম: রাফসান জিমেইল`)। বট স্বয়ংক্রিয়ভাবে প্রোফাইল স্লট তৈরি করে দেবে!");
                     } elseif ($data === 'menu_system_health') {
                         answerCallback($cbId, 'সিস্টেম হেলথ আনা হচ্ছে...');
                         renderSystemHealthView($chatId, $state);
@@ -837,9 +1056,6 @@ while (true) {
                     } elseif ($data === 'menu_status') {
                         answerCallback($cbId, 'স্ট্যাটাস লোড হচ্ছে...');
                         renderStatusView($chatId, $state);
-                    } elseif ($data === 'menu_new_task') {
-                        answerCallback($cbId, 'নতুন টাস্ক');
-                        sendMsg($chatId, "➕ *নতুন টাস্ক শুরু করতে:*\nআপনার নির্দেশ লিখে পাঠান, সরাসরি অ্যান্টিগ্রাভিটিতে এক্সিকিউট হবে!");
                     } elseif ($data === 'prompt_help') {
                         answerCallback($cbId);
                         sendMsg($chatId, "💬 *প্রম্পট দেওয়ার নিয়ম:*\nমোবাইলে ভয়েস বা টেক্সটে যা লিখবেন, সাথে সাথে কম্পিউটারের অ্যান্টিগ্রাভিটিতে কাজ হতে থাকবে!");
@@ -895,6 +1111,10 @@ while (true) {
                         renderMainMenu($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {
                         renderWorkspacesMenu($chatId, $state);
+                    } elseif ($text === '🧠 এআই মডেল নির্বাচন' || $text === '/models' || $text === '/model') {
+                        renderModelsMenu($chatId, $state);
+                    } elseif ($text === '👤 অ্যাকাউন্ট ও কোটা' || $text === '/accounts' || $text === '/account') {
+                        renderAccountsMenu($chatId, $state);
                     } elseif ($text === '📊 পিসি হেলথ ও রিসোর্স' || $text === '/health') {
                         renderSystemHealthView($chatId, $state);
                     } elseif ($text === '⚙️ মোড পরিবর্তন' || $text === '/mode') {
@@ -904,6 +1124,25 @@ while (true) {
                     } elseif ($text === '🔄 রিফ্রেশ') {
                         renderMainMenu($chatId, $state);
                     } else {
+                        // Check if user is adding an account
+                        if (stripos($text, 'অ্যাকাউন্ট নাম:') === 0 || stripos($text, 'account name:') === 0) {
+                            $accName = trim(substr($text, strpos($text, ':') + 1));
+                            $accData = loadAccounts();
+                            $newId = 'acc_' . (count($accData['accounts']) + 1);
+                            $accData['accounts'][$newId] = [
+                                'id'           => $newId,
+                                'name'         => $accName,
+                                'profile'      => 'profile_' . (count($accData['accounts']) + 1),
+                                'status'       => 'রেডি 🟢',
+                                'model'        => $state['selected_model'] ?? DEFAULT_MODEL,
+                                'quota_status' => 'উপলব্ধ 🟢'
+                            ];
+                            saveAccounts($accData);
+                            sendMsg($chatId, "✅ *নতুন অ্যাকাউন্ট যুক্ত করা হয়েছে!*\n\nনাম: *{$accName}*\nআইডি: `{$newId}`\n\nআপনি এখন এটি যেকোনো সময় নির্বাচন করতে পারেন!");
+                            renderAccountsMenu($chatId, $state);
+                            continue;
+                        }
+
                         // Check if message mentions another project
                         $intent = detectProjectIntent($text, $state['active_proj_name']);
                         if ($intent) {

@@ -6,7 +6,21 @@
 $projectDir = "c:\xampp\htdocs\Kariana Website"
 Set-Location $projectDir
 
-# 1. Ensure Antigravity IDE is running
+# 1. Wait for Internet / Network Connectivity (up to 20 seconds)
+$connected = $false
+for ($i = 0; $i -lt 20; $i++) {
+    try {
+        $ips = [System.Net.Dns]::GetHostAddresses("api.telegram.org")
+        if ($ips) {
+            $connected = $true
+            break
+        }
+    } catch {
+        Start-Sleep -Seconds 1
+    }
+}
+
+# 2. Ensure Antigravity IDE is running
 $agyProc = Get-Process "Antigravity*" -ErrorAction SilentlyContinue
 if (-not $agyProc) {
     Write-Host "[BOOT] Starting Antigravity IDE..."
@@ -14,7 +28,7 @@ if (-not $agyProc) {
     Start-Sleep -Seconds 4
 }
 
-# 2. Ensure PHP Built-in Server on Port 8015 is running
+# 3. Ensure PHP Built-in Server on Port 8015 is running
 $serverRunning = $false
 try {
     $tcp = New-Object System.Net.Sockets.TcpClient
@@ -31,7 +45,7 @@ if (-not $serverRunning) {
     Start-Sleep -Seconds 2
 }
 
-# 3. Ensure Telegram Bot Daemon is running
+# 4. Ensure Telegram Bot Daemon is running
 $runningDaemon = Get-CimInstance Win32_Process -Filter "Name = 'php.exe'" -ErrorAction SilentlyContinue |
     Where-Object { $_.CommandLine -like "*telegram_bot_daemon.php*" }
 

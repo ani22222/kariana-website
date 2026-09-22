@@ -1,0 +1,29 @@
+{
+    "active_account": "acc_1",
+    "accounts": {
+        "acc_1": {
+            "id": "acc_1",
+            "name": "মেইন অ্যাকাউন্ট (Account 1)",
+            "profile": "default",
+            "status": "সক্রিয় 🟢",
+            "model": "Gemini 3.8 Flash (High)",
+            "quota_status": "নরমাল 🟢"
+        },
+        "acc_2": {
+            "id": "acc_2",
+            "name": "ব্যাকআপ অ্যাকাউন্ট (Account 2)",
+            "profile": "profile_2",
+            "status": "স্ট্যান্ডবাই 🟡",
+            "model": "Claude Sonnet 4.6 (Thinking)",
+            "quota_status": "উপলব্ধ 🟢"
+        },
+        "acc_3": {
+            "id": "acc_3",
+            "name": "ওয়ার্ক অ্যাকাউন্ট (Account 3)",
+            "profile": "profile_3",
+            "status": "স্ট্যান্ডবাই 🟡",
+            "model": "Gemini 3.8 Pro",
+            "quota_status": "উপলব্ধ 🟢"
+        }
+    }
+}
