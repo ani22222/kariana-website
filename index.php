@@ -352,6 +352,11 @@ if (file_exists($routesFile)) {
         return $controller->directors($request);
     });
 
+    $router->get('/admin/directors/export', function (\Core\Request $request) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->exportDirectorsCsv();
+    });
+
     $router->get('/admin/directors/impersonate/{id}', function (\Core\Request $request, string $id) {
         $controller = new \App\Controllers\AdminController();
         return $controller->impersonateDirector($request, $id);
@@ -365,6 +370,16 @@ if (file_exists($routesFile)) {
     $router->post('/admin/directors/status', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
         return $controller->updateDirectorStatus($request);
+    });
+
+    $router->post('/admin/directors/delete/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->deleteDirector($request, $id);
+    });
+
+    $router->post('/admin/directors/bulk-action', function (\Core\Request $request) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->bulkDirectorsAction($request);
     });
 
     $router->post('/admin/directors/sms', function (\Core\Request $request) {

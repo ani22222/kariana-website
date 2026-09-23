@@ -157,6 +157,16 @@ class Request
         return $this->bodyParams[$key] ?? $default;
     }
 
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->queryParams) || array_key_exists($key, $this->bodyParams);
+    }
+
+    public function hasPost(string $key): bool
+    {
+        return array_key_exists($key, $this->bodyParams);
+    }
+
     public function all(): array
     {
         return array_merge($this->queryParams, $this->bodyParams);

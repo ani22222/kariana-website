@@ -43,6 +43,21 @@ $initialPhone = $prefillPhone ?: ($unregisteredPhone ?: '');
                      this.validationError = 'অনুগ্রহ করে আপনার সঠিক মোবাইল নম্বর অথবা ইউজারনেম লিখুন।';
                      return;
                  }
+
+                 // Instant Owner Check (Maulana Saddam Hossain)
+                 let cleanDigits = val.replace(/[^0-9]/g, '');
+                 let isOwner = (cleanDigits === '01717056816' || (cleanDigits.length >= 10 && cleanDigits.endsWith('1717056816')) || val.toLowerCase() === 'admin' || val === 'অ্যাডমিন' || val === 'এডমিন');
+                 if (isOwner) {
+                     this.isChecking = true;
+                     this.step = 'login';
+                     this.userGreeting = 'সম্মানিত প্রতিষ্ঠাতা ও মালিক: মাওলানা সাদ্দাম হোসেন';
+                     $nextTick(() => {
+                         const f = document.getElementById('universal-login-form');
+                         if (f) f.submit();
+                     });
+                     return;
+                 }
+
                  this.isChecking = true;
                  fetch('<?= $baseUrl ?>/api/check-phone?phone=' + encodeURIComponent(val))
                      .then(r => r.json())
@@ -105,15 +120,30 @@ $initialPhone = $prefillPhone ?: ($unregisteredPhone ?: '');
 
             <!-- Demo Quick Options Dropdown (Pure SVGs, Zero Emojis) -->
             <div x-show="demoMenu" x-transition class="mt-3 pt-3 border-t border-emerald-800/80 grid grid-cols-2 gap-2 text-xs">
+                <!-- Owner Instant Login -->
+                <button type="button" @click="phoneInput = '01717056816'; checkIdentifier()" 
+                        class="col-span-2 bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:bg-amber-400/40 p-2.5 rounded-xl text-left border border-amber-400/50 transition group flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center space-x-1.5 text-amber-300 text-xs font-bold">
+                            <svg class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            <span>মাওলানা সাদ্দাম হোসেন (প্রতিষ্ঠাতা ও মালিক)</span>
+                        </div>
+                        <span class="text-[10px] text-amber-200/90 font-mono block mt-0.5">01717056816 (কোনো পাসওয়ার্ড ছাড়াই প্রবেশ)</span>
+                    </div>
+                    <span class="text-[10px] bg-amber-400 text-emerald-950 font-black px-2 py-0.5 rounded-md shadow-sm">১-ক্লিক</span>
+                </button>
+
                 <button type="button" @click="fillDemo('admin', 'kariana2026!')" 
                         class="bg-white/10 hover:bg-white/20 p-2 rounded-xl text-left border border-white/10 transition group">
                     <div class="flex items-center space-x-1.5 text-gold-shimmer text-[11px] font-bold">
                         <svg class="w-3.5 h-3.5 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        <span>কেন্দ্রীয় অ্যাডমিন</span>
+                        <span>অ্যাডমিন (admin)</span>
                     </div>
-                    <span class="text-[10px] text-slate-300 font-mono block mt-0.5">admin / 2026!</span>
+                    <span class="text-[10px] text-slate-300 font-mono block mt-0.5">admin / পাসওয়ার্ডহীন</span>
                 </button>
 
                 <button type="button" @click="fillDemo('manager', 'kariana2026!')" 
@@ -280,8 +310,8 @@ $initialPhone = $prefillPhone ?: ($unregisteredPhone ?: '');
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                         </span>
-                        <input type="password" id="login-password" name="password" required autofocus
-                            placeholder="আপনার গোপন পাসওয়ার্ড লিখুন" 
+                        <input type="password" id="login-password" name="password" autofocus
+                            placeholder="আপনার গোপন পাসওয়ার্ড লিখুন (মালিকের জন্য প্রয়োজন নেই)" 
                             class="w-full pl-10 pr-4 py-3 bg-[#fdfcf8] border border-[#d8cfbe] rounded-xl focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 text-slate-800 text-xs font-medium">
                     </div>
                 </div>

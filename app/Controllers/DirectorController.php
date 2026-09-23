@@ -120,8 +120,31 @@ class DirectorController
         $dir = $stmt->fetch();
 
         if ($dir && password_verify($password, $dir['password'])) {
+            // Check if Super Admin blocked login access
+            if (isset($dir['login_allowed']) && (int)$dir['login_allowed'] === 0) {
+                $reasonText = !empty($dir['status_reason']) ? ' (কারণ: ' . $dir['status_reason'] . ')' : '';
+                Session::flash('error', 'আপনার ড্যাশবোর্ড লগইন এক্সেস কেন্দ্রীয় প্রশাসনিক সিদ্ধান্তে স্থগিত রাখা হয়েছে' . $reasonText . '। কেন্দ্রীয় অ্যাডমিনের সাথে যোগাযোগ করুন।');
+                return Response::redirect('/director/login');
+            }
+
+            // Check if status is expelled
             if ($dir['status'] === 'expelled') {
-                Session::flash('error', 'আপনার দায়িত্ব সাংগঠনিক সিদ্ধান্তে স্থায়ীভাবে বহিষ্কৃত করা হয়েছে। কেন্দ্রীয় কার্যালয়ে যোগাযোগ করুন।');
+                $reasonText = !empty($dir['status_reason']) ? ' (কারণ: ' . $dir['status_reason'] . ')' : '';
+                Session::flash('error', 'আপনার দায়িত্ব সাংগঠনিক সিদ্ধান্তে স্থায়ীভাবে বহিষ্কৃত করা হয়েছে' . $reasonText . '। কেন্দ্রীয় কার্যালয়ে যোগাযোগ করুন।');
+                return Response::redirect('/director/login');
+            }
+
+            // Check if status is suspended
+            if ($dir['status'] === 'suspended') {
+                $reasonText = !empty($dir['status_reason']) ? ' (কারণ: ' . $dir['status_reason'] . ')' : '';
+                Session::flash('error', 'আপনার দায়িত্ব বর্তমানে সাময়িকভাবে বরখাস্ত/স্থগিত রয়েছে' . $reasonText . '। তদন্ত নিষ্পত্তি না হওয়া পর্যন্ত ড্যাশবোর্ড এক্সেস বন্ধ থাকবে।');
+                return Response::redirect('/director/login');
+            }
+
+            // Check if status is inactive
+            if ($dir['status'] === 'inactive') {
+                $reasonText = !empty($dir['status_reason']) ? ' (কারণ: ' . $dir['status_reason'] . ')' : '';
+                Session::flash('error', 'আপনার পরিচালক পদ বর্তমানে নিষ্ক্রিয়/অব্যাহতিপ্রাপ্ত রয়েছে' . $reasonText . '।');
                 return Response::redirect('/director/login');
             }
 
