@@ -1,0 +1,1142 @@
+[
+  {
+    "number": 1,
+    "name_ar": "الفاتحة",
+    "name_bn": "আল-ফাতিহা",
+    "name_en": "Al-Fatihah",
+    "meaning_bn": "সূচনা",
+    "total_ayahs": 7,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/001.mp3"
+  },
+  {
+    "number": 2,
+    "name_ar": "البقرة",
+    "name_bn": "আল-বাকারা",
+    "name_en": "Al-Baqarah",
+    "meaning_bn": "গাভী",
+    "total_ayahs": 286,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/002.mp3"
+  },
+  {
+    "number": 3,
+    "name_ar": "آل عمران",
+    "name_bn": "আলে-ইমরান",
+    "name_en": "Aal-e-Imran",
+    "meaning_bn": "ইমরানের পরিবার",
+    "total_ayahs": 200,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/003.mp3"
+  },
+  {
+    "number": 4,
+    "name_ar": "النساء",
+    "name_bn": "আন-নিসা",
+    "name_en": "An-Nisa",
+    "meaning_bn": "নারী",
+    "total_ayahs": 176,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/004.mp3"
+  },
+  {
+    "number": 5,
+    "name_ar": "المائدة",
+    "name_bn": "আল-মায়িদাহ",
+    "name_en": "Al-Ma'idah",
+    "meaning_bn": "খাদ্য পরিবেশিত টেবিল",
+    "total_ayahs": 120,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/005.mp3"
+  },
+  {
+    "number": 6,
+    "name_ar": "الأنعام",
+    "name_bn": "আল-আনআম",
+    "name_en": "Al-An'am",
+    "meaning_bn": "গৃহপালিত পশু",
+    "total_ayahs": 165,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/006.mp3"
+  },
+  {
+    "number": 7,
+    "name_ar": "الأعراف",
+    "name_bn": "আল-আরাফ",
+    "name_en": "Al-A'raf",
+    "meaning_bn": "উঁচু স্থান",
+    "total_ayahs": 206,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/007.mp3"
+  },
+  {
+    "number": 8,
+    "name_ar": "الأنفال",
+    "name_bn": "আল-আনফাল",
+    "name_en": "Al-Anfal",
+    "meaning_bn": "যুদ্ধলব্ধ সম্পদ",
+    "total_ayahs": 75,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/008.mp3"
+  },
+  {
+    "number": 9,
+    "name_ar": "التوبة",
+    "name_bn": "আত-তাওবাহ",
+    "name_en": "At-Tawbah",
+    "meaning_bn": "অনুশোচনা",
+    "total_ayahs": 129,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/009.mp3"
+  },
+  {
+    "number": 10,
+    "name_ar": "يونس",
+    "name_bn": "ইউনুস",
+    "name_en": "Yunus",
+    "meaning_bn": "নবী ইউনুস",
+    "total_ayahs": 109,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/010.mp3"
+  },
+  {
+    "number": 11,
+    "name_ar": "هود",
+    "name_bn": "হুদ",
+    "name_en": "Hud",
+    "meaning_bn": "নবী হুদ",
+    "total_ayahs": 123,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/011.mp3"
+  },
+  {
+    "number": 12,
+    "name_ar": "يوسف",
+    "name_bn": "ইউসুফ",
+    "name_en": "Yusuf",
+    "meaning_bn": "নবী ইউসুফ",
+    "total_ayahs": 111,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/012.mp3"
+  },
+  {
+    "number": 13,
+    "name_ar": "الرعد",
+    "name_bn": "আর-রাদ",
+    "name_en": "Ar-Ra'd",
+    "meaning_bn": "বজ্রপাত",
+    "total_ayahs": 43,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/013.mp3"
+  },
+  {
+    "number": 14,
+    "name_ar": "إبراهيم",
+    "name_bn": "ইবরাহীম",
+    "name_en": "Ibrahim",
+    "meaning_bn": "নবী ইবরাহীম",
+    "total_ayahs": 52,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/014.mp3"
+  },
+  {
+    "number": 15,
+    "name_ar": "الحجر",
+    "name_bn": "আল-হিজর",
+    "name_en": "Al-Hijr",
+    "meaning_bn": "পাথুরে পাহাড়",
+    "total_ayahs": 99,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/015.mp3"
+  },
+  {
+    "number": 16,
+    "name_ar": "النحل",
+    "name_bn": "আন-নাহল",
+    "name_en": "An-Nahl",
+    "meaning_bn": "মৌমাছি",
+    "total_ayahs": 128,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/016.mp3"
+  },
+  {
+    "number": 17,
+    "name_ar": "الإسراء",
+    "name_bn": "আল-ইসরা",
+    "name_en": "Al-Isra",
+    "meaning_bn": "সান্ধ্য ভ্রমণ",
+    "total_ayahs": 111,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/017.mp3"
+  },
+  {
+    "number": 18,
+    "name_ar": "الكهف",
+    "name_bn": "আল-কাহফ",
+    "name_en": "Al-Kahf",
+    "meaning_bn": "গুহা",
+    "total_ayahs": 110,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/018.mp3"
+  },
+  {
+    "number": 19,
+    "name_ar": "مريم",
+    "name_bn": "মারইয়াম",
+    "name_en": "Maryam",
+    "meaning_bn": "মারইয়াম (আ.)",
+    "total_ayahs": 98,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/019.mp3"
+  },
+  {
+    "number": 20,
+    "name_ar": "طه",
+    "name_bn": "ত্বা-হা",
+    "name_en": "Ta-Ha",
+    "meaning_bn": "ত্বা-হা",
+    "total_ayahs": 135,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/020.mp3"
+  },
+  {
+    "number": 21,
+    "name_ar": "الأنبياء",
+    "name_bn": "আল-আম্বিয়া",
+    "name_en": "Al-Anbiya",
+    "meaning_bn": "নবীগণ",
+    "total_ayahs": 112,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/021.mp3"
+  },
+  {
+    "number": 22,
+    "name_ar": "الحج",
+    "name_bn": "আল-হাজ্জ",
+    "name_en": "Al-Hajj",
+    "meaning_bn": "হজ্জ",
+    "total_ayahs": 78,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/022.mp3"
+  },
+  {
+    "number": 23,
+    "name_ar": "المؤمنون",
+    "name_bn": "আল-মুমিনুন",
+    "name_en": "Al-Mu'minun",
+    "meaning_bn": "মুমিনগণ",
+    "total_ayahs": 118,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/023.mp3"
+  },
+  {
+    "number": 24,
+    "name_ar": "النور",
+    "name_bn": "আন-নূর",
+    "name_en": "An-Nur",
+    "meaning_bn": "আলো",
+    "total_ayahs": 64,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/024.mp3"
+  },
+  {
+    "number": 25,
+    "name_ar": "الفرقان",
+    "name_bn": "আল-ফুরকান",
+    "name_en": "Al-Furqan",
+    "meaning_bn": "সত্য-মিথ্যার পার্থক্যকারী",
+    "total_ayahs": 77,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/025.mp3"
+  },
+  {
+    "number": 26,
+    "name_ar": "الشعراء",
+    "name_bn": "আশ-শুয়ারা",
+    "name_en": "Ash-Shu'ara",
+    "meaning_bn": "কবিগণ",
+    "total_ayahs": 227,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/026.mp3"
+  },
+  {
+    "number": 27,
+    "name_ar": "النمل",
+    "name_bn": "আন-নামল",
+    "name_en": "An-Naml",
+    "meaning_bn": "পিপীলিকা",
+    "total_ayahs": 93,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/027.mp3"
+  },
+  {
+    "number": 28,
+    "name_ar": "القصص",
+    "name_bn": "আল-কাসাস",
+    "name_en": "Al-Qasas",
+    "meaning_bn": "কাহিনী",
+    "total_ayahs": 88,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/028.mp3"
+  },
+  {
+    "number": 29,
+    "name_ar": "العنكبوت",
+    "name_bn": "আল-আনকাবুত",
+    "name_en": "Al-Ankabut",
+    "meaning_bn": "মাকড়সা",
+    "total_ayahs": 69,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/029.mp3"
+  },
+  {
+    "number": 30,
+    "name_ar": "الروم",
+    "name_bn": "আর-রূম",
+    "name_en": "Ar-Rum",
+    "meaning_bn": "রোমান জাতি",
+    "total_ayahs": 60,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/030.mp3"
+  },
+  {
+    "number": 31,
+    "name_ar": "لقمان",
+    "name_bn": "লুকমান",
+    "name_en": "Luqman",
+    "meaning_bn": "জ্ঞানী লুকমান",
+    "total_ayahs": 34,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/031.mp3"
+  },
+  {
+    "number": 32,
+    "name_ar": "السجدة",
+    "name_bn": "আস-সাজদাহ",
+    "name_en": "As-Sajdah",
+    "meaning_bn": "সিজদা",
+    "total_ayahs": 30,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/032.mp3"
+  },
+  {
+    "number": 33,
+    "name_ar": "الأحزاب",
+    "name_bn": "আল-আহযাব",
+    "name_en": "Al-Ahzab",
+    "meaning_bn": "জোটবদ্ধ দলসমূহ",
+    "total_ayahs": 73,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/033.mp3"
+  },
+  {
+    "number": 34,
+    "name_ar": "سبإ",
+    "name_bn": "সাবা",
+    "name_en": "Saba",
+    "meaning_bn": "সাবা সম্প্রদায়",
+    "total_ayahs": 54,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/034.mp3"
+  },
+  {
+    "number": 35,
+    "name_ar": "فاطر",
+    "name_bn": "ফাতির",
+    "name_en": "Fatir",
+    "meaning_bn": "স্রষ্টা",
+    "total_ayahs": 45,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/035.mp3"
+  },
+  {
+    "number": 36,
+    "name_ar": "يس",
+    "name_bn": "ইয়াসীন",
+    "name_en": "Ya-Sin",
+    "meaning_bn": "ইয়াসীন",
+    "total_ayahs": 83,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/036.mp3"
+  },
+  {
+    "number": 37,
+    "name_ar": "الصافات",
+    "name_bn": "আস-সাফফাত",
+    "name_en": "As-Saffat",
+    "meaning_bn": "সারিবদ্ধ দলসমূহ",
+    "total_ayahs": 182,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/037.mp3"
+  },
+  {
+    "number": 38,
+    "name_ar": "ص",
+    "name_bn": "ছোয়াদ",
+    "name_en": "Sad",
+    "meaning_bn": "ছোয়াদ",
+    "total_ayahs": 88,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/038.mp3"
+  },
+  {
+    "number": 39,
+    "name_ar": "الزمر",
+    "name_bn": "আজ-জুমার",
+    "name_en": "Az-Zumar",
+    "meaning_bn": "দলসমূহ",
+    "total_ayahs": 75,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/039.mp3"
+  },
+  {
+    "number": 40,
+    "name_ar": "غافر",
+    "name_bn": "গাফির",
+    "name_en": "Ghafir",
+    "meaning_bn": "ক্ষমাশীল",
+    "total_ayahs": 85,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/040.mp3"
+  },
+  {
+    "number": 41,
+    "name_ar": "فصلت",
+    "name_bn": "ফুসসিলাত",
+    "name_en": "Fussilat",
+    "meaning_bn": "সুস্পষ্ট বিবরণ",
+    "total_ayahs": 54,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/041.mp3"
+  },
+  {
+    "number": 42,
+    "name_ar": "الشورى",
+    "name_bn": "আশ-শূরা",
+    "name_en": "Ash-Shura",
+    "meaning_bn": "পরামর্শ",
+    "total_ayahs": 53,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/042.mp3"
+  },
+  {
+    "number": 43,
+    "name_ar": "الزخرف",
+    "name_bn": "আজ-জুখরুফ",
+    "name_en": "Az-Zukhruf",
+    "meaning_bn": "স্বর্ণালঙ্কার",
+    "total_ayahs": 89,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/043.mp3"
+  },
+  {
+    "number": 44,
+    "name_ar": "الدخان",
+    "name_bn": "আদ-দুখান",
+    "name_en": "Ad-Dukhan",
+    "meaning_bn": "ধোঁয়া",
+    "total_ayahs": 59,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/044.mp3"
+  },
+  {
+    "number": 45,
+    "name_ar": "الجاثية",
+    "name_bn": "আল-জাসিয়াহ",
+    "name_en": "Al-Jathiyah",
+    "meaning_bn": "নতজানু",
+    "total_ayahs": 37,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/045.mp3"
+  },
+  {
+    "number": 46,
+    "name_ar": "الأحقاف",
+    "name_bn": "আল-আহকাফ",
+    "name_en": "Al-Ahqaf",
+    "meaning_bn": "বালুকাময় পাহাড়",
+    "total_ayahs": 35,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/046.mp3"
+  },
+  {
+    "number": 47,
+    "name_ar": "محمد",
+    "name_bn": "মুহাম্মাদ",
+    "name_en": "Muhammad",
+    "meaning_bn": "নবী মুহাম্মাদ (সা.)",
+    "total_ayahs": 38,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/047.mp3"
+  },
+  {
+    "number": 48,
+    "name_ar": "الفتح",
+    "name_bn": "আল-ফাতহ",
+    "name_en": "Al-Fath",
+    "meaning_bn": "বিজয়",
+    "total_ayahs": 29,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/048.mp3"
+  },
+  {
+    "number": 49,
+    "name_ar": "الحجرات",
+    "name_bn": "আল-হুজুরাত",
+    "name_en": "Al-Hujurat",
+    "meaning_bn": "কক্ষসমূহ",
+    "total_ayahs": 18,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/049.mp3"
+  },
+  {
+    "number": 50,
+    "name_ar": "ق",
+    "name_bn": "ক্বাফ",
+    "name_en": "Qaf",
+    "meaning_bn": "ক্বাফ",
+    "total_ayahs": 45,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/050.mp3"
+  },
+  {
+    "number": 51,
+    "name_ar": "الذاريات",
+    "name_bn": "আয-যারিয়াত",
+    "name_en": "Adh-Dhariyat",
+    "meaning_bn": "বিক্ষিপ্তকারী বাতাস",
+    "total_ayahs": 60,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/051.mp3"
+  },
+  {
+    "number": 52,
+    "name_ar": "الطور",
+    "name_bn": "আত-তূর",
+    "name_en": "At-Tur",
+    "meaning_bn": "তূর পাহাড়",
+    "total_ayahs": 49,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/052.mp3"
+  },
+  {
+    "number": 53,
+    "name_ar": "النجم",
+    "name_bn": "আন-নাজম",
+    "name_en": "An-Najm",
+    "meaning_bn": "নক্ষত্র",
+    "total_ayahs": 62,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/053.mp3"
+  },
+  {
+    "number": 54,
+    "name_ar": "القمر",
+    "name_bn": "আল-ক্বামার",
+    "name_en": "Al-Qamar",
+    "meaning_bn": "চন্দ্র",
+    "total_ayahs": 55,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/054.mp3"
+  },
+  {
+    "number": 55,
+    "name_ar": "الرحمن",
+    "name_bn": "আর-রহমান",
+    "name_en": "Ar-Rahman",
+    "meaning_bn": "পরম করুণাময়",
+    "total_ayahs": 78,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/055.mp3"
+  },
+  {
+    "number": 56,
+    "name_ar": "الواقعة",
+    "name_bn": "আল-ওয়াকিয়াহ",
+    "name_en": "Al-Waqi'ah",
+    "meaning_bn": "মহাবিপ্লব",
+    "total_ayahs": 96,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/056.mp3"
+  },
+  {
+    "number": 57,
+    "name_ar": "الحديد",
+    "name_bn": "আল-হাদীদ",
+    "name_en": "Al-Hadid",
+    "meaning_bn": "লোহা",
+    "total_ayahs": 29,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/057.mp3"
+  },
+  {
+    "number": 58,
+    "name_ar": "المجادلة",
+    "name_bn": "আল-মুজাদালাহ",
+    "name_en": "Al-Mujadilah",
+    "meaning_bn": "বিতর্ককারিণী",
+    "total_ayahs": 22,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/058.mp3"
+  },
+  {
+    "number": 59,
+    "name_ar": "الحشر",
+    "name_bn": "আল-হাশর",
+    "name_en": "Al-Hashr",
+    "meaning_bn": "সমাবেশ",
+    "total_ayahs": 24,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/059.mp3"
+  },
+  {
+    "number": 60,
+    "name_ar": "الممتحنة",
+    "name_bn": "আল-মুমতাহিনাহ",
+    "name_en": "Al-Mumtahanah",
+    "meaning_bn": "পরীক্ষিতা নারী",
+    "total_ayahs": 13,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/060.mp3"
+  },
+  {
+    "number": 61,
+    "name_ar": "الصف",
+    "name_bn": "আস-সফ",
+    "name_en": "As-Saff",
+    "meaning_bn": "সারিবদ্ধ সৈন্য",
+    "total_ayahs": 14,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/061.mp3"
+  },
+  {
+    "number": 62,
+    "name_ar": "الجمعة",
+    "name_bn": "আল-জুমুআহ",
+    "name_en": "Al-Jumu'ah",
+    "meaning_bn": "শুক্রবার",
+    "total_ayahs": 11,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/062.mp3"
+  },
+  {
+    "number": 63,
+    "name_ar": "المنافقون",
+    "name_bn": "আল-মুনাফিকুন",
+    "name_en": "Al-Munafiqun",
+    "meaning_bn": "কপট বিশ্বাসীগণ",
+    "total_ayahs": 11,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/063.mp3"
+  },
+  {
+    "number": 64,
+    "name_ar": "التغابن",
+    "name_bn": "আত-তাগাবুন",
+    "name_en": "At-Taghabun",
+    "meaning_bn": "লাভ-ক্ষতি",
+    "total_ayahs": 18,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/064.mp3"
+  },
+  {
+    "number": 65,
+    "name_ar": "الطلاق",
+    "name_bn": "আত-ত্বালাক্ব",
+    "name_en": "At-Talaq",
+    "meaning_bn": "তালাক",
+    "total_ayahs": 12,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/065.mp3"
+  },
+  {
+    "number": 66,
+    "name_ar": "التحريم",
+    "name_bn": "আত-তাহরীম",
+    "name_en": "At-Tahrim",
+    "meaning_bn": "নিষিদ্ধকরণ",
+    "total_ayahs": 12,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/066.mp3"
+  },
+  {
+    "number": 67,
+    "name_ar": "الملك",
+    "name_bn": "আল-মুলক",
+    "name_en": "Al-Mulk",
+    "meaning_bn": "সার্বভৌম কর্তৃত্ব",
+    "total_ayahs": 30,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/067.mp3"
+  },
+  {
+    "number": 68,
+    "name_ar": "القلم",
+    "name_bn": "আল-কলম",
+    "name_en": "Al-Qalam",
+    "meaning_bn": "কলম",
+    "total_ayahs": 52,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/068.mp3"
+  },
+  {
+    "number": 69,
+    "name_ar": "الحاقة",
+    "name_bn": "আল-হাক্বক্বাহ",
+    "name_en": "Al-Haqqah",
+    "meaning_bn": "সুনিশ্চিত সত্য",
+    "total_ayahs": 52,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/069.mp3"
+  },
+  {
+    "number": 70,
+    "name_ar": "المعارج",
+    "name_bn": "আল-মাআরিজ",
+    "name_en": "Al-Ma'arij",
+    "meaning_bn": "উন্নয়নের সোপান",
+    "total_ayahs": 44,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/070.mp3"
+  },
+  {
+    "number": 71,
+    "name_ar": "نوح",
+    "name_bn": "নূহ",
+    "name_en": "Nuh",
+    "meaning_bn": "নবী নূহ",
+    "total_ayahs": 28,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/071.mp3"
+  },
+  {
+    "number": 72,
+    "name_ar": "الجن",
+    "name_bn": "আল-জিন",
+    "name_en": "Al-Jinn",
+    "meaning_bn": "জিন জাতি",
+    "total_ayahs": 28,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/072.mp3"
+  },
+  {
+    "number": 73,
+    "name_ar": "المزمل",
+    "name_bn": "আল-মুযযাম্মিল",
+    "name_en": "Al-Muzzammil",
+    "meaning_bn": "বস্ত্রাবৃত",
+    "total_ayahs": 20,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/073.mp3"
+  },
+  {
+    "number": 74,
+    "name_ar": "المدثر",
+    "name_bn": "আল-মুদ্দাসসির",
+    "name_en": "Al-Muddaththir",
+    "meaning_bn": "চাদরাবৃত",
+    "total_ayahs": 56,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/074.mp3"
+  },
+  {
+    "number": 75,
+    "name_ar": "القيامة",
+    "name_bn": "আল-কিয়ামাহ",
+    "name_en": "Al-Qiyamah",
+    "meaning_bn": "পুনরুত্থান",
+    "total_ayahs": 40,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/075.mp3"
+  },
+  {
+    "number": 76,
+    "name_ar": "الإنسان",
+    "name_bn": "আল-ইনসান",
+    "name_en": "Al-Insan",
+    "meaning_bn": "মানবজাতি",
+    "total_ayahs": 31,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/076.mp3"
+  },
+  {
+    "number": 77,
+    "name_ar": "المرسلات",
+    "name_bn": "আল-মুরসালাত",
+    "name_en": "Al-Mursalat",
+    "meaning_bn": "প্রেরিত বাতাস",
+    "total_ayahs": 50,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/077.mp3"
+  },
+  {
+    "number": 78,
+    "name_ar": "النبإ",
+    "name_bn": "আন-নাবা",
+    "name_en": "An-Naba",
+    "meaning_bn": "মহা সংবাদ",
+    "total_ayahs": 40,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/078.mp3"
+  },
+  {
+    "number": 79,
+    "name_ar": "النازعات",
+    "name_bn": "আন-নাযিআত",
+    "name_en": "An-Nazi'at",
+    "meaning_bn": "উৎপাটনকারী",
+    "total_ayahs": 46,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/079.mp3"
+  },
+  {
+    "number": 80,
+    "name_ar": "عبس",
+    "name_bn": "আবাসা",
+    "name_en": "Abasa",
+    "meaning_bn": "ভ্রুকুটি করলেন",
+    "total_ayahs": 42,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/080.mp3"
+  },
+  {
+    "number": 81,
+    "name_ar": "التكوير",
+    "name_bn": "আত-তাকবীর",
+    "name_en": "At-Takwir",
+    "meaning_bn": "অন্ধকারাচ্ছন্নকরণ",
+    "total_ayahs": 29,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/081.mp3"
+  },
+  {
+    "number": 82,
+    "name_ar": "الانفطار",
+    "name_bn": "আল-ইনফিতার",
+    "name_en": "Al-Infitar",
+    "meaning_bn": "বিদীর্ণ হওয়া",
+    "total_ayahs": 19,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/082.mp3"
+  },
+  {
+    "number": 83,
+    "name_ar": "المطففين",
+    "name_bn": "আল-মুতাফফিফীন",
+    "name_en": "Al-Mutaffifin",
+    "meaning_bn": "প্রতারকগণ",
+    "total_ayahs": 36,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/083.mp3"
+  },
+  {
+    "number": 84,
+    "name_ar": "الانشقاق",
+    "name_bn": "আল-ইনশিকাক্ব",
+    "name_en": "Al-Inshiqaq",
+    "meaning_bn": "খণ্ড-বিখণ্ড হওয়া",
+    "total_ayahs": 25,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/084.mp3"
+  },
+  {
+    "number": 85,
+    "name_ar": "البروج",
+    "name_bn": "আল-বুরূজ",
+    "name_en": "Al-Buruj",
+    "meaning_bn": "নক্ষত্রপুঞ্জ",
+    "total_ayahs": 22,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/085.mp3"
+  },
+  {
+    "number": 86,
+    "name_ar": "الطارق",
+    "name_bn": "আত-তারিক্ব",
+    "name_en": "At-Tariq",
+    "meaning_bn": "রাতের আগমনকারী",
+    "total_ayahs": 17,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/086.mp3"
+  },
+  {
+    "number": 87,
+    "name_ar": "الأعلى",
+    "name_bn": "আল-আলা",
+    "name_en": "Al-A'la",
+    "meaning_bn": "সর্বোচ্চ",
+    "total_ayahs": 19,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/087.mp3"
+  },
+  {
+    "number": 88,
+    "name_ar": "الغاشية",
+    "name_bn": "আল-গাশিয়াহ",
+    "name_en": "Al-Ghashiyah",
+    "meaning_bn": "আচ্ছন্নকারী সংকট",
+    "total_ayahs": 26,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/088.mp3"
+  },
+  {
+    "number": 89,
+    "name_ar": "الفجر",
+    "name_bn": "আল-ফজর",
+    "name_en": "Al-Fajr",
+    "meaning_bn": "ঊষা",
+    "total_ayahs": 30,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/089.mp3"
+  },
+  {
+    "number": 90,
+    "name_ar": "البلد",
+    "name_bn": "আল-বালাদ",
+    "name_en": "Al-Balad",
+    "meaning_bn": "নগরী",
+    "total_ayahs": 20,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/090.mp3"
+  },
+  {
+    "number": 91,
+    "name_ar": "الشمس",
+    "name_bn": "আশ-শামস",
+    "name_en": "Ash-Shams",
+    "meaning_bn": "সূর্য",
+    "total_ayahs": 15,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/091.mp3"
+  },
+  {
+    "number": 92,
+    "name_ar": "الليل",
+    "name_bn": "আল-লাইল",
+    "name_en": "Al-Layl",
+    "meaning_bn": "রাত্রি",
+    "total_ayahs": 21,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/092.mp3"
+  },
+  {
+    "number": 93,
+    "name_ar": "الضحى",
+    "name_bn": "আদ-দুহা",
+    "name_en": "Ad-Duha",
+    "meaning_bn": "পূর্বাহ্ণ",
+    "total_ayahs": 11,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/093.mp3"
+  },
+  {
+    "number": 94,
+    "name_ar": "الشرح",
+    "name_bn": "আল-ইনশিরাহ",
+    "name_en": "Ash-Sharh",
+    "meaning_bn": "বক্ষ প্রশস্তকরণ",
+    "total_ayahs": 8,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/094.mp3"
+  },
+  {
+    "number": 95,
+    "name_ar": "التين",
+    "name_bn": "আত-তীন",
+    "name_en": "At-Tin",
+    "meaning_bn": "ডুমুর",
+    "total_ayahs": 8,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/095.mp3"
+  },
+  {
+    "number": 96,
+    "name_ar": "العلق",
+    "name_bn": "আল-আলাক্ব",
+    "name_en": "Al-Alaq",
+    "meaning_bn": "রক্তপিণ্ড",
+    "total_ayahs": 19,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/096.mp3"
+  },
+  {
+    "number": 97,
+    "name_ar": "القدر",
+    "name_bn": "আল-ক্বদর",
+    "name_en": "Al-Qadr",
+    "meaning_bn": "মহিমান্বিত রাত",
+    "total_ayahs": 5,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/097.mp3"
+  },
+  {
+    "number": 98,
+    "name_ar": "البينة",
+    "name_bn": "আল-বায়্যিনাহ",
+    "name_en": "Al-Bayyinah",
+    "meaning_bn": "সুস্পষ্ট প্রমাণ",
+    "total_ayahs": 8,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/098.mp3"
+  },
+  {
+    "number": 99,
+    "name_ar": "الزلزلة",
+    "name_bn": "আজ-যালযালাহ",
+    "name_en": "Az-Zalzalah",
+    "meaning_bn": "ভূমিকম্প",
+    "total_ayahs": 8,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/099.mp3"
+  },
+  {
+    "number": 100,
+    "name_ar": "العاديات",
+    "name_bn": "আল-আদিয়াত",
+    "name_en": "Al-Adiyat",
+    "meaning_bn": "অভিযানকারী অশ্ব",
+    "total_ayahs": 11,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/100.mp3"
+  },
+  {
+    "number": 101,
+    "name_ar": "القارعة",
+    "name_bn": "আল-কারিয়াহ",
+    "name_en": "Al-Qari'ah",
+    "meaning_bn": "মহা প্রলয়",
+    "total_ayahs": 11,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/101.mp3"
+  },
+  {
+    "number": 102,
+    "name_ar": "التكاثر",
+    "name_bn": "আত-তাকাসুর",
+    "name_en": "At-Takathur",
+    "meaning_bn": "প্রাচুর্যের প্রতিযোগিতা",
+    "total_ayahs": 8,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/102.mp3"
+  },
+  {
+    "number": 103,
+    "name_ar": "العصر",
+    "name_bn": "আল-আসর",
+    "name_en": "Al-Asr",
+    "meaning_bn": "সময়",
+    "total_ayahs": 3,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/103.mp3"
+  },
+  {
+    "number": 104,
+    "name_ar": "الهمزة",
+    "name_bn": "আল-হুমাযাহ",
+    "name_en": "Al-Humazah",
+    "meaning_bn": "পরনিন্দাকারী",
+    "total_ayahs": 9,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/104.mp3"
+  },
+  {
+    "number": 105,
+    "name_ar": "الفيل",
+    "name_bn": "আল-ফীল",
+    "name_en": "Al-Fil",
+    "meaning_bn": "হাতি",
+    "total_ayahs": 5,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/105.mp3"
+  },
+  {
+    "number": 106,
+    "name_ar": "قريش",
+    "name_bn": "কুরাইশ",
+    "name_en": "Quraysh",
+    "meaning_bn": "কুরাইশ বংশ",
+    "total_ayahs": 4,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/106.mp3"
+  },
+  {
+    "number": 107,
+    "name_ar": "الماعون",
+    "name_bn": "আল-মাউন",
+    "name_en": "Al-Ma'un",
+    "meaning_bn": "গৃহস্থালি সাহায্য",
+    "total_ayahs": 7,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/107.mp3"
+  },
+  {
+    "number": 108,
+    "name_ar": "الكوثر",
+    "name_bn": "আল-কাওসার",
+    "name_en": "Al-Kawthar",
+    "meaning_bn": "প্রচুর কল্যাণ",
+    "total_ayahs": 3,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/108.mp3"
+  },
+  {
+    "number": 109,
+    "name_ar": "الكافرون",
+    "name_bn": "আল-কাফিরুন",
+    "name_en": "Al-Kafirun",
+    "meaning_bn": "অবিশ্বাসীগণ",
+    "total_ayahs": 6,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/109.mp3"
+  },
+  {
+    "number": 110,
+    "name_ar": "النصر",
+    "name_bn": "আন-নাসর",
+    "name_en": "An-Nasr",
+    "meaning_bn": "সাহায্য ও বিজয়",
+    "total_ayahs": 3,
+    "revelation_type": "মাদানী",
+    "audio_url": "https://server8.mp3quran.net/afs/110.mp3"
+  },
+  {
+    "number": 111,
+    "name_ar": "المسد",
+    "name_bn": "আল-মাসাদ",
+    "name_en": "Al-Masad",
+    "meaning_bn": "খেজুরের পাকানো রশি",
+    "total_ayahs": 5,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/111.mp3"
+  },
+  {
+    "number": 112,
+    "name_ar": "الإخلاص",
+    "name_bn": "আল-ইখলাস",
+    "name_en": "Al-Ikhlas",
+    "meaning_bn": "একনিষ্ঠতা",
+    "total_ayahs": 4,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/112.mp3"
+  },
+  {
+    "number": 113,
+    "name_ar": "الفلق",
+    "name_bn": "আল-ফালাক্ব",
+    "name_en": "Al-Falaq",
+    "meaning_bn": "প্রভাত",
+    "total_ayahs": 5,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/113.mp3"
+  },
+  {
+    "number": 114,
+    "name_ar": "الناس",
+    "name_bn": "আন-নাস",
+    "name_en": "An-Nas",
+    "meaning_bn": "মানবজাতি",
+    "total_ayahs": 6,
+    "revelation_type": "মাক্কী",
+    "audio_url": "https://server8.mp3quran.net/afs/114.mp3"
+  }
+]

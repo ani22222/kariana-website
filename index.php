@@ -377,6 +377,15 @@ if (file_exists($routesFile)) {
     $router->post('/api/v1/kyc/verify-nid', function (\Core\Request $request) {
         return (new \App\Controllers\Api\V1Controller())->verifyNid($request);
     });
+    $router->get('/api/v1/surahs', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->surahs($request);
+    });
+    $router->get('/api/v1/surah/{number}', function (\Core\Request $request, string $number) {
+        return (new \App\Controllers\Api\V1Controller())->surahDetail($request, (int)$number);
+    });
+    $router->get('/api/v1/hifz/progress', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->hifzTracker($request);
+    });
 
     // --- Telegram Bot Bidirectional Webhook & Action Card Router ---
     $router->post('/api/telegram/webhook', function (\Core\Request $request) {
@@ -757,6 +766,16 @@ if (file_exists($routesFile)) {
     $router->post('/api/v1/kyc/verify-nid', function (\Core\Request $request) {
         return (new \App\Controllers\Api\V1Controller())->verifyNidLevel2($request);
     });
+    $router->get('/api/v1/surahs', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->surahs($request);
+    });
+    $router->get('/api/v1/surah/{number}', function (\Core\Request $request, string $number) {
+        return (new \App\Controllers\Api\V1Controller())->surahDetail($request, (int)$number);
+    });
+    $router->get('/api/v1/hifz/progress', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->hifzTracker($request);
+    });
+
 
     // --- WhatsApp Server Gateway & Bidirectional Webhook ---
     $router->get('/api/whatsapp/webhook', function (\Core\Request $request) {

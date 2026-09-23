@@ -316,4 +316,92 @@ class V1Controller
         $res = $this->kycService->verifyGovernmentNid($uuid, $nid, $dob);
         return $this->jsonEnvelope($res['success'], $res['success'] ? 200 : 400, $res['message'], $res);
     }
+
+    /**
+     * GET /api/v1/surahs
+     * Comprehensive 114 Surahs list for Android Kotlin Quran App & Web Reader
+     */
+    public function surahs(Request $request): Response
+    {
+        $dataFile = dirname(__DIR__, 2) . '/Data/quran_surahs.json';
+        if (!file_exists($dataFile)) {
+            return $this->jsonEnvelope(false, 404, 'সূরা তালিকা ডাটাবেজ পাওয়া যায়নি।');
+        }
+
+        $surahs = json_decode(file_get_contents($dataFile), true) ?: [];
+        $query = trim((string)$request->get('q', ''));
+        $type = trim((string)$request->get('type', ''));
+
+        if (!empty($query)) {
+            $surahs = array_filter($surahs, function ($s) use ($query) {
+                return (
+                    stripos($s['name_bn'], $query) !== false ||
+                    stripos($s['name_en'], $query) !== false ||
+                    stripos($s['name_ar'], $query) !== false ||
+                    (string)$s['number'] === $query
+                );
+            });
+            $surahs = array_values($surahs);
+        }
+
+        if (!empty($type)) {
+            $surahs = array_filter($surahs, function ($s) use ($type) {
+                return stripos($s['revelation_type'], $type) !== false;
+            });
+            $surahs = array_values($surahs);
+        }
+
+        return $this->jsonEnvelope(true, 200, 'পবিত্র কুরআনুল কারীমের ১১৪টি সূরার তালিকা', [
+            'total_surahs' => count($surahs),
+            'font'         => 'AAR-SQ-003 (Kariana Official Arabic Script)',
+            'surahs'       => $surahs
+        ]);
+    }
+
+    /**
+     * GET /api/v1/surah/{number}
+     */
+    public function surahDetail(Request $request, int $surahNumber): Response
+    {
+        $dataFile = dirname(__DIR__, 2) . '/Data/quran_surahs.json';
+        if (!file_exists($dataFile)) {
+            return $this->jsonEnvelope(false, 404, 'সূরা তালিকা পাওয়া যায়নি।');
+        }
+
+        $surahs = json_decode(file_get_contents($dataFile), true) ?: [];
+        $found = null;
+        foreach ($surahs as $s) {
+            if ((int)$s['number'] === $surahNumber) {
+                $found = $s;
+                break;
+            }
+        }
+
+        if (!$found) {
+            return $this->jsonEnvelope(false, 404, 'অনুরোধকৃত সূরা নম্বর পাওয়া যায়নি।');
+        }
+
+        return $this->jsonEnvelope(true, 200, "সূরা {$found['name_bn']} এর বিবরণ", [
+            'surah'       => $found,
+            'audio_stream'=> $found['audio_url'],
+            'kariana_font'=> 'https://project.rasel.cloud/kariana/public/assets/fonts/AAR-SQ-003.ttf',
+            'mushaf_url'  => 'https://project.rasel.cloud/kariana/books'
+        ]);
+    }
+
+    /**
+     * GET /api/v1/hifz/progress
+     */
+    public function hifzTracker(Request $request): Response
+    {
+        return $this->jsonEnvelope(true, 200, 'হিফজ ও তিলাওয়াত অগ্রগতি ট্র্যাকার', [
+            'total_paras'   => 30,
+            'total_surahs'  => 114,
+            'total_rukus'   => 558,
+            'total_ayahs'   => 6236,
+            'recommended_daily_pages' => 2,
+            'kariana_method' => 'কারিয়ানা নূরানী ও সহীহ তিলাওয়াত সিলেবাস'
+        ]);
+    }
 }
+
