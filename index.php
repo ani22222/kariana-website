@@ -372,6 +372,11 @@ if (file_exists($routesFile)) {
         return $controller->updateDirectorStatus($request);
     });
 
+    $router->post('/admin/directors/create', function (\Core\Request $request) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->createDirector($request);
+    });
+
     $router->post('/admin/directors/delete/{id}', function (\Core\Request $request, string $id) {
         $controller = new \App\Controllers\AdminController();
         return $controller->deleteDirector($request, $id);

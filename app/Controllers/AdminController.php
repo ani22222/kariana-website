@@ -270,19 +270,55 @@ class AdminController
         }
 
         $id = (int)$request->post('director_id', 0);
-        $status = trim((string)$request->post('status', 'active'));
-        $loginAllowed = (int)$request->post('login_allowed', 1);
-        $reason = trim((string)$request->post('status_reason', ''));
-        $remarks = trim((string)$request->post('admin_remarks', ''));
-
-        $allowedStatuses = ['active', 'suspended', 'expelled', 'inactive'];
-        if (!in_array($status, $allowedStatuses, true)) {
-            $status = 'active';
+        if ($id <= 0) {
+            if ($request->isAjax()) {
+                return Response::json(['success' => false, 'message' => 'অবৈধ পরিচালক আইডি।'], 400);
+            }
+            Session::flash('error', 'অবৈধ পরিচালক আইডি।');
+            return Response::redirect('/admin#directors-hub');
         }
 
-        // If director is suspended or expelled or inactive, default loginAllowed to 0 unless specifically passed as 1
-        if (in_array($status, ['suspended', 'expelled'], true) && !$request->has('login_allowed')) {
+        $stmtEx = $this->db->prepare("SELECT * FROM `directors` WHERE `id` = :id LIMIT 1");
+        $stmtEx->execute(['id' => $id]);
+        $dir = $stmtEx->fetch();
+        if (!$dir) {
+            if ($request->isAjax()) {
+                return Response::json(['success' => false, 'message' => 'পরিচালক খুঁজে পাওয়া যায়নি।'], 404);
+            }
+            Session::flash('error', 'পরিচালক খুঁজে পাওয়া যায়নি।');
+            return Response::redirect('/admin#directors-hub');
+        }
+
+        // Determine status (keep existing if not provided)
+        $allowedStatuses = ['active', 'suspended', 'expelled', 'inactive'];
+        $status = $dir['status'] ?? 'active';
+        if ($request->has('status')) {
+            $newStatus = trim((string)$request->post('status'));
+            if (in_array($newStatus, $allowedStatuses, true)) {
+                $status = $newStatus;
+            }
+        }
+
+        // Determine loginAllowed
+        $loginAllowed = (int)($dir['login_allowed'] ?? 1);
+        if ($request->has('login_allowed')) {
+            $loginAllowed = (int)$request->post('login_allowed');
+        } elseif (in_array($status, ['suspended', 'expelled'], true) && !$request->has('login_allowed')) {
             $loginAllowed = 0;
+        }
+
+        // Determine reason / Huzur notes
+        $reason = $dir['status_reason'];
+        if ($request->has('status_reason')) {
+            $val = trim((string)$request->post('status_reason'));
+            $reason = ($val !== '') ? $val : null;
+        }
+
+        // Determine admin remarks
+        $remarks = $dir['admin_remarks'];
+        if ($request->has('admin_remarks')) {
+            $val = trim((string)$request->post('admin_remarks'));
+            $remarks = ($val !== '') ? $val : null;
         }
 
         $stmt = $this->db->prepare("
@@ -297,8 +333,8 @@ class AdminController
         $stmt->execute([
             'status'        => $status,
             'login_allowed' => $loginAllowed,
-            'reason'        => $reason !== '' ? $reason : null,
-            'remarks'       => $remarks !== '' ? $remarks : null,
+            'reason'        => $reason,
+            'remarks'       => $remarks,
             'id'            => $id,
         ]);
 
@@ -310,17 +346,118 @@ class AdminController
             default     => $status,
         };
 
-        $msg = "পরিচালকের স্ট্যাটাস সফলভাবে '{$statusText}' করা হয়েছে।";
-        if ($loginAllowed === 0) {
-            $msg .= " (ড্যাশবোর্ড লগইন এক্সেস বন্ধ করা হয়েছে)";
+        $msg = "পরিচালকের তথ্য ও হুজুরের নোট সফলভাবে সংরক্ষিত হয়েছে।";
+        if ($request->has('status')) {
+            $msg = "পরিচালকের স্ট্যাটাস সফলভাবে '{$statusText}' করা হয়েছে।";
+            if ($loginAllowed === 0) {
+                $msg .= " (ড্যাশবোর্ড লগইন এক্সেস বন্ধ করা হয়েছে)";
+            }
         }
 
         if ($request->isAjax()) {
             return Response::json([
                 'success'       => true,
                 'message'       => $msg,
+                'director_id'   => $id,
                 'status'        => $status,
                 'login_allowed' => $loginAllowed,
+                'status_reason' => $reason,
+                'admin_remarks' => $remarks,
+            ]);
+        }
+
+        Session::flash('success', $msg);
+        return Response::redirect('/admin#directors-hub');
+    }
+
+    /**
+     * Create / Add New District Director (Text-box Form by Huzur/Admin)
+     * URL: POST /admin/directors/create
+     */
+    public function createDirector(Request $request): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $name = trim((string)$request->post('name', ''));
+        $district = trim((string)$request->post('district_name', ''));
+        $division = trim((string)$request->post('division_name', 'ঢাকা'));
+        $phone = trim((string)$request->post('phone', ''));
+        $designation = trim((string)$request->post('designation', 'জেলা পরিচালক'));
+        $qualification = trim((string)$request->post('qualification', 'কারিয়ানা সার্টিফাইড ক্বারী ও প্রশিক্ষক'));
+        $notes = trim((string)$request->post('status_reason', ''));
+        $adminRemarks = trim((string)$request->post('admin_remarks', ''));
+
+        if ($name === '' || $district === '' || $phone === '') {
+            $msg = 'পরিচালকের নাম, দায়িত্বপ্রাপ্ত জেলা এবং মোবাইল নম্বর পূরণ করা আবশ্যক।';
+            if ($request->isAjax()) {
+                return Response::json(['success' => false, 'message' => $msg], 400);
+            }
+            Session::flash('error', $msg);
+            return Response::redirect('/admin#directors-hub');
+        }
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        $username = 'dir_' . (strlen($cleanPhone) >= 6 ? substr($cleanPhone, -6) : rand(100000, 999999));
+        
+        // Ensure username is unique
+        $check = $this->db->prepare("SELECT id FROM `directors` WHERE `username` = ? LIMIT 1");
+        $check->execute([$username]);
+        if ($check->fetch()) {
+            $username .= '_' . rand(10, 99);
+        }
+
+        $slugBase = 'director-' . preg_replace('/[^\p{L}\p{N}]+/u', '-', mb_strtolower($name));
+        $slug = trim($slugBase, '-') . '-' . substr(md5(uniqid()), 0, 4);
+
+        $defaultPassword = password_hash('kariana2026!', PASSWORD_BCRYPT);
+        $email = $cleanPhone ? "director_{$cleanPhone}@karianaquran.com" : null;
+        $whatsapp = $cleanPhone;
+
+        $stmt = $this->db->prepare("
+            INSERT INTO `directors` (
+                `name`, `designation`, `district_name`, `division_name`, 
+                `phone`, `whatsapp`, `email`, `qualification`, `status`, 
+                `login_allowed`, `status_reason`, `admin_remarks`, 
+                `username`, `password`, `slug`, `bio`, `created_at`, `updated_at`
+            ) VALUES (
+                :name, :designation, :district_name, :division_name,
+                :phone, :whatsapp, :email, :qualification, 'active',
+                1, :status_reason, :admin_remarks,
+                :username, :password, :slug, :bio, NOW(), NOW()
+            )
+        ");
+
+        $stmt->execute([
+            'name'          => $name,
+            'designation'   => $designation ?: 'জেলা পরিচালক',
+            'district_name' => $district,
+            'division_name' => $division ?: 'ঢাকা',
+            'phone'         => $phone,
+            'whatsapp'      => $whatsapp,
+            'email'         => $email,
+            'qualification' => $qualification ?: 'কারিয়ানা সার্টিফাইড ক্বারী ও প্রশিক্ষক',
+            'status_reason' => $notes !== '' ? $notes : null,
+            'admin_remarks' => $adminRemarks !== '' ? $adminRemarks : null,
+            'username'      => $username,
+            'password'      => $defaultPassword,
+            'slug'          => $slug,
+            'bio'           => 'কারিয়ানা কুরআন শিক্ষা সোসাইটির দায়িত্বপ্রাপ্ত সম্মানিত জেলা পরিচালক।',
+        ]);
+
+        $newId = (int)$this->db->lastInsertId();
+        $msg = "মাশাআল্লাহ! নতুন পরিচালক '{$name}' ({$district}) সফলভাবে তালিকায় যুক্ত করা হয়েছে।";
+
+        if ($request->isAjax()) {
+            return Response::json([
+                'success'       => true,
+                'message'       => $msg,
+                'director_id'   => $newId,
+                'name'          => $name,
+                'district_name' => $district,
+                'division_name' => $division,
+                'phone'         => $phone,
             ]);
         }
 

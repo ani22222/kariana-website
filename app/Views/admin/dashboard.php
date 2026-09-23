@@ -197,11 +197,11 @@ $error = \Core\Session::getFlash('error');
                 </p>
             </div>
 
-            <!-- Instant Switcher & CSV Download Buttons -->
+            <!-- Instant Switcher, Add New Director & CSV Download Buttons -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                 <div class="relative">
-                    <select id="quickDirectorSelect" onchange="if(this.value) window.location.href=this.value" class="w-full sm:w-72 bg-emerald-950/90 hover:bg-emerald-950 text-white font-bold text-xs py-2.5 px-3 rounded-xl border border-gold-rich/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-gold-rich transition cursor-pointer">
-                        <option value="">⚡ যেকোনো পরিচালকের ড্যাশবোর্ড (৫৯)...</option>
+                    <select id="quickDirectorSelect" onchange="if(this.value) window.location.href=this.value" class="w-full sm:w-64 bg-emerald-950/90 hover:bg-emerald-950 text-white font-bold text-xs py-2.5 px-3 rounded-xl border border-gold-rich/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-gold-rich transition cursor-pointer">
+                        <option value="">⚡ যেকোনো পরিচালকের ড্যাশবোর্ড (<?= \Core\BengaliHelper::toBengaliNumber(count($allDirectors)) ?>)...</option>
                         <?php foreach ($allDirectors as $dirOption): ?>
                             <option value="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dirOption['id'] ?>">
                                 [ID #<?= $dirOption['id'] ?>] <?= htmlspecialchars($dirOption['district_name']) ?> — <?= htmlspecialchars($dirOption['name']) ?> (<?= htmlspecialchars($dirOption['division_name']) ?>)
@@ -210,10 +210,106 @@ $error = \Core\Session::getFlash('error');
                     </select>
                 </div>
 
+                <button type="button" onclick="toggleAddDirectorPanel()" class="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 hover:from-emerald-500 hover:to-emerald-700 text-amber-300 border border-amber-400/50 px-3.5 py-2.5 rounded-xl text-xs font-black transition shadow flex items-center justify-center shrink-0 cursor-pointer" title="তালিকায় নতুন পরিচালক যুক্ত করুন">
+                    <svg class="w-4 h-4 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    <span>নতুন পরিচালক যুক্ত করুন</span>
+                </button>
+
                 <a href="<?= $baseUrl ?>/admin/directors/export" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition shadow flex items-center justify-center shrink-0" title="চূড়ান্ত যাচাইকৃত তালিকা এক্সেল CSV ফরম্যাটে ডাউনলোড করুন">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     তালিকা ডাউনলোড (CSV)
                 </a>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- ADD NEW DIRECTOR TEXT-BOX PANEL (হুজুরের জন্য নতুন পরিচালক সংযোজন বক্স) -->
+        <!-- ========================================================================= -->
+        <div id="addNewDirectorPanel" class="hidden bg-gradient-to-br from-amber-50/95 via-emerald-50/50 to-white border-b-2 border-amber-300 p-6 transition-all duration-300 shadow-inner">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-amber-200/80">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-9 h-9 rounded-xl bg-emerald-night text-amber-300 flex items-center justify-center shadow">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                        </span>
+                        <div>
+                            <h3 class="text-base sm:text-lg font-black text-emerald-950">নতুন জেলা পরিচালক সংযোজন (টেক্সট বক্স এন্ট্রি ফর্ম)</h3>
+                            <p class="text-xs text-slate-600">হুজুরের নির্দেশনা অনুযায়ী কোনো নতুন পরিচালককে অন্তর্ভুক্ত করতে নিচের টেক্সট বক্সগুলো পূরণ করুন:</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="toggleAddDirectorPanel()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-white/80 transition" title="বন্ধ করুন">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <form id="createDirectorForm" onsubmit="submitNewDirector(event)" class="space-y-4">
+                    <?= $csrfField ?>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                পরিচালকের পূর্ণ নাম <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="newDirName" name="name" required placeholder="যেমন: মাওলানা মুহাম্মাদ আব্দুল্লাহ" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                দায়িত্বপ্রাপ্ত জেলা / এলাকা <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="newDirDistrict" name="district_name" required placeholder="যেমন: সিলেট / সুনামগঞ্জ" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                প্রশাসনিক বিভাগ <span class="text-red-500">*</span>
+                            </label>
+                            <select id="newDirDivision" name="division_name" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs cursor-pointer">
+                                <option value="ঢাকা">ঢাকা বিভাগ</option>
+                                <option value="চট্টগ্রাম">চট্টগ্রাম বিভাগ</option>
+                                <option value="রাজশাহী">রাজশাহী বিভাগ</option>
+                                <option value="খুলনা">খুলনা বিভাগ</option>
+                                <option value="বরিশাল">বরিশাল বিভাগ</option>
+                                <option value="সিলেট">সিলেট বিভাগ</option>
+                                <option value="রংপুর">রংপুর বিভাগ</option>
+                                <option value="ময়মনসিংহ">ময়মনসিংহ বিভাগ</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                মোবাইল নম্বর <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="newDirPhone" name="phone" required placeholder="যেমন: 017xxxxxxxx" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white font-mono shadow-xs">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">পদবি</label>
+                            <input type="text" id="newDirDesignation" name="designation" value="জেলা পরিচালক" placeholder="যেমন: জেলা পরিচালক" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">শিক্ষাগত যোগ্যতা / উপাধি</label>
+                            <input type="text" id="newDirQualification" name="qualification" value="কারিয়ানা সার্টিফাইড ক্বারী ও প্রশিক্ষক" placeholder="যেমন: ক্বারী ও মুয়াল্লিম" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-extrabold text-amber-950 mb-1">
+                            হুজুরের নোট / বিশেষ মন্তব্য (ঐচ্ছিক)
+                        </label>
+                        <input type="text" id="newDirNotes" name="status_reason" placeholder="যেমন: হুজুরের সরাসরি নির্দেশিত / নতুন দায়িত্বপ্রাপ্ত..." class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-amber-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white shadow-xs">
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-2 pt-2">
+                        <button type="button" onclick="toggleAddDirectorPanel()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-slate-300 transition">
+                            বাতিল
+                        </button>
+                        <button type="submit" id="btnSubmitDirector" class="px-5 py-2.5 rounded-xl text-xs font-black text-white bg-emerald-night hover:bg-emerald-deep shadow-md transition flex items-center cursor-pointer">
+                            <svg class="w-4 h-4 mr-1.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            <span>তালিকায় যুক্ত করুন</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -422,11 +518,6 @@ $error = \Core\Session::getFlash('error');
                                 </div>
                             </div>
 
-                            <!-- Reason / Note if set -->
-                            <div id="reason-box-<?= $dir['id'] ?>" class="<?= !empty($reason) ? '' : 'hidden' ?> mt-2 bg-amber-50 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded-lg text-[11px]">
-                                <span class="font-bold">নোট:</span> <span id="reason-text-<?= $dir['id'] ?>"><?= htmlspecialchars($reason) ?></span>
-                            </div>
-
                             <!-- ⚡ INSTANT 1-CLICK REVIEW BUTTONS (FOR HUZUR / MAIN OWNER) -->
                             <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
                                 <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">হুজুরের সিদ্ধান্ত:</span>
@@ -439,6 +530,30 @@ $error = \Core\Session::getFlash('error');
                                     </button>
                                     <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'suspended')" class="btn-quick-status px-2.5 py-1 rounded-md text-[11px] font-extrabold transition shadow-xs <?= $status === 'suspended' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-200' ?>" title="সাময়িকভাবে স্থগিত রাখুন">
                                         ⏸ স্থগিত
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ✍️ HUZUR INLINE NOTE / CUSTOM CHANGE WRITING BOX -->
+                            <div class="mt-2.5 bg-amber-50/80 border border-amber-200/90 rounded-xl p-2.5">
+                                <div class="flex items-center justify-between mb-1">
+                                    <label for="card-note-<?= $dir['id'] ?>" class="text-[11px] font-extrabold text-amber-950 flex items-center">
+                                        <svg class="w-3.5 h-3.5 mr-1 text-amber-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        হুজুরের নোট / পরিবর্তন মন্তব্য:
+                                    </label>
+                                    <span id="card-note-saved-<?= $dir['id'] ?>" class="hidden text-[10px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.5 rounded shadow-xs">✓ সেভ হয়েছে</span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" 
+                                           id="card-note-<?= $dir['id'] ?>" 
+                                           value="<?= htmlspecialchars($reason ?: $remarks) ?>" 
+                                           placeholder="হুজুরের নির্দেশ বা মন্তব্য লিখুন..." 
+                                           class="flex-1 text-xs px-2.5 py-1.5 rounded-lg border border-amber-300 focus:ring-2 focus:ring-emerald-vibrant focus:border-emerald-600 bg-white placeholder-slate-400"
+                                           onkeydown="if(event.key==='Enter'){ saveInlineNote(<?= $dir['id'] ?>, this.value); }">
+                                    <button type="button" 
+                                            onclick="saveInlineNote(<?= $dir['id'] ?>, document.getElementById('card-note-<?= $dir['id'] ?>').value)" 
+                                            class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition shadow-xs shrink-0 flex items-center cursor-pointer" title="নোট সংরক্ষণ করুন">
+                                        <span>সেভ</span>
                                     </button>
                                 </div>
                             </div>
@@ -489,6 +604,7 @@ $error = \Core\Session::getFlash('error');
                         <th class="px-4 py-3.5 text-center">শিক্ষক</th>
                         <th class="px-4 py-3.5 text-center">বর্তমান অবস্থা</th>
                         <th class="px-4 py-3.5 text-center">হুজুরের দ্রুত সিদ্ধান্ত</th>
+                        <th class="px-4 py-3.5">হুজুরের নোট / পরিবর্তন মন্তব্য</th>
                         <th class="px-4 py-3.5 text-right">একশন</th>
                     </tr>
                 </thead>
@@ -557,6 +673,22 @@ $error = \Core\Session::getFlash('error');
                                     <button type="button" onclick="quickSetStatus(<?= $dir['id'] ?>, 'suspended')" class="px-2 py-0.5 rounded text-[11px] font-extrabold <?= $status === 'suspended' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-200' ?>">
                                         স্থগিত
                                     </button>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3.5">
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" 
+                                           id="table-note-<?= $dir['id'] ?>" 
+                                           value="<?= htmlspecialchars($reason ?: $remarks) ?>" 
+                                           placeholder="হুজুরের নির্দেশ বা মন্তব্য..." 
+                                           class="w-44 sm:w-56 text-xs px-2.5 py-1.5 rounded-lg border border-amber-300 focus:ring-1 focus:ring-emerald-vibrant focus:border-emerald-600 bg-amber-50/30"
+                                           onkeydown="if(event.key==='Enter'){ saveInlineNote(<?= $dir['id'] ?>, this.value); }">
+                                    <button type="button" 
+                                            onclick="saveInlineNote(<?= $dir['id'] ?>, document.getElementById('table-note-<?= $dir['id'] ?>').value)" 
+                                            class="bg-amber-600 hover:bg-amber-700 text-white px-2 py-1.5 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer" title="নোট সংরক্ষণ করুন">
+                                        সেভ
+                                    </button>
+                                    <span id="table-note-saved-<?= $dir['id'] ?>" class="hidden text-[10px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.5 rounded shadow-xs">✓</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3.5 text-right space-x-1">
@@ -847,6 +979,103 @@ function quickSetStatus(directorId, newStatus) {
     .catch(err => {
         console.error(err);
         showToast('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।', false);
+    });
+}
+
+// Save Inline Note for Huzur (Instant AJAX without reload)
+function saveInlineNote(directorId, noteText) {
+    const cardSaved = document.getElementById('card-note-saved-' + directorId);
+    const tableSaved = document.getElementById('table-note-saved-' + directorId);
+    
+    const formData = new FormData();
+    formData.append('director_id', directorId);
+    formData.append('status_reason', noteText.trim());
+    formData.append('ajax', '1');
+
+    fetch(BASE_URL + '/admin/directors/status', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            // Flash saved badges
+            if (cardSaved) {
+                cardSaved.classList.remove('hidden');
+                setTimeout(() => cardSaved.classList.add('hidden'), 2500);
+            }
+            if (tableSaved) {
+                tableSaved.classList.remove('hidden');
+                setTimeout(() => tableSaved.classList.add('hidden'), 2500);
+            }
+
+            // Sync both card and table inputs
+            const cInput = document.getElementById('card-note-' + directorId);
+            const tInput = document.getElementById('table-note-' + directorId);
+            if (cInput && cInput.value !== noteText) cInput.value = noteText;
+            if (tInput && tInput.value !== noteText) tInput.value = noteText;
+
+            showToast(data.message || 'হুজুরের নোট সফলভাবে সংরক্ষিত হয়েছে!');
+        } else {
+            showToast(data.message || 'নোট সংরক্ষণে সমস্যা হয়েছে।', false);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('সার্ভারের সাথে সংযোগ স্থাপন সম্ভব হয়নি।', false);
+    });
+}
+
+// Toggle Add Director Text-box Panel
+function toggleAddDirectorPanel() {
+    const panel = document.getElementById('addNewDirectorPanel');
+    if (!panel) return;
+    
+    panel.classList.toggle('hidden');
+    if (!panel.classList.contains('hidden')) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const nameInput = document.getElementById('newDirName');
+        if (nameInput) setTimeout(() => nameInput.focus(), 300);
+    }
+}
+
+// Submit New Director Form via AJAX
+function submitNewDirector(e) {
+    e.preventDefault();
+    const form = document.getElementById('createDirectorForm');
+    const formData = new FormData(form);
+    const btn = document.getElementById('btnSubmitDirector');
+
+    const originalBtnHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-amber-300 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> <span>যুক্ত করা হচ্ছে...</span>';
+
+    fetch(BASE_URL + '/admin/directors/create', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+
+        if (data.success) {
+            showToast(data.message || 'নতুন পরিচালক সফলভাবে যুক্ত হয়েছে!');
+            form.reset();
+            // Reload page smoothly to display new director card, options & counters
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            showToast(data.message || 'ত্রুটি ঘটেছে, পুনরায় চেষ্টা করুন।', false);
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+        showToast('সার্ভার যোগাযোগে সমস্যা হয়েছে।', false);
     });
 }
 
