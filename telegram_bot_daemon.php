@@ -16,9 +16,9 @@ define('ADMIN_CHAT_ID', (string)($secretCreds['admin_chat_id'] ?? '1827362508'))
 define('TG_API', 'https://api.telegram.org/bot' . BOT_TOKEN);
 
 define('PROJECT_ROOT', __DIR__);
-define('DEFAULT_CONV_ID', '6bd0f2a8-a3d2-459d-99a3-872c0091d281');
+define('DEFAULT_CONV_ID', 'b5d31c4a-85e9-4609-b28a-3786eed9a1a3');
 define('DEFAULT_PROJECT_NAME', 'Kariana Website');
-define('DEFAULT_CHAT_TITLE', 'Telegram Ad Security Concern');
+define('DEFAULT_CHAT_TITLE', 'কারিয়ানা কুরআন প্রধান প্রজেক্ট');
 define('DEFAULT_MODEL', 'Gemini 3.8 Flash (High)');
 
 define('STATE_FILE', PROJECT_ROOT . '/telegram_state.json');
@@ -30,7 +30,7 @@ define('BRAIN_DIR', 'C:/Users/UseR/.gemini/antigravity/brain');
 // Standard Access Links
 define('LINK_LOCAL', 'http://localhost:8015');
 define('LINK_WIFI', 'http://192.168.0.100:8015');
-define('LINK_CLOUDFLARE', 'https://rev-mysql-stops-ext.trycloudflare.com');
+define('LINK_CLOUDFLARE', 'https://crowd-passenger-martin-passport.trycloudflare.com');
 define('LINK_GITHUB', 'https://github.com/ani22222/kariana-website');
 
 // Logging to file & console
@@ -1940,19 +1940,19 @@ while (true) {
                             if ($res['ok'] ?? false) $sent = true;
                         }
                         if (!$sent) {
-                            $webShot = PROJECT_ROOT . '/storage/logs/verify_mobile.png';
+                            $webShot = PROJECT_ROOT . '/storage/logs/verify_desktop.png';
                             if (!file_exists($webShot)) {
-                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/final_mobile.png';
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/verify_desktop.png';
                             }
                             if (!file_exists($webShot)) {
-                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/verify_desktop.png';
                             }
-                            sendMsg($chatId, "🔒 *পিসি স্ক্রিন স্ট্যাটাস:* কম্পিউটার স্ক্রিন বর্তমানে লক স্ক্রিন / হেডলেস সেশনে রয়েছে।\n\n📱 ওয়েবসাইটের লাইভ মোবাইল ভিউ নিচে পাঠানো হলো:");
+                            sendMsg($chatId, "🖥️ *পিসি স্ক্রিন স্ট্যাটাস:* আপনার একটি মনিটর অফ থাকায় উইন্ডোজ DWM লাইভ স্ক্রিন বাফার সাময়িকভাবে পজ রয়েছে।\n\n💻 পিসির ফুলস্ক্রিন ডেস্কটপ রেজোলিউশন ভিউ (1440x900) নিচে পাঠানো হলো:");
                             if (file_exists($webShot)) {
-                                sendPhoto($chatId, $webShot, "📱 *কারিয়ানা মোবাইল লাইভ ভিউ* (Port 8015)\n" . getStandardLinksText());
+                                sendPhoto($chatId, $webShot, "🖥️ *পিসির ডেস্কটপ ভিউ* (Port 8015)\n" . getStandardLinksText());
                             }
                             // Refresh in background without blocking
-                            pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js"', 'r'));
+                            pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js" >nul 2>&1', 'r'));
                         }
                     } elseif ($data === 'action_web_screenshot') {
                         answerCallback($cbId, 'ওয়েবসাইট প্রিভিউ প্রস্তুত হচ্ছে...');
@@ -2239,16 +2239,16 @@ while (true) {
                             if ($res['ok'] ?? false) $sent = true;
                         }
                         if (!$sent) {
-                            $webShot = PROJECT_ROOT . '/storage/logs/verify_mobile.png';
+                            $webShot = PROJECT_ROOT . '/storage/logs/verify_desktop.png';
                             if (!file_exists($webShot)) {
-                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/final_mobile.png';
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/' . ($state['active_conv_id'] ?? DEFAULT_CONV_ID) . '/verify_desktop.png';
                             }
                             if (!file_exists($webShot)) {
-                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/final_mobile.png';
+                                $webShot = 'C:/Users/UseR/.gemini/antigravity/brain/b5d31c4a-85e9-4609-b28a-3786eed9a1a3/verify_desktop.png';
                             }
-                            sendMsg($chatId, "🔒 *পিসি স্ক্রিন স্ট্যাটাস:* ডেস্কটপ লক স্ক্রিন / হেডলেস সেশনে রয়েছে।\n\n📱 ওয়েবসাইটের লাইভ মোবাইল ভিউ নিচে পাঠানো হলো:");
+                            sendMsg($chatId, "🖥️ *পিসি স্ক্রিন স্ট্যাটাস:* আপনার একটি মনিটর অফ থাকায় উইন্ডোজের লাইভ স্ক্রিন বাফার পজ রয়েছে।\n\n💻 পিসির ওয়াইডস্ক্রিন ডেস্কটপ রেজোলিউশন ভিউ (1440x900) নিচে পাঠানো হলো:");
                             if (file_exists($webShot)) {
-                                sendPhoto($chatId, $webShot, "📱 *কারিয়ানা মোবাইল লাইভ ভিউ* (Port 8015)\n" . getStandardLinksText());
+                                sendPhoto($chatId, $webShot, "🖥️ *পিসির ডেস্কটপ রেজোলিউশন ভিউ* (Port 8015)\n" . getStandardLinksText());
                             }
                             // Refresh in background without blocking
                             pclose(popen('start /b cmd /c node "' . PROJECT_ROOT . '/screenshot_verify.js" >nul 2>&1', 'r'));
