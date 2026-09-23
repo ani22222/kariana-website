@@ -58,28 +58,84 @@ class Request
         $scriptDir = dirname($scriptName);
         $scriptDir = ($scriptDir === '/' || $scriptDir === '\\' || $scriptDir === '.') ? '' : $scriptDir;
 
+        // 4. Reverse Proxy Prefix Detection (e.g. HTTP_X_FORWARDED_PREFIX like '/kariana')
+        $forwardedPrefix = '';
+        if (!empty($this->serverParams['HTTP_X_FORWARDED_PREFIX'])) {
+            $rawPrefix = $this->serverParams['HTTP_X_FORWARDED_PREFIX'];
+            if (str_contains($rawPrefix, ',')) {
+                $rawPrefix = trim(explode(',', $rawPrefix)[0]);
+            }
+            $forwardedPrefix = '/' . trim($rawPrefix, '/');
+            if ($forwardedPrefix === '/') {
+                $forwardedPrefix = '';
+            }
+        }
+
+        // If a forwarded prefix is present and the request path starts with it, strip it for internal routing
+        if ($forwardedPrefix !== '') {
+            if ($decodedPath === $forwardedPrefix) {
+                $decodedPath = '';
+            } elseif (str_starts_with($decodedPath, $forwardedPrefix . '/')) {
+                $decodedPath = substr($decodedPath, strlen($forwardedPrefix));
+            }
+        }
+
         // Check decoded script directory comparison
         $decodedScriptDir = rawurldecode($scriptDir);
 
-        if ($decodedScriptDir !== '' && str_starts_with($decodedPath, $decodedScriptDir)) {
-            $decodedPath = substr($decodedPath, strlen($decodedScriptDir));
-        } elseif ($scriptDir !== '' && str_starts_with($decodedPath, $scriptDir)) {
-            $decodedPath = substr($decodedPath, strlen($scriptDir));
+        if ($decodedScriptDir !== '') {
+            if ($decodedPath === $decodedScriptDir) {
+                $decodedPath = '';
+            } elseif (str_starts_with($decodedPath, $decodedScriptDir . '/')) {
+                $decodedPath = substr($decodedPath, strlen($decodedScriptDir));
+            }
+        } elseif ($scriptDir !== '') {
+            if ($decodedPath === $scriptDir) {
+                $decodedPath = '';
+            } elseif (str_starts_with($decodedPath, $scriptDir . '/')) {
+                $decodedPath = substr($decodedPath, strlen($scriptDir));
+            }
         }
 
-        // Clean up the path
+        // Clean up the internal routing path
         $cleanPath = '/' . trim($decodedPath, '/');
         $this->path = $cleanPath === '' ? '/' : $cleanPath;
 
-        // 4. Construct Base URL (detecting protocol, host, port, and subdirectory)
+        // 5. Construct Base URL (detecting protocol, host, port, and subdirectory/prefix)
+        $cfScheme = null;
+        if (!empty($this->serverParams['HTTP_CF_VISITOR'])) {
+            $cfVisitor = json_decode($this->serverParams['HTTP_CF_VISITOR'], true);
+            if (is_array($cfVisitor) && isset($cfVisitor['scheme'])) {
+                $cfScheme = strtolower((string)$cfVisitor['scheme']);
+            }
+        }
+
+        $forwardedProto = strtolower($this->serverParams['HTTP_X_FORWARDED_PROTO'] ?? '');
+        if (str_contains($forwardedProto, ',')) {
+            $forwardedProto = trim(explode(',', $forwardedProto)[0]);
+        }
+
         $isHttps = (!empty($this->serverParams['HTTPS']) && $this->serverParams['HTTPS'] !== 'off')
-            || (isset($this->serverParams['SERVER_PORT']) && $this->serverParams['SERVER_PORT'] == 443)
-            || (isset($this->serverParams['HTTP_X_FORWARDED_PROTO']) && $this->serverParams['HTTP_X_FORWARDED_PROTO'] === 'https');
+            || (isset($this->serverParams['SERVER_PORT']) && (int)$this->serverParams['SERVER_PORT'] === 443)
+            || $forwardedProto === 'https'
+            || $cfScheme === 'https'
+            || (!empty($this->serverParams['HTTP_X_FORWARDED_SSL']) && strtolower($this->serverParams['HTTP_X_FORWARDED_SSL']) === 'on')
+            || (!empty($this->serverParams['HTTP_FRONT_END_HTTPS']) && strtolower($this->serverParams['HTTP_FRONT_END_HTTPS']) !== 'off');
 
         $protocol = $isHttps ? 'https' : 'http';
-        $host = $this->serverParams['HTTP_HOST'] ?? 'localhost';
 
-        $this->baseUrl = rtrim("{$protocol}://{$host}{$scriptDir}", '/');
+        $host = $this->serverParams['HTTP_X_FORWARDED_HOST']
+            ?? $this->serverParams['HTTP_HOST']
+            ?? 'localhost';
+
+        if (str_contains($host, ',')) {
+            $host = trim(explode(',', $host)[0]);
+        }
+
+        // Base directory or reverse proxy prefix
+        $basePrefix = $forwardedPrefix !== '' ? $forwardedPrefix : $scriptDir;
+
+        $this->baseUrl = rtrim("{$protocol}://{$host}{$basePrefix}", '/');
     }
 
     /**
@@ -190,7 +246,8 @@ class Request
 
     public function getIp(): string
     {
-        return $this->serverParams['HTTP_CLIENT_IP']
+        return $this->serverParams['HTTP_CF_CONNECTING_IP']
+            ?? $this->serverParams['HTTP_CLIENT_IP']
             ?? $this->serverParams['HTTP_X_FORWARDED_FOR']
             ?? $this->serverParams['REMOTE_ADDR']
             ?? '127.0.0.1';

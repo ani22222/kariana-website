@@ -7,6 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= isset($title) ? htmlspecialchars($title) : 'কারিয়ানা কুরআন শিক্ষা সোসাইটি' ?></title>
     
+    <!-- Anti-Flash Dark Mode Script (Immediately applies or removes .dark before DOM renders) -->
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('kariana_theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
     <!-- Enterprise Global Maximum-Level SEO Stack (Schema.org JSON-LD, OpenGraph, Twitter Cards, Canonical) -->
     <?= \Core\SeoHelper::renderHeadStack([
         'title'       => $title ?? null,
@@ -87,6 +102,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -154,6 +170,36 @@
                 display: none !important;
             }
         }
+
+        /* Royal Islamic Dark Mode Palette */
+        html.dark body {
+            background-color: #031711 !important;
+            color: #f1f5f9 !important;
+        }
+        html.dark .bg-\[\#f8f5ee\] {
+            background-color: #031711 !important;
+        }
+        html.dark .bg-\[\#fffefb\] {
+            background-color: #07271e !important;
+            color: #f8fafc !important;
+            border-color: #0e4435 !important;
+        }
+        html.dark .border-\[\#e7dec6\] {
+            border-color: #0e4435 !important;
+        }
+        html.dark .text-slate-800 {
+            color: #f1f5f9 !important;
+        }
+        html.dark .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+        html.dark .text-slate-600 {
+            color: #94a3b8 !important;
+        }
+        html.dark .bg-white {
+            background-color: #07271e !important;
+            color: #f8fafc !important;
+        }
     </style>
 </head>
 <body class="bg-[#f8f5ee] text-slate-800 antialiased flex flex-col min-h-screen">
@@ -205,28 +251,6 @@
     ?>
     <!-- Real-time Offline / Online Network Alert Bar -->
     <div id="networkAlertBar" class="hidden text-xs py-1.5 px-3 text-center font-bold z-50 transition-all duration-300"></div>
-
-    <!-- PWA In-App Install Floating Banner for Mobile -->
-    <div id="pwaInstallBanner" class="hidden fixed top-2 left-2 right-2 max-w-lg mx-auto z-50 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] backdrop-blur-lg transition-all duration-300">
-        <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center space-x-2.5">
-                <img src="<?= $baseUrl ?? '' ?>/assets/images/icon-192.png" alt="App Icon" class="w-10 h-10 rounded-xl border border-amber-400 shadow shrink-0">
-                <div>
-                    <h4 class="text-xs font-bold text-amber-300">কারিয়ানা মোবাইল অ্যাপ</h4>
-                    <p class="text-[11px] text-emerald-200">১-ক্লিকে ফোনে শর্টকাট যুক্ত করুন</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-1.5 shrink-0">
-                <button id="pwaInstallBtn" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 text-xs font-black px-3.5 py-1.5 rounded-xl shadow transition transform active:scale-95 flex items-center space-x-1">
-                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <span>ইনস্টল করুন</span>
-                </button>
-                <button id="pwaDismissBtn" type="button" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition" title="বিজ্ঞপ্তি বন্ধ করুন">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Visual Step-by-Step PWA / Shortcut Guide Modal -->
     <div id="pwaGuideModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -303,6 +327,29 @@
                         <p class="text-[10px] sm:text-[11px] text-amber-300 font-medium tracking-wider">কুরআন শিক্ষা সোসাইটি</p>
                     </div>
                 </a>
+
+                <!-- Header Actions (Visible on Mobile & Desktop): Dark/Light Toggle + App Download Button -->
+                <div class="flex items-center space-x-2 md:order-last">
+                    <!-- Dark / Light Mode Switcher Button -->
+                    <button id="themeToggleBtn" type="button" 
+                            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-gold-rich/40 text-amber-300 flex items-center justify-center transition shadow-sm"
+                            title="ডার্ক / লাইট মোড পরিবর্তন">
+                        <!-- Sun Icon (shown in dark mode) -->
+                        <svg id="themeSunIcon" class="w-4 h-4 hidden text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <!-- Moon Icon (shown in light mode) -->
+                        <svg id="themeMoonIcon" class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    </button>
+
+                    <!-- App Download / Install Action Button -->
+                    <button id="headerAppInstallBtn" type="button" 
+                            class="flex items-center space-x-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-black px-2.5 sm:px-3.5 py-1.5 rounded-xl shadow-md transition transform active:scale-95 text-xs border border-amber-300/40"
+                            title="কারিয়ানা মোবাইল অ্যাপ ফোনে ইনস্টল করুন">
+                        <svg class="w-3.5 h-3.5 text-emerald-950 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span class="text-[11px] sm:text-xs">অ্যাপ ডাউনলোড</span>
+                    </button>
+                </div>
 
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex items-center space-x-5 text-white font-medium text-sm">
@@ -516,6 +563,36 @@
     <!-- Progressive Web App Engine & Real-Time Network Health Observer -->
     <script>
     (function() {
+        // Theme Toggle Controller (Dark / Light Mode)
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeSunIcon = document.getElementById('themeSunIcon');
+        const themeMoonIcon = document.getElementById('themeMoonIcon');
+
+        function syncThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (themeSunIcon && themeMoonIcon) {
+                if (isDark) {
+                    themeSunIcon.classList.remove('hidden');
+                    themeMoonIcon.classList.add('hidden');
+                } else {
+                    themeSunIcon.classList.add('hidden');
+                    themeMoonIcon.classList.remove('hidden');
+                }
+            }
+        }
+
+        syncThemeIcons();
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                try {
+                    localStorage.setItem('kariana_theme', isDark ? 'dark' : 'light');
+                } catch (e) {}
+                syncThemeIcons();
+            });
+        }
+
         // 1. Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -527,6 +604,7 @@
         let deferredPrompt = null;
         const installBanner = document.getElementById('pwaInstallBanner');
         const installBtn = document.getElementById('pwaInstallBtn');
+        const headerAppInstallBtn = document.getElementById('headerAppInstallBtn');
         const dismissBtn = document.getElementById('pwaDismissBtn');
         const networkBar = document.getElementById('networkAlertBar');
         const guideModal = document.getElementById('pwaGuideModal');
@@ -578,6 +656,10 @@
 
         if (installBtn) {
             installBtn.addEventListener('click', triggerInstallAction);
+        }
+
+        if (headerAppInstallBtn) {
+            headerAppInstallBtn.addEventListener('click', triggerInstallAction);
         }
 
         document.addEventListener('click', (e) => {
