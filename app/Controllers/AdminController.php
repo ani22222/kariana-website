@@ -120,6 +120,8 @@ class AdminController
         $coursesCount = (int)$this->db->query("SELECT COUNT(*) FROM `courses`")->fetchColumn();
         $admissionsCount = (int)$this->db->query("SELECT COUNT(*) FROM `admissions`")->fetchColumn();
         $booksCount = (int)$this->db->query("SELECT COUNT(*) FROM `books`")->fetchColumn();
+        $directorsCount = (int)$this->db->query("SELECT COUNT(*) FROM `directors`")->fetchColumn();
+        $teachersCount = (int)$this->db->query("SELECT COUNT(*) FROM `teachers`")->fetchColumn();
 
         $recentAdmissions = $this->db->query(
             "SELECT a.*, c.title as course_title 
@@ -128,16 +130,85 @@ class AdminController
              ORDER BY a.created_at DESC LIMIT 5"
         )->fetchAll();
 
+        // Fetch all 59 district directors with associated teacher & student counts
+        $allDirectors = $this->db->query("
+            SELECT d.*, COUNT(t.id) as teachers_count, COALESCE(SUM(t.total_students), 0) as total_students
+            FROM `directors` d 
+            LEFT JOIN `teachers` t ON d.id = t.director_id 
+            GROUP BY d.id 
+            ORDER BY d.id ASC
+        ")->fetchAll();
+
+        // Extract unique divisions for filter tabs
+        $divisions = [];
+        foreach ($allDirectors as $d) {
+            $div = trim((string)($d['division_name'] ?? ''));
+            if ($div !== '' && !in_array($div, $divisions, true)) {
+                $divisions[] = $div;
+            }
+        }
+
         return new Response(View::render('admin/dashboard', [
-            'title'            => 'অ্যাডমিন ড্যাশবোর্ড | কারিয়ানা কুরআন',
+            'title'            => 'অ্যাডমিন ড্যাশবোর্ড ও পরিচালক কমান্ড হাব | কারিয়ানা কুরআন',
             'stats'            => [
                 'posts'      => $postsCount,
                 'courses'    => $coursesCount,
                 'admissions' => $admissionsCount,
                 'books'      => $booksCount,
+                'directors'  => $directorsCount,
+                'teachers'   => $teachersCount,
             ],
             'recentAdmissions' => $recentAdmissions,
+            'allDirectors'     => $allDirectors,
+            'divisions'        => $divisions,
         ], 'layouts/main'));
+    }
+
+    /**
+     * Super Admin 1-Click Director Dashboard Switch / Impersonation
+     * Allows Super Admin to directly enter any individual director's dedicated dashboard
+     */
+    public function impersonateDirector(Request $request, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $dirId = (int)$id;
+        $stmt = $this->db->prepare("SELECT * FROM `directors` WHERE `id` = :id LIMIT 1");
+        $stmt->execute(['id' => $dirId]);
+        $dir = $stmt->fetch();
+
+        if (!$dir) {
+            Session::flash('error', 'অনুরোধকৃত জেলা পরিচালক খুঁজে পাওয়া যায়নি।');
+            return Response::redirect('/admin');
+        }
+
+        Session::set('director_id', $dir['id']);
+        Session::set('director_name', $dir['name']);
+        Session::set('director_district', $dir['district_name']);
+        Session::set('director_status', $dir['status']);
+        Session::set('admin_impersonating', true);
+        Session::set('admin_original_id', Session::getUser()['id'] ?? 1);
+
+        Session::flash('success', "🛡️ আপনি সুপার এডমিন হিসেবে '{$dir['name']}' ({$dir['district_name']})-এর একক ড্যাশবোর্ডে প্রবেশ করেছেন।");
+        return Response::redirect('/director/dashboard');
+    }
+
+    /**
+     * Exit Director Impersonation Mode and return to Main Admin Panel
+     */
+    public function exitImpersonation(Request $request): Response
+    {
+        Session::remove('director_id');
+        Session::remove('director_name');
+        Session::remove('director_district');
+        Session::remove('director_status');
+        Session::remove('admin_impersonating');
+        Session::remove('admin_original_id');
+
+        Session::flash('success', 'সফলভাবে পরিচালকের একক ড্যাশবোর্ড থেকে মূল অ্যাডমিন কন্ট্রোল প্যানেলে ফিরে এসেছেন।');
+        return Response::redirect('/admin');
     }
 
     /**

@@ -352,6 +352,16 @@ if (file_exists($routesFile)) {
         return $controller->directors($request);
     });
 
+    $router->get('/admin/directors/impersonate/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->impersonateDirector($request, $id);
+    });
+
+    $router->get('/admin/directors/exit-impersonation', function (\Core\Request $request) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->exitImpersonation($request);
+    });
+
     $router->post('/admin/directors/status', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
         return $controller->updateDirectorStatus($request);

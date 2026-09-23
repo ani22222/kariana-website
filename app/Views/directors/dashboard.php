@@ -7,6 +7,23 @@ $success = \Core\Session::getFlash('success');
 $error = \Core\Session::getFlash('error');
 ?>
 <div class="container mx-auto px-4 py-8">
+    <?php if (\Core\Session::get('admin_impersonating')): ?>
+        <!-- Super Admin Impersonation Control Banner -->
+        <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 text-white p-4 rounded-2xl shadow-lg mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 border border-amber-300">
+            <div class="flex items-center space-x-3">
+                <span class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">🛡️</span>
+                <div>
+                    <p class="font-bold text-sm text-white">সুপার এডমিন ভিউ মোড সক্রিয়</p>
+                    <p class="text-xs text-amber-100">আপনি বর্তমানে <strong><?= htmlspecialchars($director['name']) ?></strong> (<?= htmlspecialchars($director['district_name']) ?>)-এর একক পরিচালক ড্যাশবোর্ড পরিচালনা করছেন।</p>
+                </div>
+            </div>
+            <a href="<?= $baseUrl ?>/admin/directors/exit-impersonation" class="bg-white text-emerald-night hover:bg-emerald-50 px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md shrink-0 flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-emerald-night" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                মূল অ্যাডমিন কন্ট্রোল প্যানেলে ফিরে যান
+            </a>
+        </div>
+    <?php endif; ?>
+
     <!-- Director Header -->
     <div class="bg-gradient-to-r from-emerald-night via-emerald-deep to-emerald-night rounded-3xl p-6 md:p-8 text-white shadow-lg mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-2 text-center md:text-right">

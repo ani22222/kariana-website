@@ -420,45 +420,123 @@ window.smoothScrollToContent = function() {
 })();
 </script>
 
-<!-- Quick Stats / Features Bar (Soft Warm Ivory with Gold Borders) -->
-<div id="mainContentSection" class="bg-[#fffdf9] border-2 border-[#e6dcce] py-8 relative z-20 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] mt-0 md:mt-8 mx-4 md:mx-auto max-w-5xl rounded-2xl">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-[#ece3d4]">
-        <div class="px-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
-                <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+<!-- ============================================================
+     5-PORTAL QUICK ACCESS HUB (বই, কোর্স, ভর্তি, ব্লগ, জেলা পরিচালকবৃন্দ)
+     ============================================================ -->
+<div id="mainContentSection" class="relative z-20 mt-4 md:mt-8 mx-4 md:mx-auto max-w-5xl">
+    <div class="bg-[#fffdf9] border-2 border-[#e6dcce] rounded-3xl p-4 sm:p-6 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] mb-6">
+        <!-- Header / Label -->
+        <div class="flex items-center justify-between mb-4 px-1">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                <h3 class="text-xs sm:text-sm font-extrabold text-emerald-night uppercase tracking-wider">কুইক এক্সেস পোর্টাল</h3>
             </div>
-            <h4 class="font-bold text-[#064e3b] text-base">সহীহ তিলাওয়াত</h4>
-            <p class="text-xs text-slate-600 mt-0.5">বিশুদ্ধ তাজবীদ রুলস</p>
+            <span class="text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60">
+                ৫টি প্রধান সেবা
+            </span>
         </div>
-        <div class="px-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
-                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                </svg>
-            </div>
-            <h4 class="font-bold text-[#064e3b] text-base">দক্ষ শিক্ষক</h4>
-            <p class="text-xs text-slate-600 mt-0.5">প্রশিক্ষণপ্রাপ্ত মুয়াল্লিম</p>
+
+        <!-- 5-Card Quick Access Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <!-- 1. বই ও প্রকাশনা -->
+            <a href="<?= $baseUrl ?? '' ?>/books" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">বই ও প্রকাশনা</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">অর্ডার ও ক্যাটালগ</p>
+            </a>
+
+            <!-- 2. কোর্স ক্যাটালগ -->
+            <a href="<?= $baseUrl ?? '' ?>/courses" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
+                </div>
+                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">কোর্স ক্যাটালগ</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">নাজেরা ও তাজবীদ</p>
+            </a>
+
+            <!-- 3. ভর্তি আবেদন -->
+            <a href="<?= $baseUrl ?? '' ?>/courses#admission" class="group bg-white hover:bg-amber-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100/70 text-amber-800 flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-gold-rich group-hover:text-white transition-all shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-amber-800 transition">ভর্তি আবেদন</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">অনলাইন ফর্ম</p>
+            </a>
+
+            <!-- 4. ব্লগ ও নিউজ -->
+            <a href="<?= $baseUrl ?? '' ?>/blog" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                </div>
+                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">ব্লগ ও নিউজ</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">ইসলামী প্রবন্ধ</p>
+            </a>
+
+            <!-- 5. জেলা পরিচালকবৃন্দ (৫৯ জেলা) - Highlight Quick Access -->
+            <a href="<?= $baseUrl ?? '' ?>/directors" class="group col-span-2 sm:col-span-1 bg-gradient-to-br from-emerald-night to-emerald-deep text-white p-3.5 rounded-2xl border-2 border-gold-rich/70 shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-200 flex flex-col items-center text-center relative overflow-hidden">
+                <span class="absolute top-1.5 right-1.5 bg-gold-rich text-white text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow">নতুন</span>
+                <div class="w-12 h-12 rounded-2xl bg-gold-rich text-white flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-amber-300 group-hover:text-emerald-night transition-all shadow">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h4 class="font-black text-white text-xs sm:text-sm group-hover:text-amber-200 transition">জেলা পরিচালকবৃন্দ</h4>
+                <p class="text-[11px] text-amber-200/90 mt-0.5">৫৯ জেলা তালিকা</p>
+            </a>
         </div>
-        <div class="px-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
-                <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                </svg>
+    </div>
+
+    <!-- Quick Stats / Features Bar (Soft Warm Ivory with Gold Borders) -->
+    <div class="bg-[#fffdf9] border-2 border-[#e6dcce] py-6 sm:py-8 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] rounded-2xl">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-[#ece3d4]">
+            <div class="px-3">
+                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
+                    <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h4 class="font-bold text-[#064e3b] text-base">সহীহ তিলাওয়াত</h4>
+                <p class="text-xs text-slate-600 mt-0.5">বিশুদ্ধ তাজবীদ রুলস</p>
             </div>
-            <h4 class="font-bold text-[#064e3b] text-base">সারা দেশে ডেলিভারি</h4>
-            <p class="text-xs text-slate-600 mt-0.5">কুরিয়ারে নির্ভরযোগ্য সেবা</p>
-        </div>
-        <div class="px-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
-                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+            <div class="px-3">
+                <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    </svg>
+                </div>
+                <h4 class="font-bold text-[#064e3b] text-base">দক্ষ শিক্ষক</h4>
+                <p class="text-xs text-slate-600 mt-0.5">প্রশিক্ষণপ্রাপ্ত মুয়াল্লিম</p>
             </div>
-            <h4 class="font-bold text-[#064e3b] text-base">সার্বক্ষণিক সাপোর্ট</h4>
-            <p class="text-xs text-slate-600 mt-0.5">জেলা পরিচালক নেটওয়ার্ক</p>
+            <div class="px-3">
+                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
+                    <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                    </svg>
+                </div>
+                <h4 class="font-bold text-[#064e3b] text-base">সারা দেশে ডেলিভারি</h4>
+                <p class="text-xs text-slate-600 mt-0.5">কুরিয়ারে নির্ভরযোগ্য সেবা</p>
+            </div>
+            <div class="px-3">
+                <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                </div>
+                <h4 class="font-bold text-[#064e3b] text-base">সার্বক্ষণিক সাপোর্ট</h4>
+                <p class="text-xs text-slate-600 mt-0.5">জেলা পরিচালক নেটওয়ার্ক</p>
+            </div>
         </div>
     </div>
 </div>
