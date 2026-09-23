@@ -188,7 +188,7 @@ class V1Controller
      */
     public function courses(Request $request): Response
     {
-        $stmt = $this->db->query("SELECT `id`, `title`, `slug`, `subtitle`, `fee`, `discount_fee`, `duration`, `admission_open` FROM `courses` ORDER BY `sort_order` ASC");
+        $stmt = $this->db->query("SELECT `id`, `title`, `slug`, `course_code`, `category`, `fee`, `duration`, `total_classes`, `admission_open` FROM `courses` ORDER BY `sort_order` ASC");
         $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->jsonEnvelope(true, 200, 'কোর্স তালিকা', [
