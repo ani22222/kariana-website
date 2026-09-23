@@ -201,6 +201,30 @@
         $authRoleBadge = 'ব্যবস্থাপক';
     }
     ?>
+    <!-- Real-time Offline / Online Network Alert Bar -->
+    <div id="networkAlertBar" class="hidden text-xs py-1.5 px-3 text-center font-bold z-50 transition-all duration-300"></div>
+
+    <!-- PWA In-App Install Floating Banner for Mobile -->
+    <div id="pwaInstallBanner" class="hidden fixed top-3 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-md z-50 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 border-2 border-gold-rich text-white p-3 rounded-2xl shadow-2xl backdrop-blur-md transition-all duration-300">
+        <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-2.5">
+                <img src="<?= $baseUrl ?? '' ?>/assets/images/icon-192.png" alt="App Icon" class="w-10 h-10 rounded-xl border border-gold-rich shadow shrink-0">
+                <div>
+                    <h4 class="text-xs font-bold text-gold-shimmer">কারিয়ানা মোবাইল অ্যাপ</h4>
+                    <p class="text-[11px] text-emerald-200">হোমস্ক্রিনে ১-ক্লিকে যুক্ত করুন</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0">
+                <button id="pwaInstallBtn" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 text-xs font-black px-3.5 py-1.5 rounded-xl shadow transition transform active:scale-95">
+                    ইন্সটল
+                </button>
+                <button id="pwaDismissBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="topTickerBar" class="bg-emerald-night text-white text-xs sm:text-sm py-1 sm:py-1.5 px-3 sm:px-4 border-b border-gold-deep/30 flex items-center h-[26px] sm:h-auto overflow-hidden">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-2 space-x-reverse overflow-hidden whitespace-nowrap">
@@ -455,13 +479,112 @@
         <?= $mkt['custom_body_end_scripts'] ?>
     <?php endif; ?>
 
-    <!-- Progressive Web App Service Worker Registration -->
+    <!-- Progressive Web App Engine & Real-Time Network Health Observer -->
     <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('<?= $baseUrl ?? '' ?>/sw.js').catch(function() {});
+    (function() {
+        // 1. Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('<?= $baseUrl ?? '' ?>/sw.js').catch(function() {});
+            });
+        }
+
+        // 2. PWA In-App Install Prompt Handling
+        let deferredPrompt = null;
+        const installBanner = document.getElementById('pwaInstallBanner');
+        const installBtn = document.getElementById('pwaInstallBtn');
+        const dismissBtn = document.getElementById('pwaDismissBtn');
+        const networkBar = document.getElementById('networkAlertBar');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Check if dismissed in this session
+            if (!sessionStorage.getItem('pwa_banner_dismissed')) {
+                if (installBanner) {
+                    installBanner.classList.remove('hidden');
+                    installBanner.classList.add('flex');
+                }
+            }
+            // Show any in-page install buttons
+            document.querySelectorAll('.btn-pwa-install').forEach(btn => {
+                btn.style.display = 'inline-flex';
+            });
         });
-    }
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        if (installBanner) installBanner.classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // Delegate click for any dedicated install button on login or director dashboard
+        document.addEventListener('click', async (e) => {
+            const targetBtn = e.target.closest('.btn-pwa-install');
+            if (targetBtn) {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        targetBtn.innerHTML = '✅ সফলভাবে যুক্ত হয়েছে!';
+                        setTimeout(() => targetBtn.style.display = 'none', 2000);
+                    }
+                    deferredPrompt = null;
+                } else {
+                    alert('আপনার ক্রোম ব্রাউজারের ৩-ডট (⋮) মেনু থেকে "Add to Home screen" বা "Install App" চাপুন।');
+                }
+            }
+        });
+
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', () => {
+                if (installBanner) installBanner.classList.add('hidden');
+                sessionStorage.setItem('pwa_banner_dismissed', '1');
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBanner) installBanner.classList.add('hidden');
+            deferredPrompt = null;
+        });
+
+        // 3. Real-Time Network Status Observer (Offline Graceful Degradation)
+        function updateNetworkStatus() {
+            if (!networkBar) return;
+            if (!navigator.onLine) {
+                networkBar.className = 'bg-rose-900 border-b-2 border-rose-500 text-rose-100 text-xs py-1.5 px-3 text-center font-bold block z-50 animate-pulse';
+                networkBar.innerHTML = '⚠️ ইন্টারনেট সংযোগ বিচ্ছিন্ন রয়েছে — পূর্বে লোড করা তথ্য দৃশ্যমান আছে, নতুন তথ্য পেতে ইন্টারনেট চালু করুন।';
+            } else {
+                if (networkBar.classList.contains('bg-rose-900')) {
+                    networkBar.className = 'bg-emerald-800 border-b-2 border-emerald-400 text-emerald-100 text-xs py-1.5 px-3 text-center font-bold block z-50';
+                    networkBar.innerHTML = '✅ ইন্টারনেট সংযোগ পুনঃস্থাপিত হয়েছে!';
+                    setTimeout(() => {
+                        networkBar.className = 'hidden';
+                    }, 3500);
+                } else {
+                    networkBar.className = 'hidden';
+                }
+            }
+        }
+
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        if (!navigator.onLine) updateNetworkStatus();
+
+        // 4. Smooth PWA Back Navigation
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            window.addEventListener('popstate', function() {
+                // Preserves in-app history stack
+            });
+        }
+    })();
     </script>
 </body>
 </html>

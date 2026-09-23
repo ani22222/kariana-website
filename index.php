@@ -97,6 +97,27 @@ if (file_exists($routesFile)) {
         return $controller->logout();
     });
 
+    // --- Smart Dynamic PWA App Launcher ---
+    $router->get('/app-launcher', function (\Core\Request $request) {
+        if (\Core\Session::has('director_id')) {
+            return \Core\Response::redirect('/director/dashboard');
+        }
+        if (\Core\Session::has('teacher')) {
+            return \Core\Response::redirect('/teacher/dashboard');
+        }
+        if (\Core\Session::has('manager')) {
+            return \Core\Response::redirect('/manager/dashboard');
+        }
+        $user = \Core\Session::getUser();
+        if ($user) {
+            if (($user['role'] ?? '') === 'admin') {
+                return \Core\Response::redirect('/admin');
+            }
+            return \Core\Response::redirect('/profile');
+        }
+        return \Core\Response::redirect('/login?source=pwa');
+    });
+
     // --- Student & General User Profile Routes ---
     $router->get('/profile', function (\Core\Request $request) {
         $controller = new \App\Controllers\StudentController();

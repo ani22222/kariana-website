@@ -43,7 +43,9 @@ if (in_array($firstSegment, $protectedDirs, true) || strtolower(basename($decode
 // 4. Sensitive Extension Defense: Block direct retrieval of sensitive file formats
 $ext = strtolower(pathinfo($decodedPath, PATHINFO_EXTENSION));
 $blockedExtensions = ['sql', 'md', 'json', 'env', 'log', 'ini', 'lock', 'yml', 'yaml', 'bak', 'sh', 'bat'];
-if (in_array($ext, $blockedExtensions, true)) {
+if ($ext === 'json' && basename($decodedPath) === 'manifest.json') {
+    // Permit PWA web app manifest
+} elseif (in_array($ext, $blockedExtensions, true)) {
     http_response_code(403);
     header('Content-Type: text/plain; charset=UTF-8');
     echo '403 Forbidden: Direct access to this file type is denied.';
@@ -88,6 +90,7 @@ if ($publicDir !== false) {
                 'mp4'   => 'video/mp4',
                 'txt'   => 'text/plain; charset=UTF-8',
                 'xml'   => 'application/xml; charset=UTF-8',
+                'json'  => 'application/manifest+json; charset=UTF-8',
             ];
 
             if (isset($allowedMimes[$fileExt])) {

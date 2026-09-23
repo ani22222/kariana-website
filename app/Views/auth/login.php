@@ -95,6 +95,23 @@ $initialPhone = $prefillPhone ?: ($unregisteredPhone ?: '');
          }"
          x-init="if (phoneInput && phoneInput.length >= 11 && step === 'phone') { checkIdentifier(); }">
 
+        <!-- Dedicated PWA Mobile App Card for Directors & Teachers -->
+        <div class="mb-5 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-white rounded-2xl p-3.5 border-2 border-amber-400/50 shadow-md flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-amber-300">কারিয়ানা মোবাইল অ্যাপ</h4>
+                    <p class="text-[11px] text-emerald-200">পরিচালক ও শিক্ষকদের জন্য দ্রুততম অভিজ্ঞতা</p>
+                </div>
+            </div>
+            <button type="button" class="btn-pwa-install bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 text-xs font-black px-3.5 py-1.5 rounded-xl shadow transition transform active:scale-95 shrink-0 flex items-center space-x-1">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span>ইন্সটল</span>
+            </button>
+        </div>
+
         <!-- Demo Quick Switcher Header Banner -->
         <div class="mb-6 bg-gradient-to-r from-emerald-900 to-emerald-950 text-white rounded-2xl p-3 sm:p-4 border border-gold-rich/40 shadow-sm">
             <div class="flex items-center justify-between">

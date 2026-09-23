@@ -2,7 +2,7 @@
   "name": "কারিয়ানা কুরআন শিক্ষা সোসাইটি",
   "short_name": "কারিয়ানা",
   "description": "সহজ ও সহীহ পদ্ধতিতে কুরআন শিক্ষা, জেলা পরিচালক ও শিক্ষক পোর্টাল",
-  "start_url": "/?source=pwa",
+  "start_url": "/app-launcher",
   "display": "standalone",
   "background_color": "#022c22",
   "theme_color": "#022c22",
