@@ -1770,6 +1770,63 @@ while (true) {
                         continue;
                     }
 
+                    // Interactive Action Card Decision Buttons (Topics 18 & 19: Order & Admission Routing)
+                    if (str_starts_with($data, 'appv_bo_') || str_starts_with($data, 'ship_bo_') || str_starts_with($data, 'canc_bo_')) {
+                        $orderId = (int)substr($data, 8);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_bo_')) {
+                            $db->prepare("UPDATE `book_orders` SET `status` = 'routed_to_director', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[✅ অনুমোদিত: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$orderId]);
+                            answerCallback($cbId, 'অর্ডার অনুমোদিত হয়েছে! ✅');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* পরিচালক কর্তৃক অনুমোদিত ও প্রসেসিং শুরু হয়েছে।");
+                            }
+                        } elseif (str_starts_with($data, 'ship_bo_')) {
+                            $db->prepare("UPDATE `book_orders` SET `status` = 'central_courier', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[🚚 সেন্ট্রাল কুরিয়ার: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$orderId]);
+                            answerCallback($cbId, 'সেন্ট্রাল কুরিয়ারে হস্তান্তর করা হয়েছে! 🚚');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n📦 *সিদ্ধান্ত:* সেন্ট্রাল কুরিয়ারে হস্তান্তর করা হয়েছে। চালান প্রস্তুত।");
+                            }
+                        } elseif (str_starts_with($data, 'canc_bo_')) {
+                            $db->prepare("UPDATE `book_orders` SET `status` = 'cancelled', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[❌ বাতিল: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$orderId]);
+                            answerCallback($cbId, 'অর্ডার বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* অর্ডারটি বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
+                    if (str_starts_with($data, 'appv_adm_') || str_starts_with($data, 'cont_adm_') || str_starts_with($data, 'canc_adm_')) {
+                        $admId = (int)substr($data, 9);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_adm_')) {
+                            $db->prepare("UPDATE `admissions` SET `status` = 'enrolled', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[🎓 ভর্তি নিশ্চিত: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$admId]);
+                            answerCallback($cbId, 'ভর্তি নিশ্চিত ও এনরোল করা হয়েছে! 🎓');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* শিক্ষার্থীর ভর্তি নিশ্চিত (এনরোল্ড) করা হয়েছে।");
+                            }
+                        } elseif (str_starts_with($data, 'cont_adm_')) {
+                            $db->prepare("UPDATE `admissions` SET `status` = 'contacted', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[📞 যোগাযোগ সম্পন্ন: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$admId]);
+                            answerCallback($cbId, 'যোগাযোগ সম্পন্ন হিসেবে মার্ক করা হয়েছে 📞');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n📞 *সিদ্ধান্ত:* শিক্ষার্থীর সাথে প্রাথমিক যোগাযোগ সম্পন্ন হয়েছে।");
+                            }
+                        } elseif (str_starts_with($data, 'canc_adm_')) {
+                            $db->prepare("UPDATE `admissions` SET `status` = 'cancelled', `admin_notes` = CONCAT(COALESCE(admin_notes, ''), '\n[❌ বাতিল: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$admId]);
+                            answerCallback($cbId, 'আবেদন বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* ভর্তি আবেদনটি বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
                     // Voice Module Callback Handlers
                     if (strpos($data, 'vsend_') === 0) {
                         $actId = substr($data, 6);

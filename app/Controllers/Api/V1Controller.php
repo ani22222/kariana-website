@@ -156,6 +156,7 @@ class V1Controller
         $totalAmount = $price * $qty;
 
         // Save order to database if table exists or record log
+        $routingInfo = [];
         try {
             $checkTable = $this->db->query("SHOW TABLES LIKE 'book_orders'")->fetchColumn();
             if ($checkTable) {
@@ -165,6 +166,10 @@ class V1Controller
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
                 ");
                 $ins->execute([$orderId, $bookId, $name, $phone, $address, $district, $qty, $totalAmount]);
+                $newOrderId = (int)$this->db->lastInsertId();
+                if ($newOrderId > 0) {
+                    $routingInfo = \App\Services\OrderRoutingService::routeBookOrder($newOrderId);
+                }
             }
         } catch (\Throwable $e) {}
 
@@ -173,7 +178,8 @@ class V1Controller
             'book_title'   => $bookTitle,
             'quantity'     => $qty,
             'total_amount' => $totalAmount,
-            'status'       => 'pending_admin_routing'
+            'routed_to'    => $routingInfo['routed_to'] ?? 'স্বয়ংক্রিয় রাউটিং প্রক্রিয়াধীন',
+            'status'       => $routingInfo['status'] ?? 'pending_admin_routing'
         ]);
     }
 
@@ -216,13 +222,17 @@ class V1Controller
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
             ");
             $stmt->execute([$appNumber, $name, $guardian, $phone, $courseSlug, $district, $age]);
+            $newAdmId = (int)$this->db->lastInsertId();
+            if ($newAdmId > 0) {
+                \App\Services\OrderRoutingService::routeAdmission($newAdmId);
+            }
         } catch (\Throwable $e) {}
 
         return $this->jsonEnvelope(true, 201, 'ভর্তি আবেদন সফলভাবে জমা হয়েছে। কেন্দ্রীয় অফিস থেকে যোগাযোগ করা হবে।', [
             'application_number' => $appNumber,
             'applicant_name'     => $name,
             'phone'              => $phone,
-            'status'             => 'pending_approval'
+            'status'             => 'routed_to_administration'
         ]);
     }
 

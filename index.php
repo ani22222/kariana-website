@@ -692,6 +692,35 @@ if (file_exists($routesFile)) {
         return new \Core\Response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     });
 
+    // --- Decoupled RESTful API (v1) for Mobile & Kotlin Native Android Studio App ---
+    $router->get('/api/v1/health', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->health($request);
+    });
+    $router->post('/api/v1/auth/login', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->login($request);
+    });
+    $router->get('/api/v1/books', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->books($request);
+    });
+    $router->post('/api/v1/order', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->orderBook($request);
+    });
+    $router->get('/api/v1/courses', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->courses($request);
+    });
+    $router->post('/api/v1/admissions', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->createAdmission($request);
+    });
+    $router->get('/api/v1/prayer-times', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->prayerTimes($request);
+    });
+    $router->get('/api/v1/kyc/status', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->kycStatus($request);
+    });
+    $router->post('/api/v1/kyc/verify-nid', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->verifyNidLevel2($request);
+    });
+
     // --- WhatsApp Server Gateway & Bidirectional Webhook ---
     $router->get('/api/whatsapp/webhook', function (\Core\Request $request) {
         return (new \App\Controllers\WhatsAppWebhookController())->verify($request);
