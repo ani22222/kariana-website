@@ -441,6 +441,16 @@ if (file_exists($routesFile)) {
         return $controller->generateIdCard($request, $type, $id);
     });
 
+    $router->post('/admin/teachers/approve/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->approveTeacher($request, $id);
+    });
+
+    $router->post('/admin/teachers/reject/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->rejectTeacher($request, $id);
+    });
+
     $router->get('/admin/settings', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
         return $controller->settings($request);

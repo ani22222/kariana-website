@@ -347,8 +347,8 @@ class DirectorController
 
         try {
             $stmt = $this->db->prepare("
-                INSERT INTO `teachers` (`director_id`, `name`, `phone`, `username`, `password`, `area_name`, `qualification`, `location_type`, `total_students`, `status`, `joined_date`)
-                VALUES (:did, :name, :phone, :username, :password, :area, :qual, :loc, :students, 'active', CURDATE())
+                INSERT INTO `teachers` (`director_id`, `name`, `phone`, `username`, `password`, `area_name`, `qualification`, `location_type`, `total_students`, `status`, `approval_status`, `joined_date`)
+                VALUES (:did, :name, :phone, :username, :password, :area, :qual, :loc, :students, 'training', 'pending', CURDATE())
             ");
             $stmt->execute([
                 'did'      => $directorId,
@@ -362,7 +362,15 @@ class DirectorController
                 'students' => $totalStudents,
             ]);
 
-            Session::flash('success', "আলহামদুলিল্লাহ! শিক্ষক '{$name}' সফলভাবে আপনার জেলা তালিকায় যুক্ত হয়েছেন।");
+            // Notify Central Admin / Huzur Maulana Saddam Hossain for Approval
+            try {
+                $dirName = Session::get('director_name') ?: 'জেলা পরিচালক';
+                $dirDist = Session::get('director_district') ?: '';
+                $admMsg = "📢 *নতুন শিক্ষক সংযোজন (অনুমোদন অপেক্ষমান)*\nপরিচালক: {$dirName} ({$dirDist})\nশিক্ষক: {$name}\nমোবাইল: {$cleanPhone}\nএলাকা: {$areaName}\nস্ট্যাটাস: প্রধান কার্যালয় অনুমোদন সাপেক্ষে ১ বছরের আইডি কার্ড সক্রিয় হবে।";
+                (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('admin', 1, $admMsg);
+            } catch (\Throwable $te) {}
+
+            Session::flash('success', "আলহামদুলিল্লাহ! শিক্ষক '{$name}' যুক্ত হয়েছেন। প্রধান কার্যালয় (মাওলানা সাদ্দাম হোসেন) অনুমোদনের পর ১ বছর মেয়াদি আইডি কার্ড প্রিন্ট করা যাবে।");
         } catch (\Throwable $e) {
             Session::flash('error', 'শিক্ষক যুক্ত করতে সমস্যা হয়েছে: ' . $e->getMessage());
         }

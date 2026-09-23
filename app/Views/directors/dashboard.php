@@ -125,6 +125,33 @@ $pendingActivities = array_filter($teacherActivities ?? [], fn($a) => ($a['statu
         </div>
     </div>
 
+    <!-- Director Financial Wallet & MOQ Policy Ribbon -->
+    <div class="mb-6 p-4 rounded-2xl bg-[#fffefb] border-2 border-gold-rich/40 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5 w-full sm:w-auto">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-emerald-950 flex items-center justify-center text-2xl font-black shrink-0 shadow-inner">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">আমার ওয়ালেট ব্যালেন্স</p>
+                <h3 class="text-2xl font-black text-emerald-night flex items-center gap-2">
+                    ৳ <?= \Core\BengaliHelper::toBengaliNumber(number_format((float)($director['wallet_balance'] ?? 0), 2)) ?>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">মার্জিন লাভ মডেল</span>
+                </h3>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start sm:justify-end text-xs">
+            <div class="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-bold flex items-center gap-1.5">
+                <i class="fas fa-box text-amber-600"></i>
+                <span>ন্যূনতম কিতাব অর্ডার: <strong><?= \Core\BengaliHelper::toBengaliNumber($director['min_order_quantity'] ?? 1) ?> কপি</strong></span>
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold flex items-center gap-1.5">
+                <i class="fas fa-cubes text-emerald-600"></i>
+                <span>কুরআন কার্টন সাইজ: <strong>২০ পিস</strong></span>
+            </div>
+        </div>
+    </div>
+
     <!-- 4 Mobile KPI Counter Cards (Touch Grid) -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <div @click="activeSection = 'teachers'" class="bg-[#fffefb] p-4 rounded-2xl border-2 border-emerald-600/20 hover:border-gold-rich shadow-sm cursor-pointer transition transform active:scale-95 text-center">
@@ -300,26 +327,52 @@ $pendingActivities = array_filter($teacherActivities ?? [], fn($a) => ($a['statu
                                         </p>
                                     </div>
                                 </div>
-                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full shrink-0">
-                                    <?= htmlspecialchars($t['status'] ?? 'active') === 'active' ? 'সক্রিয়' : 'প্রশিক্ষণ' ?>
-                                </span>
+                                <?php 
+                                $apprStatus = $t['approval_status'] ?? 'approved';
+                                $validUntil = !empty($t['valid_until']) ? date('d M Y', strtotime($t['valid_until'])) : null;
+                                ?>
+                                <div class="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                                    <?php if ($apprStatus === 'approved'): ?>
+                                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full border border-emerald-300">
+                                            অনুমোদিত ✅
+                                        </span>
+                                    <?php elseif ($apprStatus === 'rejected'): ?>
+                                        <span class="px-2 py-0.5 bg-red-100 text-red-800 text-[10px] font-black rounded-full border border-red-300">
+                                            বাতিল ❌
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-black rounded-full border border-amber-300">
+                                            অপেক্ষমান ⏳
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
                             </div>
 
-                            <div class="bg-[#fcfaf5] p-2.5 rounded-xl border border-[#efe6d5] my-2.5 text-xs flex justify-between items-center text-slate-700">
+                            <div class="bg-[#fcfaf5] p-2.5 rounded-xl border border-[#efe6d5] my-2.5 text-xs flex flex-wrap justify-between items-center text-slate-700 gap-1.5">
                                 <span><i class="fas fa-graduation-cap text-gold-deep mr-1"></i> শিক্ষার্থী: <strong><?= \Core\BengaliHelper::toBengaliNumber($t['total_students']) ?> জন</strong></span>
+                                <span class="text-[10px] text-slate-500"><i class="fas fa-calendar-check text-emerald-600 mr-1"></i> মেয়াদ: <strong><?= $validUntil ?: 'নির্ধারণাধীন' ?></strong></span>
                                 <span class="text-[10px] text-slate-400">আইডি: <?= htmlspecialchars($t['username'] ?? '') ?></span>
                             </div>
                         </div>
 
-                        <!-- 1-Tap Touch Contact Action Buttons -->
+                        <!-- 1-Tap Touch Contact & ID Card Action Buttons -->
                         <div class="pt-2 border-t border-[#ede5d6] flex items-center justify-between gap-2">
                             <div class="flex items-center gap-1.5 flex-1">
                                 <a href="tel:<?= htmlspecialchars($t['phone']) ?>" class="flex-1 py-1.5 px-2 bg-emerald-50 hover:bg-emerald-night hover:text-white border border-emerald-300 text-emerald-900 rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1">
                                     <i class="fas fa-phone-alt text-emerald-600"></i> কল
                                 </a>
                                 <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $t['phone']) ?>" target="_blank" class="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1">
-                                    <i class="fab fa-whatsapp"></i> হোয়াটসঅ্যাপ
+                                    <i class="fab fa-whatsapp"></i> চ্যাট
                                 </a>
+                                <?php if ($apprStatus === 'approved'): ?>
+                                <a href="<?= $baseUrl ?>/admin/id-card/teacher/<?= $t['id'] ?>" target="_blank" class="py-1.5 px-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1 shadow-sm" title="শিক্ষকের ১ বছর মেয়াদি আইডি কার্ড প্রিন্ট করুন">
+                                    <i class="fas fa-id-card"></i> আইডি
+                                </a>
+                                <?php else: ?>
+                                <span class="py-1.5 px-2.5 bg-slate-100 border border-slate-200 text-slate-400 rounded-xl text-[10px] font-bold text-center flex items-center justify-center gap-1 cursor-not-allowed" title="প্রধান কার্যালয় (মাওলানা সাদ্দাম হোসেন) অনুমোদনের পর আইডি কার্ড প্রিন্ট করা যাবে">
+                                    <i class="fas fa-lock"></i> আইডি
+                                </span>
+                                <?php endif; ?>
                             </div>
 
                             <!-- Delete Teacher Form -->

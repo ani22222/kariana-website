@@ -1096,4 +1096,75 @@ class AdminController
             'member'  => $member,
         ]));
     }
+
+    /**
+     * Approve Pending Teacher (1-Year Validity Activation)
+     * URL: POST /admin/teachers/approve/{id}
+     */
+    public function approveTeacher(Request $request, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $teacherId = (int)$id;
+        $currentUser = Session::getUser();
+        $approverName = $currentUser['name'] ?? 'মাওলানা সাদ্দাম হোসেন (প্রতিষ্ঠাতা ও বোর্ড প্রধান)';
+
+        $stmt = $this->db->prepare("
+            UPDATE `teachers` 
+            SET `approval_status` = 'approved',
+                `status` = 'active',
+                `valid_until` = DATE_ADD(CURDATE(), INTERVAL 1 YEAR),
+                `approved_by` = :approver,
+                `approved_at` = NOW()
+            WHERE `id` = :id
+        ");
+        $stmt->execute([
+            'approver' => $approverName,
+            'id'       => $teacherId
+        ]);
+
+        // Fetch teacher & director info for notification
+        $tStmt = $this->db->prepare("SELECT t.*, d.name as director_name, d.phone as director_phone FROM `teachers` t JOIN `directors` d ON t.director_id = d.id WHERE t.id = ?");
+        $tStmt->execute([$teacherId]);
+        $teacher = $tStmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($teacher) {
+            try {
+                $msg = "✅ *শিক্ষক অনুমোদন সম্পন্ন*\nশিক্ষক: {$teacher['name']}\nমোবাইল: {$teacher['phone']}\nজেলা পরিচালক: {$teacher['director_name']}\nমেয়াদ: ১ বছর (আজ হতে সক্রিয়)\nআইডি কার্ড: পরিচালক ও অ্যাডমিন প্যানেল থেকে প্রিন্টযোগ্য।";
+                (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('director', (int)$teacher['director_id'], $msg);
+            } catch (\Throwable $e) {}
+        }
+
+        $successMsg = "শিক্ষক '{$teacher['name']}' সফলভাবে অনুমোদিত হয়েছে। মেয়াদ ১ বছর সক্রিয় করা হয়েছে।";
+        if ($request->isAjax()) {
+            return Response::json(['success' => true, 'message' => $successMsg]);
+        }
+        Session::flash('success', $successMsg);
+        return Response::redirect('/admin#teachers-hub');
+    }
+
+    /**
+     * Reject Pending Teacher
+     * URL: POST /admin/teachers/reject/{id}
+     */
+    public function rejectTeacher(Request $request, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $teacherId = (int)$id;
+        $stmt = $this->db->prepare("UPDATE `teachers` SET `approval_status` = 'rejected', `status` = 'inactive' WHERE `id` = ?");
+        $stmt->execute([$teacherId]);
+
+        $successMsg = "শিক্ষকের আবেদনটি বাতিল করা হয়েছে।";
+        if ($request->isAjax()) {
+            return Response::json(['success' => true, 'message' => $successMsg]);
+        }
+        Session::flash('success', $successMsg);
+        return Response::redirect('/admin#teachers-hub');
+    }
 }
+
