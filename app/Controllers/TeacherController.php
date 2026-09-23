@@ -195,8 +195,14 @@ class TeacherController
             'qty'   => $quantity,
             'pdate' => $preferredDate ?: null,
         ]);
+        $activityId = (int)$this->db->lastInsertId();
 
-        // Notify Director via WhatsApp / Telegram
+        // 1. Dispatch Interactive Action Card to Central Admin / Director
+        try {
+            \App\Services\OrderRoutingService::routeSabakActivity($activityId);
+        } catch (\Throwable $e) {}
+
+        // 2. Notify Director via WhatsApp / Telegram
         try {
             if ($directorId > 0) {
                 $typeBn = match($activityType) {
@@ -236,12 +242,13 @@ class TeacherController
         $stmt = $this->db->prepare("UPDATE `teachers` SET `total_students` = :cnt, `updated_at` = NOW() WHERE `id` = :id");
         $stmt->execute(['cnt' => $count, 'id' => $teacherId]);
 
-        // Notify Director via WhatsApp / Telegram
+        // Notify Director & Central Admin via Telegram / WhatsApp
         try {
+            $msg = "📢 *শিক্ষার্থীর সংখ্যা আপডেট*\nশিক্ষক: *{$sessTeacher['name']}*\nনতুন শিক্ষার্থী সংখ্যা: *{$count} জন*";
             if ($directorId > 0) {
-                $msg = "📢 *শিক্ষার্থীর সংখ্যা আপডেট*\nআপনার আওতাধীন শিক্ষক *{$sessTeacher['name']}* তার মাদরাসা/মক্তবের বর্তমান শিক্ষার্থী সংখ্যা হালনাগাদ করে *{$count} জন* করেছেন।";
                 (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('director', $directorId, $msg);
             }
+            \App\Controllers\TelegramWebhookController::sendCategoryAlert('👥 শিক্ষক তথ্য আপডেট', "শিক্ষক {$sessTeacher['name']} শিক্ষার্থী সংখ্যা পরিবর্তন করেছেন: {$count} জন");
         } catch (\Throwable $e) {}
 
         Session::flash('success', 'শিক্ষার্থীর সংখ্যা সফলভাবে হালনাগাদ করা হয়েছে।');

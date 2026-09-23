@@ -305,8 +305,14 @@ class DirectorController
             'details' => $details,
             'qty'     => $qty,
         ]);
+        $newReqId = (int)$this->db->lastInsertId();
 
-        // Notify Admin via WhatsApp / Telegram
+        // 1. Dispatch Interactive Action Card to Central Admin (Telegram Decision Card)
+        try {
+            \App\Services\OrderRoutingService::routeDirectorRequest($newReqId);
+        } catch (\Throwable $e) {}
+
+        // 2. Notify Admin via WhatsApp / Telegram Gateway
         try {
             $dirName = Session::get('director_name') ?: 'জেলা পরিচালক';
             $dirDist = Session::get('director_district') ?: '';
@@ -361,8 +367,14 @@ class DirectorController
                 'loc'      => $locationType,
                 'students' => $totalStudents,
             ]);
+            $newTeacherId = (int)$this->db->lastInsertId();
 
-            // Notify Central Admin / Huzur Maulana Saddam Hossain for Approval
+            // 1. Send Interactive Action Card to Super Admin / Huzur Maulana Saddam Hossain for 1-Click Approval
+            try {
+                \App\Services\OrderRoutingService::routeTeacherCreation($newTeacherId);
+            } catch (\Throwable $te) {}
+
+            // 2. Notify Central Admin via UnifiedMessagingService
             try {
                 $dirName = Session::get('director_name') ?: 'জেলা পরিচালক';
                 $dirDist = Session::get('director_district') ?: '';

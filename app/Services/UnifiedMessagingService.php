@@ -995,14 +995,18 @@ class UnifiedMessagingService
             $results['whatsapp'] = $waRes['ok'] ?? false;
         }
 
-        // 2. Send via Telegram if linked
+        // 2. Send via Telegram
         $stmtTg = $this->db->prepare("SELECT sender_id FROM `bot_user_links` WHERE `user_type` = :ut AND `user_id` = :uid AND `channel` = 'telegram' AND `is_active` = 1 LIMIT 1");
         $stmtTg->execute([':ut' => $userType, ':uid' => $userId]);
         $tgChatId = $stmtTg->fetchColumn();
 
-        if ($tgChatId && function_exists('tg_send')) {
-            \tg_send($message);
-            $results['telegram'] = true;
+        if (!$tgChatId && $userType === 'admin') {
+            $tgChatId = '1827362508'; // Default Super Admin (Rasel Gazi)
+        }
+
+        if (!empty($tgChatId)) {
+            $res = \App\Services\OrderRoutingService::sendTelegramCard((string)$tgChatId, $message, []);
+            $results['telegram'] = !empty($res['ok']);
         }
 
         return $results;

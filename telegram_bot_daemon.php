@@ -1827,6 +1827,123 @@ while (true) {
                         continue;
                     }
 
+                    // Teacher Approval / Rejection Action Cards
+                    if (str_starts_with($data, 'appv_tch_') || str_starts_with($data, 'canc_tch_')) {
+                        $teacherId = (int)substr($data, 9);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_tch_')) {
+                            $db->prepare("
+                                UPDATE `teachers` 
+                                SET `approval_status` = 'approved',
+                                    `status` = 'active',
+                                    `valid_until` = DATE_ADD(CURDATE(), INTERVAL 1 YEAR),
+                                    `approved_by` = 'মাওলানা সাদ্দাম হোসেন (টেলিগ্রাম)',
+                                    `approved_at` = NOW()
+                                WHERE `id` = ?
+                            ")->execute([$teacherId]);
+                            $tRow = $db->query("SELECT name FROM `teachers` WHERE `id` = {$teacherId}")->fetch(PDO::FETCH_ASSOC);
+                            $tName = $tRow['name'] ?? "#{$teacherId}";
+                            answerCallback($cbId, "শিক্ষক {$tName} অনুমোদিত! ✅");
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* শিক্ষক {$tName} সফলভাবে অনুমোদিত। ১ বছর মেয়াদি আইডি কার্ড সক্রিয়।");
+                            }
+                        } else {
+                            $db->prepare("UPDATE `teachers` SET `approval_status` = 'rejected', `status` = 'inactive' WHERE `id` = ?")->execute([$teacherId]);
+                            answerCallback($cbId, 'শিক্ষকের আবেদন বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* শিক্ষকের আবেদনটি বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
+                    // Director Requisition Action Cards
+                    if (str_starts_with($data, 'appv_req_') || str_starts_with($data, 'canc_req_')) {
+                        $reqId = (int)substr($data, 9);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_req_')) {
+                            $db->prepare("UPDATE `director_requests` SET `status` = 'approved', `admin_note` = CONCAT(COALESCE(admin_note, ''), '\n[✅ অনুমোদিত: Telegram ID {$chatId}]'), `updated_at` = NOW() WHERE `id` = ?")->execute([$reqId]);
+                            answerCallback($cbId, "রিকুইজিশন #{$reqId} অনুমোদিত! ✅");
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* জেলা পরিচালক রিকুইজিশন অনুমোদিত হয়েছে।");
+                            }
+                        } else {
+                            $db->prepare("UPDATE `director_requests` SET `status` = 'rejected', `admin_note` = CONCAT(COALESCE(admin_note, ''), '\n[❌ বাতিল: Telegram ID {$chatId}]'), `updated_at` = NOW() WHERE `id` = ?")->execute([$reqId]);
+                            answerCallback($cbId, 'রিকুইজিশন বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* জেলা পরিচালক রিকুইজিশন বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
+                    // Sabak Class / Teacher Activity Action Cards
+                    if (str_starts_with($data, 'appv_act_') || str_starts_with($data, 'canc_act_')) {
+                        $actId = (int)substr($data, 9);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_act_')) {
+                            $db->prepare("UPDATE `teacher_activities` SET `status` = 'approved', `director_notes` = CONCAT(COALESCE(director_notes, ''), '\n[✅ অনুমোদিত: Telegram ID {$chatId}]'), `updated_at` = NOW() WHERE `id` = ?")->execute([$actId]);
+                            answerCallback($cbId, "সবক সেশন #{$actId} অনুমোদিত! ✅");
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* সবক ক্লাস/সেশন সফলভাবে অনুমোদিত।");
+                            }
+                        } else {
+                            $db->prepare("UPDATE `teacher_activities` SET `status` = 'cancelled', `director_notes` = CONCAT(COALESCE(director_notes, ''), '\n[❌ বাতিল: Telegram ID {$chatId}]'), `updated_at` = NOW() WHERE `id` = ?")->execute([$actId]);
+                            answerCallback($cbId, 'সবক সেশন বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* সবক সেশনটি বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
+                    // KYC Verification Action Cards
+                    if (str_starts_with($data, 'appv_kyc_') || str_starts_with($data, 'canc_kyc_')) {
+                        $kycId = (int)substr($data, 9);
+                        $db = \Core\Database::getInstance();
+                        $cbMsgId = $cb['message']['message_id'] ?? null;
+                        $cbText = $cb['message']['text'] ?? '';
+
+                        if (str_starts_with($data, 'appv_kyc_')) {
+                            $db->prepare("UPDATE `kyc_verifications` SET `kyc_status` = 'approved', `verified_at` = NOW(), `admin_remarks` = CONCAT(COALESCE(admin_remarks, ''), '\n[✅ অনুমোদিত: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$kycId]);
+                            $kStmt = $db->prepare("SELECT * FROM `kyc_verifications` WHERE `id` = ? LIMIT 1");
+                            $kStmt->execute([$kycId]);
+                            $kRow = $kStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($kRow) {
+                                $uType = $kRow['user_type'] ?? '';
+                                $uId = (int)($kRow['user_id'] ?? 0);
+                                $kUuid = $kRow['uuid'] ?? '';
+                                if ($uType === 'teacher' && $uId > 0) {
+                                    $db->prepare("UPDATE `teachers` SET `kyc_level` = 2, `kyc_uuid` = ? WHERE `id` = ?")->execute([$kUuid, $uId]);
+                                } elseif ($uType === 'director' && $uId > 0) {
+                                    $db->prepare("UPDATE `directors` SET `kyc_level` = 2, `kyc_uuid` = ? WHERE `id` = ?")->execute([$kUuid, $uId]);
+                                } elseif ($uId > 0) {
+                                    $db->prepare("UPDATE `users` SET `kyc_level` = 2, `kyc_uuid` = ? WHERE `id` = ?")->execute([$kUuid, $uId]);
+                                }
+                            }
+                            answerCallback($cbId, "কেওয়াইসি #{$kycId} অনুমোদিত! 🪪");
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🟢 *সিদ্ধান্ত:* কেওয়াইসি সফলভাবে অনুমোদিত এবং ডিজিটাল আইডি সক্রিয় করা হয়েছে।");
+                            }
+                        } else {
+                            $db->prepare("UPDATE `kyc_verifications` SET `kyc_status` = 'rejected', `admin_remarks` = CONCAT(COALESCE(admin_remarks, ''), '\n[❌ বাতিল: Telegram ID {$chatId}]') WHERE `id` = ?")->execute([$kycId]);
+                            answerCallback($cbId, 'কেওয়াইসি আবেদন বাতিল করা হয়েছে ❌');
+                            if ($cbMsgId) {
+                                editMsg($chatId, $cbMsgId, $cbText . "\n\n🔴 *সিদ্ধান্ত:* কেওয়াইসি আবেদনটি বাতিল করা হয়েছে।");
+                            }
+                        }
+                        continue;
+                    }
+
                     // Voice Module Callback Handlers
                     if (strpos($data, 'vsend_') === 0) {
                         $actId = substr($data, 6);

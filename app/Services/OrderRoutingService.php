@@ -209,4 +209,180 @@ class OrderRoutingService
             'application_number' => $appNum
         ];
     }
+
+    /**
+     * Route a new Teacher Creation by District Director
+     * Sends action card to Super Admin / Maulana Saddam Hossain for 1-click approval
+     */
+    public static function routeTeacherCreation(int $teacherId): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT t.*, d.name as director_name, d.district_name, d.phone as director_phone
+            FROM `teachers` t
+            LEFT JOIN `directors` d ON t.director_id = d.id
+            WHERE t.id = ? LIMIT 1
+        ");
+        $stmt->execute([$teacherId]);
+        $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$teacher) {
+            return ['success' => false, 'message' => 'শিক্ষকের তথ্য পাওয়া যায়নি।'];
+        }
+
+        $cardText = "👨‍🏫 *নতুন শিক্ষক সংযোজন — অনুমোদন অ্যাকশন কার্ড*\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "👤 *শিক্ষক:* {$teacher['name']}\n";
+        $cardText .= "📞 *মোবাইল:* `{$teacher['phone']}`\n";
+        $cardText .= "📍 *কর্মএলাকা:* {$teacher['area_name']} ({$teacher['district_name']} জেলা)\n";
+        $cardText .= "🎓 *যোগ্যতা:* {$teacher['qualification']}\n";
+        $cardText .= "👥 *শিক্ষার্থী:* " . BengaliHelper::toBengaliNumber($teacher['total_students']) . " জন\n";
+        $cardText .= "🏢 *জেলা পরিচালক:* {$teacher['director_name']}\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "⚡ *হযরত হুজুর / প্রধান অ্যাডমিনের সিদ্ধান্ত:*";
+
+        $keyboard = [
+            [
+                ['text' => '✅ অনুমোদন (১ বছর মেয়াদ)', 'callback_data' => 'appv_tch_' . $teacherId],
+                ['text' => '❌ বাতিল', 'callback_data' => 'canc_tch_' . $teacherId]
+            ],
+            [
+                ['text' => '📞 শিক্ষকের সাথে কথা', 'url' => 'tel:' . $teacher['phone']],
+                ['text' => '💬 হোয়াটসঅ্যাপ', 'url' => 'https://wa.me/88' . preg_replace('/[^0-9]/', '', $teacher['phone'])]
+            ]
+        ];
+
+        self::sendTelegramCard(self::ADMIN_CHAT_ID, $cardText, $keyboard);
+
+        return ['success' => true, 'teacher_id' => $teacherId];
+    }
+
+    /**
+     * Route a District Director Requisition / Request
+     */
+    public static function routeDirectorRequest(int $requestId): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT r.*, d.name as director_name, d.district_name, d.phone as director_phone
+            FROM `director_requests` r
+            LEFT JOIN `directors` d ON r.director_id = d.id
+            WHERE r.id = ? LIMIT 1
+        ");
+        $stmt->execute([$requestId]);
+        $req = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$req) {
+            return ['success' => false, 'message' => 'আবেদনের তথ্য পাওয়া যায়নি।'];
+        }
+
+        $cardText = "📦 *জেলা পরিচালক রিকুইজিশন — অ্যাকশন কার্ড*\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "🏢 *পরিচালক:* {$req['director_name']} ({$req['district_name']} জেলা)\n";
+        $cardText .= "📞 *মোবাইল:* `{$req['director_phone']}`\n";
+        $cardText .= "📋 *ধরন:* " . strtoupper($req['request_type']) . "\n";
+        $cardText .= "🔢 *পরিমাণ:* " . BengaliHelper::toBengaliNumber($req['quantity']) . " কপি\n";
+        $cardText .= "📝 *বিবরণ:* {$req['details']}\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "⚡ *সিদ্ধান্ত নিন:*";
+
+        $keyboard = [
+            [
+                ['text' => '✅ রিকুইজিশন অনুমোদন', 'callback_data' => 'appv_req_' . $requestId],
+                ['text' => '❌ বাতিল', 'callback_data' => 'canc_req_' . $requestId]
+            ],
+            [
+                ['text' => '📞 পরিচালকের সাথে কথা', 'url' => 'tel:' . $req['director_phone']]
+            ]
+        ];
+
+        self::sendTelegramCard(self::ADMIN_CHAT_ID, $cardText, $keyboard);
+
+        return ['success' => true, 'request_id' => $requestId];
+    }
+
+    /**
+     * Route a Teacher Sabak Class / Ceremony Activity
+     */
+    public static function routeSabakActivity(int $activityId): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("
+            SELECT a.*, t.name as teacher_name, t.phone as teacher_phone, t.area_name, d.name as director_name, d.district_name
+            FROM `teacher_activities` a
+            LEFT JOIN `teachers` t ON a.teacher_id = t.id
+            LEFT JOIN `directors` d ON a.director_id = d.id
+            WHERE a.id = ? LIMIT 1
+        ");
+        $stmt->execute([$activityId]);
+        $act = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$act) {
+            return ['success' => false, 'message' => 'সবক ক্লাসের তথ্য পাওয়া যায়নি।'];
+        }
+
+        $cardText = "📖 *নতুন সবক সেশন / ক্লাস — অ্যাকশন কার্ড*\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "👤 *শিক্ষক:* {$act['teacher_name']} (`{$act['teacher_phone']}`)\n";
+        $cardText .= "📍 *এলাকা:* {$act['area_name']} ({$act['district_name']} জেলা)\n";
+        $cardText .= "📚 *ক্লাস শিরোনাম:* {$act['title']}\n";
+        $cardText .= "👥 *শিক্ষার্থী সংখ্যা:* " . BengaliHelper::toBengaliNumber($act['quantity'] ?? 0) . " জন\n";
+        $cardText .= "📝 *বিবরণ:* " . ($act['details'] ?? $act['description'] ?? '—') . "\n";
+        $cardText .= "🏢 *পরিচালক:* {$act['director_name']}\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "⚡ *সিদ্ধান্ত নিন:*";
+
+        $keyboard = [
+            [
+                ['text' => '✅ সবক সেশন অনুমোদন', 'callback_data' => 'appv_act_' . $activityId],
+                ['text' => '❌ বাতিল', 'callback_data' => 'canc_act_' . $activityId]
+            ],
+            [
+                ['text' => '📞 শিক্ষকের সাথে কথা', 'url' => 'tel:' . $act['teacher_phone']]
+            ]
+        ];
+
+        self::sendTelegramCard(self::ADMIN_CHAT_ID, $cardText, $keyboard);
+
+        return ['success' => true, 'activity_id' => $activityId];
+    }
+
+    /**
+     * Route a KYC Verification Submission
+     */
+    public static function routeKycVerification(int $kycId): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM `kyc_verifications` WHERE `id` = ? LIMIT 1");
+        $stmt->execute([$kycId]);
+        $kyc = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$kyc) {
+            return ['success' => false, 'message' => 'কেওয়াইসি তথ্য পাওয়া যায়নি।'];
+        }
+
+        $cardText = "🪪 *নতুন কেওয়াইসি ভেরিফিকেশন — অ্যাকশন কার্ড*\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "🆔 *ইউজার টাইপ:* " . strtoupper($kyc['user_type']) . "\n";
+        $cardText .= "📞 *মোবাইল:* `{$kyc['phone']}`\n";
+        $cardText .= "🔢 *এনআইডি নং:* " . ($kyc['nid_number'] ?? '—') . "\n";
+        $cardText .= "🛡️ *কেওয়াইসি লেভেল:* লেভেল " . $kyc['kyc_level'] . "\n";
+        $cardText .= "🔗 *আইডি লিংক:* https://project.rasel.cloud/kariana/verify/{$kyc['uuid']}\n";
+        $cardText .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $cardText .= "⚡ *সিদ্ধান্ত নিন:*";
+
+        $keyboard = [
+            [
+                ['text' => '✅ কেওয়াইসি অনুমোদন', 'callback_data' => 'appv_kyc_' . $kycId],
+                ['text' => '❌ বাতিল', 'callback_data' => 'canc_kyc_' . $kycId]
+            ],
+            [
+                ['text' => '🔍 পাবলিক আইডি দেখুন', 'url' => "https://project.rasel.cloud/kariana/verify/{$kyc['uuid']}"]
+            ]
+        ];
+
+        self::sendTelegramCard(self::ADMIN_CHAT_ID, $cardText, $keyboard);
+
+        return ['success' => true, 'kyc_id' => $kycId];
+    }
 }

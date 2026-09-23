@@ -193,6 +193,18 @@ class VerificationController
         }
 
         $res = $this->kycService->verifyGovernmentNid($uuid, $nid, $dob);
+
+        if (!empty($res['success'])) {
+            try {
+                $stmtK = $this->db->prepare("SELECT id FROM `kyc_verifications` WHERE `uuid` = ? LIMIT 1");
+                $stmtK->execute([$uuid]);
+                $kycId = (int)$stmtK->fetchColumn();
+                if ($kycId > 0) {
+                    \App\Services\OrderRoutingService::routeKycVerification($kycId);
+                }
+            } catch (\Throwable $e) {}
+        }
+
         return Response::json($res, $res['success'] ? 200 : 400);
     }
 
