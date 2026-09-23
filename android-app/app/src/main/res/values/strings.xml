@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">কারিয়ানা কুরআন</string>
+    <string name="loading">লোড হচ্ছে…</string>
+    <string name="no_internet">ইন্টারনেট সংযোগ পাওয়া যায়নি</string>
+    <string name="retry">পুনরায় চেষ্টা করুন</string>
+    <string name="exit_confirm">অ্যাপ থেকে বের হতে আবার ব্যাক চাপুন</string>
+</resources>

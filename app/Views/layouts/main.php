@@ -14,6 +14,15 @@
         'schema'      => $schemaJsonLd ?? null,
     ]) ?>
 
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="<?= $baseUrl ?? '' ?>/manifest.json">
+    <meta name="theme-color" content="#022c22">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="কারিয়ানা">
+    <link rel="apple-touch-icon" href="<?= $baseUrl ?? '' ?>/assets/images/icon-192.png">
+
     <!-- Dynamic Marketing & External Integrations Hub -->
     <?php
     $mkt = [];
@@ -445,5 +454,15 @@
     <?php if (!empty($mkt['custom_body_end_scripts'])): ?>
         <?= $mkt['custom_body_end_scripts'] ?>
     <?php endif; ?>
+
+    <!-- Progressive Web App Service Worker Registration -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('<?= $baseUrl ?? '' ?>/sw.js').catch(function() {});
+        });
+    }
+    </script>
 </body>
 </html>
+

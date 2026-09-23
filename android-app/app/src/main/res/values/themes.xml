@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base Application Theme -->
+    <style name="Theme.KarianaQuran" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/emerald_deep</item>
+        <item name="colorPrimaryVariant">@color/emerald_night</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/gold_rich</item>
+        <item name="colorSecondaryVariant">@color/gold_deep</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:statusBarColor">@color/emerald_night</item>
+        <item name="android:navigationBarColor">@color/emerald_night</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.KarianaQuran.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/emerald_night</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.KarianaQuran</item>
+    </style>
+</resources>

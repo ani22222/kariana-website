@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Royal Islamic Emerald Green & Gold Palette -->
+    <color name="emerald_night">#022C22</color>
+    <color name="emerald_deep">#064E3B</color>
+    <color name="emerald_vibrant">#047857</color>
+    <color name="emerald_light">#ECFDF5</color>
+
+    <color name="gold_rich">#D97706</color>
+    <color name="gold_deep">#B45309</color>
+    <color name="gold_shimmer">#FBBF24</color>
+    <color name="gold_light">#FEF3C7</color>
+
+    <color name="parchment_bg">#F8F5EE</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="slate_700">#334155</color>
+    <color name="slate_400">#94A3B8</color>
+</resources>
