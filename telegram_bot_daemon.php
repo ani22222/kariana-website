@@ -94,6 +94,8 @@ function getLatestActiveConversation(): ?array {
         $stmt = $db->query("SELECT conversation_id, preview, last_modified_time, workspace_uris 
                             FROM conversation_summaries 
                             WHERE (parent_conversation_id IS NULL OR parent_conversation_id = '') 
+                            AND workspace_uris IS NOT NULL AND workspace_uris != '[]' AND workspace_uris != ''
+                            AND (preview NOT LIKE '%Telegram Assistant%' OR preview IS NULL)
                             ORDER BY last_modified_time DESC LIMIT 1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
@@ -666,23 +668,61 @@ function renderLatestResponseView(string $chatId, array $state): void {
     }
 
     $timeStr = !empty($resp['created_at']) ? date('d M Y, h:i A', strtotime($resp['created_at'])) : date('d M Y, h:i A');
-    $header = "🖥️ *পিসির স্ক্রিনের সর্বশেষ উত্তর (Latest AI Response)*\n"
-            . "━━━━━━━━━━━━━━━━━━━━\n"
-            . "📁 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
-            . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
-            . "🔢 *স্টেপ:* `{$resp['step_index']}` | ⏰ *সময়:* {$timeStr}";
+    $stepIdx = $resp['step_index'];
+    $fullContent = $resp['content'];
 
-    $kb = [
-        [
-            ['text' => '🔄 রিফ্রেশ (আপডেট দেখুন)', 'callback_data' => 'action_latest_response'],
-            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
-        ],
-        [
-            ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
-        ]
-    ];
+    // Cache full response to disk
+    $respDir = PROJECT_ROOT . '/storage/logs/responses';
+    if (!is_dir($respDir)) @mkdir($respDir, 0777, true);
+    @file_put_contents($respDir . "/resp_{$stepIdx}.txt", $fullContent);
 
-    sendChunkedTelegramResponse($chatId, $header, $resp['content'], $kb);
+    if (mb_strlen($fullContent) > 450) {
+        $cleanSummary = mb_substr($fullContent, 0, 420);
+        $lastBreak = max((int)mb_strrpos($cleanSummary, "\n"), (int)mb_strrpos($cleanSummary, "."));
+        if ($lastBreak > 200) {
+            $cleanSummary = mb_substr($cleanSummary, 0, $lastBreak);
+        }
+        $summaryBody = $cleanSummary . "\n\n*(ℹ️ বিস্তারিত উত্তর বড় হওয়ায় সংক্ষেপিত করা হয়েছে। সম্পূর্ণ রেজাল্ট দেখতে নিচের বাটনে চাপ দিন)*";
+
+        $header = "🖥️ *পিসির স্ক্রিনের সর্বশেষ সারসংক্ষেপ (Step {$stepIdx})*\n"
+                . "━━━━━━━━━━━━━━━━━━━━\n"
+                . "📁 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+                . "⏰ *সময়:* {$timeStr}";
+
+        $kb = [
+            [
+                ['text' => '📖 বিস্তারিত সম্পূর্ণ রেজাল্ট দেখুন', 'callback_data' => 'action_full_resp_' . $stepIdx]
+            ],
+            [
+                ['text' => '🔄 রিফ্রেশ', 'callback_data' => 'action_latest_response'],
+                ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+            ],
+            [
+                ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+            ]
+        ];
+
+        sendMsg($chatId, $header . "\n\n" . $summaryBody, $kb);
+    } else {
+        $header = "🖥️ *পিসির স্ক্রিনের সর্বশেষ উত্তর (Latest AI Response)*\n"
+                . "━━━━━━━━━━━━━━━━━━━━\n"
+                . "📁 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+                . "🔢 *স্টেপ:* `{$stepIdx}` | ⏰ *সময়:* {$timeStr}";
+
+        $kb = [
+            [
+                ['text' => '🔄 রিফ্রেশ (আপডেট দেখুন)', 'callback_data' => 'action_latest_response'],
+                ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
+            ],
+            [
+                ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+            ]
+        ];
+
+        sendChunkedTelegramResponse($chatId, $header, $fullContent, $kb);
+    }
 }
 
 
@@ -930,6 +970,9 @@ function sendQuotaAlert(string $chatId, array $state, int $stepCount, string $re
 
     $kb = [
         [
+            ['text' => '🔐 সরাসরি গুগল সাইন-ইন ও অথ লিংক', 'callback_data' => 'action_auth_portal']
+        ],
+        [
             ['text' => '🔄 ব্যাকআপ অ্যাকাউন্ট ২-এ সুইচ (Claude/Flash)', 'callback_data' => 'switchacc_acc_2']
         ],
         [
@@ -951,6 +994,38 @@ function checkModelQuotaAlert(array &$state): void {
     // Only alert when actual API quota limit / rate limit error occurs
 }
 
+// Dedicated Google Account Authorization & Direct Sign-In Portal
+function renderAuthAccountCard(string $chatId, array $state): void {
+    $text  = "🔐 *গুগল অ্যাকাউন্ট সাইন-ইন ও সরাসরি অথরাইজেশন পোর্টাল*\n";
+    $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $text .= "বিছানায় শুয়ে সরাসরি মোবাইল থেকেই আপনি নতুন গুগল অ্যাকাউন্ট যুক্ত বা অথরাইজেশন সম্পন্ন করতে পারেন।\n\n";
+    $text .= "🌐 *১. সরাসরি গুগল সাইন-ইন লিংক:*\n";
+    $text .= "নিচের [Google Sign-In] বাটনে চাপ দিলে সরাসরি আপনার মোবাইলের ব্রাউজারে গুগল লগইন পেজ ওপেন হবে।\n\n";
+    $text .= "🔑 *২. গুগল এআই স্টুডিও API Key তৈরি:*\n";
+    $text .= "গুগল এআই স্টুডিও থেকে ফ্রি কী তৈরি করে টেলিগ্রামে সরাসরি এভাবে মেসেজ দিন:\n";
+    $text .= "`token: AIzaSy...`\n";
+    $text .= "অথবা নতুন জিমেইল যুক্ত করতে পাঠান:\n";
+    $text .= "`account: yourname@gmail.com`\n\n";
+    $text .= "⚡ *৩. তাৎক্ষণিক কোটামুক্ত ব্যবহার (Zero Wait):*\n";
+    $text .= "কোনো লিমিট বা রিস্ট্রিকশন ছাড়াই কাজ চালাতে নিচের বাটনে ১-ক্লিকে Flash-Lite আনলিমিটেড মডেলে সুইচ করুন।\n";
+
+    $kb = [
+        [
+            ['text' => '🔗 Google Sign-In পেজ ওপেন করুন', 'url' => 'https://accounts.google.com/signin/v2/identifier?service=lso'],
+            ['text' => '🔑 ফ্রি Google API Key তৈরি করুন', 'url' => 'https://aistudio.google.com/app/apikey']
+        ],
+        [
+            ['text' => '⚡ Flash-Lite আনলিমিটেড মডেলে সুইচ', 'callback_data' => 'model_gemini_lite'],
+            ['text' => '🔄 ব্যাকআপ অ্যাকাউন্ট ২-এ সুইচ', 'callback_data' => 'switchacc_acc_2']
+        ],
+        [
+            ['text' => '🔙 অ্যাকাউন্ট মেনু', 'callback_data' => 'menu_accounts'],
+            ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+        ]
+    ];
+
+    sendMsg($chatId, $text, $kb);
+}
 
 // Account & Quota Management Menu
 function renderAccountsMenu(string $chatId, array $state): void {
@@ -993,10 +1068,13 @@ function renderAccountsMenu(string $chatId, array $state): void {
     }
 
     $keyboard[] = [
+        ['text' => '🔐 সরাসরি গুগল সাইন-ইন ও অথ লিংক', 'callback_data' => 'action_auth_portal']
+    ];
+    $keyboard[] = [
         ['text' => '🚨 ৯৫% কোটা সতর্কবার্তা টেস্ট', 'callback_data' => 'test_quota_alert']
     ];
     $keyboard[] = [
-        ['text' => '🚪 বর্তমান অ্যাকাউন্ট লগআউট / রি-অথ', 'callback_data' => 'action_logout_reauth'],
+        ['text' => '🚪 অ্যাকাউন্ট লগআউট / রি-অথ', 'callback_data' => 'action_logout_reauth'],
         ['text' => '➕ নতুন অ্যাকাউন্ট যুক্ত করুন', 'callback_data' => 'action_add_acc']
     ];
     $keyboard[] = [
@@ -1580,24 +1658,62 @@ while (true) {
             } elseif ($curStep > $lastSent) {
                 botLog("[STREAM] Auto-streaming AI response step {$curStep} to Telegram...");
 
-                $streamHeader = "🖥️ *পিসির স্ক্রিনে নতুন উত্তর (Live from Antigravity):*\n"
-                              . "━━━━━━━━━━━━━━━━━━━━\n"
-                              . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
-                              . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
-                              . "🔢 *স্টেপ:* `{$curStep}`";
+                $fullContent = $latestResp['content'];
+                $fullLen = mb_strlen($fullContent);
 
-                $streamKb = [
-                    [
-                        ['text' => '💬 স্ক্রিনের সর্বশেষ উত্তর', 'callback_data' => 'action_latest_response'],
-                        ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot']
-                    ],
-                    [
-                        ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
-                    ]
-                ];
+                // Cache full response to disk so user can view full response anytime
+                $respDir = PROJECT_ROOT . '/storage/logs/responses';
+                if (!is_dir($respDir)) @mkdir($respDir, 0777, true);
+                @file_put_contents($respDir . "/resp_{$curStep}.txt", $fullContent);
 
-                $bodyWithLinks = $latestResp['content'] . getStandardLinksText();
-                sendChunkedTelegramResponse($state['chat_id'], $streamHeader, $bodyWithLinks, $streamKb);
+                if ($fullLen > 450) {
+                    $cleanSummary = mb_substr($fullContent, 0, 420);
+                    $lastBreak = max((int)mb_strrpos($cleanSummary, "\n"), (int)mb_strrpos($cleanSummary, "."));
+                    if ($lastBreak > 200) {
+                        $cleanSummary = mb_substr($cleanSummary, 0, $lastBreak);
+                    }
+                    $summaryBody = $cleanSummary . "\n\n*(ℹ️ বিস্তারিত উত্তর বড় হওয়ায় সংক্ষেপিত করা হয়েছে। সম্পূর্ণ রেজাল্ট দেখতে নিচের বাটনে চাপ দিন)*";
+
+                    $streamHeader = "🖥️ *পিসির স্ক্রিনে কাজের সারসংক্ষেপ (Step {$curStep}):*\n"
+                                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                                  . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                                  . "💬 *চ্যাট:* `{$state['active_chat_title']}`";
+
+                    $streamKb = [
+                        [
+                            ['text' => '📖 বিস্তারিত সম্পূর্ণ রেজাল্ট দেখুন', 'callback_data' => 'action_full_resp_' . $curStep]
+                        ],
+                        [
+                            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot'],
+                            ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot']
+                        ],
+                        [
+                            ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+                        ]
+                    ];
+
+                    sendMsg($state['chat_id'], $streamHeader . "\n\n" . $summaryBody, $streamKb);
+                } else {
+                    $streamHeader = "🖥️ *পিসির স্ক্রিনে নতুন উত্তর (Live from Antigravity):*\n"
+                                  . "━━━━━━━━━━━━━━━━━━━━\n"
+                                  . "🎯 *প্রজেক্ট:* `{$state['active_proj_name']}`\n"
+                                  . "💬 *চ্যাট:* `{$state['active_chat_title']}`\n"
+                                  . "🔢 *স্টেপ:* `{$curStep}`";
+
+                    $streamKb = [
+                        [
+                            ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot'],
+                            ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot']
+                        ],
+                        [
+                            ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+                        ]
+                    ];
+
+                    $bodyWithLinks = $fullContent . getStandardLinksText();
+                    sendChunkedTelegramResponse($state['chat_id'], $streamHeader, $bodyWithLinks, $streamKb);
+                }
+
                 $state['streamed_steps'][$activeConv] = $curStep;
                 $state['last_streamed_step'] = $curStep;
                 saveState($state);
@@ -1730,6 +1846,29 @@ while (true) {
                         continue;
                     }
 
+                    if (strpos($data, 'action_full_resp_') === 0) {
+                        $targetStep = (int)substr($data, 17);
+                        answerCallback($cbId, 'সম্পূর্ণ রেজাল্ট লোড হচ্ছে...');
+                        $respFile = PROJECT_ROOT . "/storage/logs/responses/resp_{$targetStep}.txt";
+                        $fullText = file_exists($respFile) ? file_get_contents($respFile) : '';
+                        if (empty($fullText)) {
+                            $latest = getLatestModelResponse($state['active_conv_id'] ?? DEFAULT_CONV_ID);
+                            $fullText = $latest['content'] ?? 'সম্পূর্ণ রেজাল্ট পাওয়া যায়নি।';
+                        }
+                        $hdr = "📖 *অ্যান্টিগ্রাভিটির সম্পূর্ণ বিস্তারিত রেজাল্ট (Step {$targetStep}):*\n━━━━━━━━━━━━━━━━━━━━";
+                        $fullKb = [
+                            [
+                                ['text' => '📸 পিসির স্ক্রিনশট', 'callback_data' => 'action_pc_screenshot'],
+                                ['text' => '📱 ওয়েবসাইট লাইভ ভিউ', 'callback_data' => 'action_web_screenshot']
+                            ],
+                            [
+                                ['text' => '🏠 মেইন মেনু', 'callback_data' => 'menu_home']
+                            ]
+                        ];
+                        sendChunkedTelegramResponse($chatId, $hdr, $fullText . getStandardLinksText(), $fullKb);
+                        continue;
+                    }
+
                     if ($data === 'menu_home') {
                         answerCallback($cbId, 'মেইন মেনু লোড হচ্ছে...');
                         renderMainMenu($chatId, $state);
@@ -1770,16 +1909,10 @@ while (true) {
                         answerCallback($cbId, '🚨 কোটা অ্যালার্ট টেস্ট...');
                         sendQuotaAlert($chatId, $state, 85, 'ম্যানুয়াল টেস্ট ও কোটা ভেরিফিকেশন (৯৫% থ্রেশহোল্ড)');
                         continue;
-                    } elseif ($data === 'action_logout_reauth') {
-                        answerCallback($cbId, 'রি-অথরাইজেশন...');
-                        $reauthMsg = "🚪 *অ্যাকাউন্ট লগআউট ও রি-অথরাইজেশন*\n"
-                                   . "━━━━━━━━━━━━━━━━━━━━\n"
-                                   . "আপনি যদি অ্যান্টিগ্রাভিটিতে সম্পূর্ণ নতুন জিমেইল অ্যাকাউন্ট লগইন করতে চান:\n\n"
-                                   . "১. কম্পিউটারের অ্যান্টিগ্রাভিটি ওপেন করে প্রোফাইল থেকে Logout দিন।\n"
-                                   . "২. অথবা মোবাইল থেকেই নতুন Google OAuth অথরাইজেশন সম্পন্ন করুন।\n"
-                                   . "৩. নতুন অ্যাকাউন্ট যুক্ত হলে টেলিগ্রাম স্বয়ংক্রিয়ভাবে সিঙ্ক হয়ে যাবে এবং বট ২৪ ঘণ্টা কানেক্টেড থাকবে!";
-                        sendMsg($chatId, $reauthMsg);
-                    } elseif ($data === 'action_add_acc') {
+                    } elseif ($data === 'action_auth_portal' || $data === 'action_logout_reauth' || $data === 'action_add_acc') {
+                        answerCallback($cbId, '🔐 অথরাইজেশন পোর্টাল...');
+                        renderAuthAccountCard($chatId, $state);
+                        continue;
                     } elseif ($data === 'action_sync_active_chat') {
                         answerCallback($cbId, 'অ্যাক্টিভ চ্যাট সিঙ্ক হচ্ছে...');
                         $latest = getLatestActiveConversation();
@@ -2147,21 +2280,40 @@ while (true) {
                     } elseif ($text === '🔄 রিফ্রেশ') {
                         renderMainMenu($chatId, $state);
                     } else {
-                        // Check if user is adding an account
-                        if (stripos($text, 'অ্যাকাউন্ট নাম:') === 0 || stripos($text, 'account name:') === 0) {
-                            $accName = trim(substr($text, strpos($text, ':') + 1));
+                        // Check if user is adding an account or token
+                        $isAccountCmd = false;
+                        $prefixes = ['অ্যাকাউন্ট নাম:', 'account name:', 'account:', 'email:', 'gmail:', 'token:', 'api_key:', 'key:'];
+                        foreach ($prefixes as $pfx) {
+                            if (stripos($text, $pfx) === 0) {
+                                $isAccountCmd = true;
+                                $matchedPfx = $pfx;
+                                break;
+                            }
+                        }
+
+                        if ($isAccountCmd) {
+                            $colonPos = strpos($text, ':');
+                            $val = trim(substr($text, $colonPos + 1));
                             $accData = loadAccounts();
                             $newId = 'acc_' . (count($accData['accounts']) + 1);
+                            $isToken = (stripos($matchedPfx, 'token') !== false || stripos($matchedPfx, 'key') !== false);
+                            
                             $accData['accounts'][$newId] = [
                                 'id'           => $newId,
-                                'name'         => $accName,
+                                'name'         => $val,
+                                'type'         => $isToken ? 'api_key' : 'google_oauth',
                                 'profile'      => 'profile_' . (count($accData['accounts']) + 1),
-                                'status'       => 'রেডি 🟢',
+                                'status'       => 'সক্রিয় 🟢',
                                 'model'        => $state['selected_model'] ?? DEFAULT_MODEL,
-                                'quota_status' => 'উপলব্ধ 🟢'
+                                'quota_status' => '১০০% উপলব্ধ 🟢'
                             ];
+                            $accData['active_account'] = $newId;
+                            $state['active_account'] = $newId;
                             saveAccounts($accData);
-                            sendMsg($chatId, "✅ *নতুন অ্যাকাউন্ট যুক্ত করা হয়েছে!*\n\nনাম: *{$accName}*\nআইডি: `{$newId}`\n\nআপনি এখন এটি যেকোনো সময় নির্বাচন করতে পারেন!");
+                            saveState($state);
+
+                            $typeName = $isToken ? "গুগল এপিআই টোকেন" : "গুগল জিমেইল অ্যাকাউন্ট";
+                            sendMsg($chatId, "🎉 *নতুন {$typeName} সফলভাবে যুক্ত ও সক্রিয় করা হয়েছে!*\n━━━━━━━━━━━━━━━━━━━━\n👤 *আইডি:* `{$newId}`\n🔑 *শনাক্তকারী:* `{$val}`\n🟢 *স্ট্যাটাস:* সক্রিয় ও কানেক্টেড\n\nএখন থেকে আপনার সকল অনুরোধ এই অ্যাকাউন্টের মাধ্যমে সম্পন্ন হবে!");
                             renderAccountsMenu($chatId, $state);
                             continue;
                         }
