@@ -175,7 +175,7 @@
            ROYAL ISLAMIC 100% CONTRAST PALETTE (LIGHT & DARK DUAL ENGINE)
            ============================================================ */
 
-        /* 1. LIGHT MODE SPECIFICATION (Clean, Warm, Legible) */
+        /* 1. LIGHT MODE SPECIFICATION (Clean, Warm Ivory & Regal Accents) */
         html:not(.dark) body {
             background-color: #f8f5ee !important;
             color: #1e293b !important;
@@ -194,73 +194,139 @@
             border-color: #cbd5e1 !important;
         }
 
-        /* 2. DARK MODE SPECIFICATION (Deep Obsidian Emerald & Royal Gold) */
+        /* 2. DARK MODE SPECIFICATION (Pure Deep Obsidian Emerald & Royal Gold — Zero Light Patches Anywhere) */
+        html.dark,
         html.dark body {
-            background-color: #031711 !important;
+            background-color: #02150f !important;
             color: #f8fafc !important;
         }
 
-        /* Surfaces & Containers */
-        html.dark .bg-\[\#f8f5ee\],
+        /* Eradicate any light linear gradients & parchment section backdrops */
+        html.dark #mainContentSection,
+        html.dark .bg-gradient-to-b,
+        html.dark [class*="from-[#fbf8f1]"],
+        html.dark [class*="via-[#fffdf9]"],
+        html.dark [class*="to-[#f6f1e5]"],
+        html.dark section.bg-\[\#f4efe4\]\/70,
+        html.dark section.bg-\[\#edf4ee\],
+        html.dark section.bg-\[\#f6f1e7\],
+        html.dark section.bg-\[\#f8f5ee\],
         html.dark .bg-parchment,
-        html.dark .bg-parchment-warm,
+        html.dark .bg-parchment-warm {
+            background-image: none !important;
+            background-color: #02150f !important;
+            border-color: #0a3d2e !important;
+        }
+
+        /* Alternating dark section backdrops for smooth contrast rhythm */
+        html.dark section.bg-\[\#edf4ee\],
+        html.dark section.bg-\[\#f8f5ee\] {
+            background-color: #031c15 !important;
+        }
+
+        /* All Cards, Boxes, Modals, Dropdowns & Container Surfaces */
+        html.dark .bg-white,
+        html.dark .bg-\[\#fbf8f1\],
+        html.dark .bg-\[\#fffdf9\],
+        html.dark .bg-\[\#fffefb\],
+        html.dark .bg-\[\#fdfcf8\],
+        html.dark .bg-\[\#fdfbf7\],
+        html.dark .bg-\[\#f6f1e5\],
+        html.dark .bg-\[\#f4efe4\],
+        html.dark .bg-\[\#f6f1e7\],
         html.dark .bg-slate-50,
         html.dark .bg-gray-50,
-        html.dark .bg-emerald-50 {
-            background-color: #041f17 !important;
-            border-color: #0e4435 !important;
-        }
-
-        html.dark .bg-white,
-        html.dark .bg-\[\#fffefb\],
         html.dark .islamic-card,
-        html.dark .card {
-            background-color: #07271e !important;
+        html.dark .card,
+        html.dark article {
+            background-color: #062c20 !important;
             color: #f8fafc !important;
-            border-color: rgba(251, 191, 36, 0.25) !important;
+            border-color: #0e4837 !important;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
         }
 
-        html.dark .border-\[\#e7dec6\],
+        /* Sub-surfaces, feature boxes, and inner row items */
+        html.dark .bg-\[\#f7f9f7\],
+        html.dark .bg-\[\#f7f4ea\],
+        html.dark .bg-\[\#f9fbf9\],
+        html.dark .bg-\[\#faf7f0\],
+        html.dark .bg-emerald-50,
+        html.dark .bg-amber-50,
+        html.dark .bg-emerald-50\/70,
+        html.dark .bg-amber-50\/70,
+        html.dark .bg-emerald-100,
+        html.dark .bg-amber-100 {
+            background-color: #031e16 !important;
+            color: #e2e8f0 !important;
+            border-color: #0e4837 !important;
+        }
+
+        /* Dark Mode Icon Badges */
+        html.dark .bg-emerald-100\/80,
+        html.dark .bg-amber-100\/80 {
+            background-color: #083829 !important;
+            color: #fbbf24 !important;
+        }
+
+        /* Card Hover States in Dark Mode */
+        html.dark a.group:hover,
+        html.dark .islamic-card:hover,
+        html.dark article:hover {
+            background-color: #083c2d !important;
+            border-color: rgba(251, 191, 36, 0.5) !important;
+        }
+
+        /* Border Overrides in Dark Mode */
+        html.dark [class*="border-[#e"],
+        html.dark [class*="border-[#d"],
         html.dark .border-slate-100,
         html.dark .border-slate-200,
         html.dark .border-slate-300,
         html.dark .border-gray-200,
         html.dark .border-emerald-100,
-        html.dark .border-emerald-200 {
-            border-color: #0e4435 !important;
+        html.dark .border-emerald-200,
+        html.dark .border-emerald-300,
+        html.dark .divide-\[\#ece3d4\] > * + *,
+        html.dark .divide-\[\#e4ebe5\] > * + * {
+            border-color: #0a3d2e !important;
         }
 
-        /* Typography Overrides in Dark Mode (High-Contrast, Zero Black-on-Dark) */
+        /* High-Contrast Typography in Dark Mode (Warm Golds, Mint & Crisp Silvers) */
+        html.dark .text-emerald-night,
         html.dark .text-emerald-950,
         html.dark .text-emerald-900,
         html.dark .text-slate-900,
         html.dark .text-slate-800,
         html.dark .text-gray-900,
-        html.dark .text-gray-800 {
-            color: #fef3c7 !important; /* Warm creamy gold for bold headings */
+        html.dark .text-gray-800,
+        html.dark .text-\[\#064e3b\] {
+            color: #fef3c7 !important; /* Golden/cream glow for titles */
         }
 
         html.dark .text-emerald-800,
-        html.dark .text-emerald-700 {
-            color: #6ee7b7 !important; /* Soft mint emerald */
+        html.dark .text-emerald-700,
+        html.dark .text-emerald-vibrant {
+            color: #6ee7b7 !important; /* Mint emerald */
         }
 
         html.dark .text-slate-700,
-        html.dark .text-gray-700 {
-            color: #e2e8f0 !important;
-        }
-
         html.dark .text-slate-600,
-        html.dark .text-slate-500,
-        html.dark .text-gray-600,
-        html.dark .text-gray-500 {
-            color: #94a3b8 !important; /* Muted text still crisp & readable */
+        html.dark .text-gray-700,
+        html.dark .text-gray-600 {
+            color: #cbd5e1 !important; /* Crisp silver */
         }
 
+        html.dark .text-slate-500,
+        html.dark .text-gray-500,
+        html.dark .text-slate-400 {
+            color: #94a3b8 !important; /* Soft legible slate */
+        }
+
+        html.dark .text-amber-800,
         html.dark .text-amber-900,
-        html.dark .text-amber-950 {
-            color: #fbbf24 !important;
+        html.dark .text-amber-950,
+        html.dark .text-gold-deep {
+            color: #fbbf24 !important; /* Shimmer gold */
         }
 
         /* Form Controls & Inputs */
@@ -269,7 +335,7 @@
         html.dark textarea {
             background-color: #022017 !important;
             color: #f8fafc !important;
-            border-color: #0e4435 !important;
+            border-color: #0a3d2e !important;
         }
 
         html.dark input::placeholder,
@@ -289,11 +355,11 @@
         html.dark thead th {
             background-color: #04271c !important;
             color: #fef3c7 !important;
-            border-color: #0e4435 !important;
+            border-color: #0a3d2e !important;
         }
 
         html.dark tbody td {
-            border-color: #0e4435 !important;
+            border-color: #0a3d2e !important;
             color: #f1f5f9 !important;
         }
 
@@ -363,34 +429,172 @@
     <!-- Real-time Offline / Online Network Alert Bar -->
     <div id="networkAlertBar" class="hidden text-xs py-1.5 px-3 text-center font-bold z-50 transition-all duration-300"></div>
 
-    <!-- Visual Step-by-Step PWA / Shortcut Guide Modal -->
-    <div id="pwaGuideModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-gradient-to-b from-[#022c22] via-[#064e3b] to-[#011a14] border-2 border-amber-400 rounded-3xl p-6 max-w-sm w-full text-white shadow-2xl relative text-center">
-            <button id="closeGuideModalBtn" type="button" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <!-- Comprehensive Multi-Platform Kariana Application & Portal Hub Modal -->
+    <div id="pwaGuideModal" class="hidden fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-gradient-to-b from-[#022c22] via-[#04392b] to-[#011a14] border-2 border-amber-400/80 rounded-3xl p-5 sm:p-7 max-w-xl w-full text-white shadow-2xl relative">
+            <!-- Modal Close Button -->
+            <button id="closeGuideModalBtn" type="button" class="absolute top-4 right-4 text-slate-300 hover:text-amber-300 p-1.5 rounded-full hover:bg-white/10 transition" title="বন্ধ করুন">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <div class="inline-flex items-center justify-center w-13 h-13 rounded-2xl bg-amber-400/20 border border-amber-400/50 text-amber-300 mb-2.5 shadow-inner">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6M4 6h16" />
+                    </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight">
+                    কারিয়ানা ডিজিটাল অ্যাপ্লিকেশন হাব
+                </h3>
+                <p class="text-xs sm:text-sm text-emerald-200/90 mt-1 max-w-md mx-auto">
+                    আপনার ডিভাইসের জন্য উপযুক্ত সংস্করণটি নির্বাচন করুন — মোবাইল, কম্পিউটার বা সরাসরি ওয়েব
+                </p>
             </div>
-            <h3 class="text-lg font-extrabold text-amber-300 mb-1">ফোনে অ্যাপ/শর্টকাট যুক্ত করুন</h3>
-            <p class="text-xs text-emerald-200/90 mb-4">গুগল ক্রোম ব্রাউজারের মাধ্যমে সরাসরি ফোনে অ্যাপ যুক্ত করার ৩টি সহজ ধাপ:</p>
-            <div class="space-y-2.5 text-left text-xs bg-emerald-950/90 p-3.5 rounded-2xl border border-amber-400/30 mb-5">
-                <div class="flex items-start space-x-2.5">
-                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">১</span>
-                    <p class="text-slate-200">উপরে ডানদিকের তিনটি ডট ( <strong class="text-amber-300 text-sm">⋮</strong> ) মেনুতে চাপুন।</p>
+
+            <!-- Platform Switcher Tabs -->
+            <div class="flex items-center p-1 bg-emerald-950/80 rounded-2xl border border-amber-400/30 mb-5 gap-1">
+                <button type="button" id="tabBtnMobile" onclick="switchAppHubTab('mobile')" 
+                        class="app-hub-tab flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center justify-center gap-1.5 bg-amber-400 text-emerald-950 shadow">
+                    <span>📱</span>
+                    <span>মোবাইল অ্যাপ</span>
+                </button>
+                <button type="button" id="tabBtnDesktop" onclick="switchAppHubTab('desktop')" 
+                        class="app-hub-tab flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition flex items-center justify-center gap-1.5">
+                    <span>💻</span>
+                    <span>কম্পিউটার ও পিসি</span>
+                </button>
+                <button type="button" id="tabBtnWeb" onclick="switchAppHubTab('web')" 
+                        class="app-hub-tab flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition flex items-center justify-center gap-1.5">
+                    <span>🌐</span>
+                    <span>ওয়েব পোর্টাল</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: MOBILE APPS (Android APK & PWA) -->
+            <div id="tabContentMobile" class="space-y-3.5">
+                <!-- Option A: Instant PWA Mobile App -->
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-900/60 border border-emerald-600/40 hover:border-amber-400/60 transition flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wide">১-ক্লিক মোবাইল ওয়েব অ্যাপ</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.2 rounded-full font-bold">ইনস্ট্যান্ট</span>
+                        </div>
+                        <p class="text-xs text-slate-200">কোনো ডাউনলোড ছাড়াই ফোনে অ্যাপের মতো চালু হবে, অফলাইনে কুরআন ও নামাজের সময় পাওয়া যাবে।</p>
+                    </div>
+                    <button type="button" onclick="triggerPwaPromptDirectly()" class="w-full sm:w-auto shrink-0 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <span>ফোনে ইনস্টল</span>
+                    </button>
                 </div>
-                <div class="flex items-start space-x-2.5">
-                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">২</span>
-                    <p class="text-slate-200">মেনু থেকে <strong class="text-amber-300">"Add to Home screen"</strong> (বা <strong class="text-amber-300">"Install app"</strong>) অপশনে চাপুন।</p>
+
+                <!-- Option B: Direct Android APK Download -->
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-950/80 border border-amber-400/40 hover:border-amber-400 transition flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wide">অ্যান্ড্রয়েড সরাসরি ইনস্টলার (.APK)</span>
+                            <span class="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-full font-bold">v1.0 APK</span>
+                        </div>
+                        <p class="text-xs text-slate-200">যেকোনো স্মার্টফোনে সরাসরি ফাইল ডাউনলোড করে ইনস্টল করার জন্য প্যাকেজ ফাইল।</p>
+                    </div>
+                    <a href="<?= $baseUrl ?? '' ?>/download/apk" download="kariana-quran-v1.0.apk" class="w-full sm:w-auto shrink-0 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-black py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <span>APK ডাউনলোড</span>
+                    </a>
                 </div>
-                <div class="flex items-start space-x-2.5">
-                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">৩</span>
-                    <p class="text-slate-200">এবার <strong class="text-amber-300">"Install"</strong> বা <strong class="text-amber-300">"Add"</strong> চাপলেই আপনার মোবাইলের হোমস্ক্রিনে কারিয়ানা অ্যাপ চলে আসবে!</p>
+
+                <!-- Option C: iPhone / iPad iOS Quick Instructions -->
+                <div class="p-3 rounded-xl bg-black/30 border border-white/10 text-left text-[11px] text-slate-300">
+                    <p class="font-bold text-amber-300 mb-1 flex items-center gap-1">
+                        <span>🍎 আইফোন / আইপ্যাড (Safari) ব্যবহারকারীরা:</span>
+                    </p>
+                    <p>নিচের শেয়ার আইকনে ( <strong class="text-white">Share</strong> ) চাপুন ➔ এরপর <strong class="text-amber-300">"Add to Home Screen"</strong> চাপলেই ফোনের হোমস্ক্রিনে কারিয়ানা অ্যাপ যুক্ত হয়ে যাবে।</p>
                 </div>
             </div>
-            <button id="gotItGuideBtn" type="button" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-bold py-2.5 rounded-xl shadow text-sm">
-                ঠিক আছে, বুঝেছি
-            </button>
+
+            <!-- TAB 2: DESKTOP & PC (Windows .EXE & Chrome App) -->
+            <div id="tabContentDesktop" class="space-y-3.5 hidden">
+                <!-- Option A: Windows .EXE Desktop Launcher -->
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-950/80 border border-amber-400/40 hover:border-amber-400 transition flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wide">উইন্ডোজ ডেস্কটপ অ্যাপ্লিকেশন (.EXE)</span>
+                            <span class="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-full font-bold">Windows 10/11</span>
+                        </div>
+                        <p class="text-xs text-slate-200">কম্পিউটারে বড় স্ক্রিনে কুরআন ও প্রকাশনা পরিচালনার জন্য ডেডিকেটেড ডেস্কটপ সফটওয়্যার সেটআপ।</p>
+                    </div>
+                    <a href="<?= $baseUrl ?? '' ?>/download/exe" download="Kariana-Quran-Setup-v1.0.exe" class="w-full sm:w-auto shrink-0 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-black py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <span>Windows .EXE ডাউনলোড</span>
+                    </a>
+                </div>
+
+                <!-- Option B: Desktop Web App (Chrome / Edge PWA) -->
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-900/60 border border-emerald-600/40 hover:border-amber-400/60 transition flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wide">ক্রোম ও এজ ডেস্কটপ অ্যাপ</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.2 rounded-full font-bold">স্টার্ট মেনু ও টাস্কবার</span>
+                        </div>
+                        <p class="text-xs text-slate-200">কম্পিউটারের ব্রাউজার থেকে সরাসরি উইন্ডোজ অ্যাপ হিসেবে ইনস্টল করুন ও টাস্কবারে পিন করে রাখুন।</p>
+                    </div>
+                    <button type="button" onclick="triggerPwaPromptDirectly()" class="w-full sm:w-auto shrink-0 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>পিসিতে অ্যাপ যুক্ত করুন</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 3: DIRECT WEB & ADMIN PORTALS -->
+            <div id="tabContentWeb" class="space-y-2.5 hidden">
+                <p class="text-xs text-slate-300 text-center mb-3">যেকোনো ব্রাউজার থেকে সরাসরি সংশ্লিষ্ট প্রশাসনিক প্যানেলে প্রবেশ করুন:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <a href="<?= $baseUrl ?? '' ?>/admin" target="_blank" class="p-3 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-amber-400/30 hover:border-amber-400 transition flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+                            👑
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-white text-xs">সুপার অ্যাডমিন ড্যাশবোর্ড</h4>
+                            <p class="text-[10px] text-emerald-200/80">কেন্দ্রীয় প্রকাশনা ও নিয়ন্ত্রণ</p>
+                        </div>
+                    </a>
+
+                    <a href="<?= $baseUrl ?? '' ?>/manager/login" target="_blank" class="p-3 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-amber-400/30 hover:border-amber-400 transition flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+                            👔
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-white text-xs">ম্যানেজার ও পরিচালক পোর্টাল</h4>
+                            <p class="text-[10px] text-emerald-200/80">আঞ্চলিক কার্যক্রম ও লেজার</p>
+                        </div>
+                    </a>
+
+                    <a href="<?= $baseUrl ?? '' ?>/teacher/login" target="_blank" class="p-3 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-amber-400/30 hover:border-amber-400 transition flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+                            👨‍🏫
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-white text-xs">মুয়াল্লিম ও শিক্ষক প্যানেল</h4>
+                            <p class="text-[10px] text-emerald-200/80">শিক্ষক ক্লাসরুম ও উপস্থিতি</p>
+                        </div>
+                    </a>
+
+                    <a href="<?= $baseUrl ?? '' ?>/verify/kyc" target="_blank" class="p-3 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-amber-400/30 hover:border-amber-400 transition flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+                            🪪
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-white text-xs">সদস্য ও ছাত্র আইডি যাচাই</h4>
+                            <p class="text-[10px] text-emerald-200/80">ডিজিটাল সনদ ও আইডি কার্ড</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-3 border-t border-emerald-800/60 flex items-center justify-between text-[11px] text-emerald-200/70">
+                <span>কারিয়ানা কুরআন অফিসিয়াল সিস্টেম</span>
+                <button type="button" id="gotItGuideBtn" class="text-amber-300 hover:text-white font-bold transition">বন্ধ করুন ✕</button>
+            </div>
         </div>
     </div>
 
@@ -733,6 +937,31 @@
             }
         }
 
+        const isMobileUser = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        if (headerAppInstallBtn) {
+            const btnText = headerAppInstallBtn.querySelector('span');
+            if (btnText) {
+                btnText.textContent = isMobileUser ? '📱 অ্যাপ ডাউনলোড' : '💻 পিসি ও মোবাইল অ্যাপ';
+            }
+        }
+
+        window.switchAppHubTab = function(tabName) {
+            const tabs = ['mobile', 'desktop', 'web'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (btn && content) {
+                    if (t === tabName) {
+                        btn.className = 'app-hub-tab flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center justify-center gap-1.5 bg-amber-400 text-emerald-950 shadow';
+                        content.classList.remove('hidden');
+                    } else {
+                        btn.className = 'app-hub-tab flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition flex items-center justify-center gap-1.5';
+                        content.classList.add('hidden');
+                    }
+                }
+            });
+        };
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -745,7 +974,7 @@
             });
         });
 
-        function triggerInstallAction() {
+        window.triggerPwaPromptDirectly = function() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(({ outcome }) => {
@@ -754,15 +983,25 @@
                             installBanner.classList.add('hidden');
                             installBanner.classList.remove('flex');
                         }
+                        closeGuideModal();
                     }
                     deferredPrompt = null;
                 });
             } else {
-                if (guideModal) {
-                    guideModal.classList.remove('hidden');
-                    guideModal.classList.add('flex');
-                }
+                alert('আপনার ব্রাউজার থেকে অ্যাপটি হোমস্ক্রিন বা পিসিতে যুক্ত করতে ব্রাউজার মেনু (⋮) থেকে "Add to Home screen" বা "Install" নির্বাচন করুন।');
             }
+        };
+
+        function openAppHubModal() {
+            if (guideModal) {
+                switchAppHubTab(isMobileUser ? 'mobile' : 'desktop');
+                guideModal.classList.remove('hidden');
+                guideModal.classList.add('flex');
+            }
+        }
+
+        function triggerInstallAction() {
+            openAppHubModal();
         }
 
         if (installBtn) {
@@ -794,6 +1033,12 @@
                 if (e.target === guideModal) closeGuideModal();
             });
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && guideModal && !guideModal.classList.contains('hidden')) {
+                closeGuideModal();
+            }
+        });
 
         if (dismissBtn) {
             dismissBtn.addEventListener('click', () => {

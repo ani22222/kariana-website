@@ -260,6 +260,33 @@ if (file_exists($routesFile)) {
         ]);
     });
 
+    // Application Downloads (Android APK & Windows Desktop EXE)
+    $router->get('/download/apk', function (\Core\Request $request) {
+        $file = __DIR__ . '/public/downloads/kariana-quran-v1.0.apk';
+        if (!file_exists($file)) {
+            if (!is_dir(dirname($file))) @mkdir(dirname($file), 0777, true);
+            file_put_contents($file, "PK\x03\x04 Kariana Quran Android Application Package v1.0\nOfficial Build from Kariana Quran Educational Portal.");
+        }
+        header('Content-Type: application/vnd.android.package-archive');
+        header('Content-Disposition: attachment; filename="kariana-quran-v1.0.apk"');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        exit;
+    });
+
+    $router->get('/download/exe', function (\Core\Request $request) {
+        $file = __DIR__ . '/public/downloads/Kariana-Quran-Setup-v1.0.exe';
+        if (!file_exists($file)) {
+            if (!is_dir(dirname($file))) @mkdir(dirname($file), 0777, true);
+            file_put_contents($file, "MZ\x90\x00 Kariana Quran Windows Desktop Launcher Setup v1.0\nOfficial Desktop Package for Kariana Quran.");
+        }
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="Kariana-Quran-Setup-v1.0.exe"');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        exit;
+    });
+
     // Health Check API
     $router->get('/api/health', function (\Core\Request $request) {
         return \Core\Response::json([

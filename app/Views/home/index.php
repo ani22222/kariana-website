@@ -672,18 +672,18 @@ window.smoothScrollToContent = function() {
 <!-- ============================================================
      5-PORTAL QUICK ACCESS HUB (বই, কোর্স, ভর্তি, ব্লগ, জেলা পরিচালকবৃন্দ)
      ============================================================ -->
-<section id="mainContentSection" class="relative z-20 pt-8 pb-10 sm:py-14 bg-gradient-to-b from-[#fbf8f1] via-[#fffdf9] to-[#f6f1e5] border-t-4 border-amber-400/50 shadow-sm">
+<section id="mainContentSection" class="relative z-20 pt-8 pb-10 sm:py-14 bg-gradient-to-b from-[#fbf8f1] via-[#fffdf9] to-[#f6f1e5] dark:from-[#02150f] dark:via-[#021812] dark:to-[#02150f] border-t-4 border-amber-400/50 dark:border-emerald-800/60 shadow-sm transition-colors duration-300">
     <div class="container mx-auto px-3.5 sm:px-6 max-w-6xl">
         <!-- Section Header -->
         <div class="text-center mb-6 sm:mb-8">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/10 text-emerald-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 border border-emerald-800/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/10 dark:bg-emerald-800/30 text-emerald-900 dark:text-emerald-300 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 border border-emerald-800/20 dark:border-emerald-700/40">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse"></span>
                 <span>কারিয়ানা কেন্দ্রীয় সেবা কেন্দ্র</span>
             </div>
-            <h2 class="text-lg sm:text-2xl md:text-3xl font-black text-emerald-night tracking-tight">
+            <h2 class="text-lg sm:text-2xl md:text-3xl font-black text-emerald-night dark:text-amber-300 tracking-tight">
                 কুইক এক্সেস পোর্টাল ও মূল বিভাগসমূহ
             </h2>
-            <p class="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto mt-1">
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-emerald-200/80 max-w-xl mx-auto mt-1">
                 সহীহ কুরআন শিক্ষা, প্রকাশনা ও দেশব্যাপী সাংগঠনিক কার্যক্রমের সরাসরি গেটওয়ে
             </p>
         </div>
@@ -691,56 +691,56 @@ window.smoothScrollToContent = function() {
         <!-- 5-Service Dynamic Grid (Responsive: 2x2 + Full-Width Leadership Banner on Mobile, 5-Cols on Desktop) -->
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3.5 mb-6">
             <!-- 1. বই ও প্রকাশনা -->
-            <a href="<?= $baseUrl ?? '' ?>/books" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+            <a href="<?= $baseUrl ?? '' ?>/books" class="group bg-white dark:bg-[#062c20] hover:bg-emerald-50/70 dark:hover:bg-[#093c2c] p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] dark:border-emerald-800/60 hover:border-emerald-600 dark:hover:border-amber-400/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-night dark:text-amber-300 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">বই ও প্রকাশনা</h3>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">অর্ডার ও ক্যাটালগ</p>
-                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">বই সংগ্রহ করুন →</span>
+                <h3 class="font-black text-slate-800 dark:text-amber-100 text-xs sm:text-sm group-hover:text-emerald-night dark:group-hover:text-amber-300 transition">বই ও প্রকাশনা</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-emerald-300/70 mt-0.5">অর্ডার ও ক্যাটালগ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-700/60 group-hover:bg-emerald-600 group-hover:text-white dark:group-hover:bg-amber-400 dark:group-hover:text-emerald-950 transition">বই সংগ্রহ করুন →</span>
             </a>
 
             <!-- 2. কোর্স ক্যাটালগ -->
-            <a href="<?= $baseUrl ?? '' ?>/courses" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+            <a href="<?= $baseUrl ?? '' ?>/courses" class="group bg-white dark:bg-[#062c20] hover:bg-emerald-50/70 dark:hover:bg-[#093c2c] p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] dark:border-emerald-800/60 hover:border-emerald-600 dark:hover:border-amber-400/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-night dark:text-amber-300 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     </svg>
                 </div>
-                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">কোর্স ক্যাটালগ</h3>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">নাজেরা ও তাজবীদ</p>
-                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">কোর্স দেখুন →</span>
+                <h3 class="font-black text-slate-800 dark:text-amber-100 text-xs sm:text-sm group-hover:text-emerald-night dark:group-hover:text-amber-300 transition">কোর্স ক্যাটালগ</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-emerald-300/70 mt-0.5">নাজেরা ও তাজবীদ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-700/60 group-hover:bg-emerald-600 group-hover:text-white dark:group-hover:bg-amber-400 dark:group-hover:text-emerald-950 transition">কোর্স দেখুন →</span>
             </a>
 
             <!-- 3. ভর্তি আবেদন -->
-            <a href="<?= $baseUrl ?? '' ?>/courses#admission" class="group bg-white hover:bg-amber-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-amber-500 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-gold-rich group-hover:text-white transition-all shadow-xs">
+            <a href="<?= $baseUrl ?? '' ?>/courses#admission" class="group bg-white dark:bg-[#062c20] hover:bg-amber-50/70 dark:hover:bg-[#093c2c] p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] dark:border-emerald-800/60 hover:border-amber-500 dark:hover:border-amber-400/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-amber-100/80 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-gold-rich group-hover:text-white transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
-                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-amber-800 transition">ভর্তি আবেদন</h3>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">অনলাইন রেজিস্ট্রেশন</p>
-                <span class="mt-2 text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-300 group-hover:bg-amber-600 group-hover:text-white transition">আবেদন করুন →</span>
+                <h3 class="font-black text-slate-800 dark:text-amber-100 text-xs sm:text-sm group-hover:text-amber-800 dark:group-hover:text-amber-300 transition">ভর্তি আবেদন</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-emerald-300/70 mt-0.5">অনলাইন রেজিস্ট্রেশন</p>
+                <span class="mt-2 text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-700/60 group-hover:bg-amber-600 group-hover:text-white transition">আবেদন করুন →</span>
             </a>
 
             <!-- 4. ব্লগ ও প্রবন্ধ -->
-            <a href="<?= $baseUrl ?? '' ?>/blog" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+            <a href="<?= $baseUrl ?? '' ?>/blog" class="group bg-white dark:bg-[#062c20] hover:bg-emerald-50/70 dark:hover:bg-[#093c2c] p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] dark:border-emerald-800/60 hover:border-emerald-600 dark:hover:border-amber-400/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-night dark:text-amber-300 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                     </svg>
                 </div>
-                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">ব্লগ ও নিউজ</h3>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">ইসলামী প্রবন্ধ ও পাঠ</p>
-                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">প্রবন্ধ পড়ুন →</span>
+                <h3 class="font-black text-slate-800 dark:text-amber-100 text-xs sm:text-sm group-hover:text-emerald-night dark:group-hover:text-amber-300 transition">ব্লগ ও নিউজ</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-emerald-300/70 mt-0.5">ইসলামী প্রবন্ধ ও পাঠ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-700/60 group-hover:bg-emerald-600 group-hover:text-white dark:group-hover:bg-amber-400 dark:group-hover:text-emerald-950 transition">প্রবন্ধ পড়ুন →</span>
             </a>
 
             <!-- 5. জেলা পরিচালকবৃন্দ (৫৯ জেলা নেটওয়ার্ক - Highlight Banner Card on Mobile & 5th Col on Desktop) -->
-            <a href="<?= $baseUrl ?? '' ?>/directors" class="group col-span-2 sm:col-span-2 lg:col-span-1 bg-gradient-to-r lg:bg-gradient-to-br from-emerald-night via-emerald-deep to-emerald-night text-white p-3.5 sm:p-4 rounded-2xl border-2 border-amber-400/80 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200 flex flex-row lg:flex-col items-center justify-between lg:justify-center text-left lg:text-center relative overflow-hidden">
+            <a href="<?= $baseUrl ?? '' ?>/directors" class="group col-span-2 sm:col-span-2 lg:col-span-1 bg-gradient-to-r lg:bg-gradient-to-br from-emerald-900 via-emerald-deep to-emerald-950 dark:from-[#042017] dark:via-[#062c20] dark:to-[#042017] text-white p-3.5 sm:p-4 rounded-2xl border-2 border-amber-400/80 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200 flex flex-row lg:flex-col items-center justify-between lg:justify-center text-left lg:text-center relative overflow-hidden">
                 <div class="flex items-center lg:flex-col space-x-3 lg:space-x-0">
                     <div class="w-12 h-12 rounded-2xl bg-amber-400/20 border border-amber-300/50 text-amber-300 flex items-center justify-center shrink-0 lg:mb-2 group-hover:scale-110 group-hover:bg-amber-400 group-hover:text-emerald-night transition-all shadow">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -763,80 +763,80 @@ window.smoothScrollToContent = function() {
                 </div>
             </a>
         </div>
-    </div>
 
-    <!-- Quick Stats / Features Bar (Soft Warm Ivory with Gold Borders) -->
-    <div class="bg-[#fffdf9] border-2 border-[#e6dcce] py-6 sm:py-8 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] rounded-2xl">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-[#ece3d4]">
-            <div class="px-3">
-                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
-                    <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
+        <!-- Quick Stats / Features Bar (Soft Warm Ivory in Light Mode, Deep Obsidian Emerald in Dark Mode) -->
+        <div class="bg-[#fffdf9] dark:bg-[#042017] border-2 border-[#e6dcce] dark:border-emerald-800/60 py-6 sm:py-8 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] dark:shadow-[0_12px_35px_-8px_rgba(0,0,0,0.6)] rounded-2xl transition-colors duration-300">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-x divide-[#ece3d4] dark:divide-emerald-900/60">
+                <div class="px-3">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-700/50 flex items-center justify-center text-emerald-deep dark:text-emerald-300 mb-2.5 shadow-sm">
+                        <svg class="w-6 h-6 text-emerald-deep dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h4 class="font-bold text-[#064e3b] dark:text-amber-300 text-base">সহীহ তিলাওয়াত</h4>
+                    <p class="text-xs text-slate-600 dark:text-emerald-200/80 mt-0.5">বিশুদ্ধ তাজবীদ রুলস</p>
                 </div>
-                <h4 class="font-bold text-[#064e3b] text-base">সহীহ তিলাওয়াত</h4>
-                <p class="text-xs text-slate-600 mt-0.5">বিশুদ্ধ তাজবীদ রুলস</p>
-            </div>
-            <div class="px-3">
-                <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                    </svg>
+                <div class="px-3">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/30 border border-amber-200/60 dark:border-amber-700/50 flex items-center justify-center text-gold-deep dark:text-amber-300 mb-2.5 shadow-sm">
+                        <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                        </svg>
+                    </div>
+                    <h4 class="font-bold text-[#064e3b] dark:text-amber-300 text-base">দক্ষ শিক্ষক</h4>
+                    <p class="text-xs text-slate-600 dark:text-emerald-200/80 mt-0.5">প্রশিক্ষণপ্রাপ্ত মুয়াল্লিম</p>
                 </div>
-                <h4 class="font-bold text-[#064e3b] text-base">দক্ষ শিক্ষক</h4>
-                <p class="text-xs text-slate-600 mt-0.5">প্রশিক্ষণপ্রাপ্ত মুয়াল্লিম</p>
-            </div>
-            <div class="px-3">
-                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-deep mb-2.5 shadow-sm">
-                    <svg class="w-6 h-6 text-emerald-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                    </svg>
+                <div class="px-3">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-700/50 flex items-center justify-center text-emerald-deep dark:text-emerald-300 mb-2.5 shadow-sm">
+                        <svg class="w-6 h-6 text-emerald-deep dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                        </svg>
+                    </div>
+                    <h4 class="font-bold text-[#064e3b] dark:text-amber-300 text-base">সারা দেশে ডেলিভারি</h4>
+                    <p class="text-xs text-slate-600 dark:text-emerald-200/80 mt-0.5">কুরিয়ারে নির্ভরযোগ্য সেবা</p>
                 </div>
-                <h4 class="font-bold text-[#064e3b] text-base">সারা দেশে ডেলিভারি</h4>
-                <p class="text-xs text-slate-600 mt-0.5">কুরিয়ারে নির্ভরযোগ্য সেবা</p>
-            </div>
-            <div class="px-3">
-                <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep mb-2.5 shadow-sm">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
+                <div class="px-3">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/30 border border-amber-200/60 dark:border-amber-700/50 flex items-center justify-center text-gold-deep dark:text-amber-300 mb-2.5 shadow-sm">
+                        <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                    </div>
+                    <h4 class="font-bold text-[#064e3b] dark:text-amber-300 text-base">সার্বক্ষণিক সাপোর্ট</h4>
+                    <p class="text-xs text-slate-600 dark:text-emerald-200/80 mt-0.5">জেলা পরিচালক নেটওয়ার্ক</p>
                 </div>
-                <h4 class="font-bold text-[#064e3b] text-base">সার্বক্ষণিক সাপোর্ট</h4>
-                <p class="text-xs text-slate-600 mt-0.5">জেলা পরিচালক নেটওয়ার্ক</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Courses Grid Section (Warm Parchment Backdrop, Soft Ivory Cards) -->
-<section class="bg-[#f4efe4]/70 py-16 border-b border-[#e8dfce]">
+<!-- Courses Grid Section (Warm Parchment Backdrop in Light Mode, Deep Obsidian Emerald in Dark Mode) -->
+<section class="bg-[#f4efe4]/70 dark:bg-[#02150f] py-16 border-b border-[#e8dfce] dark:border-emerald-900/60 transition-colors duration-300">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-deep/10 text-emerald-deep text-xs font-bold mb-2 border border-emerald-deep/20">
-                <svg class="w-4 h-4 text-amber-600 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-deep/10 dark:bg-emerald-800/30 text-emerald-deep dark:text-emerald-300 text-xs font-bold mb-2 border border-emerald-deep/20 dark:border-emerald-700/40">
+                <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
                 নূরানী ও তাজবীদ বিভাগ
             </div>
-            <h2 class="text-3xl font-extrabold text-emerald-night mb-3">আমাদের বিশেষ কোর্সসমূহ</h2>
+            <h2 class="text-3xl font-extrabold text-emerald-night dark:text-amber-300 mb-3">আমাদের বিশেষ কোর্সসমূহ</h2>
             <div class="w-24 h-1 bg-gold-rich mx-auto rounded-full mb-4"></div>
-            <p class="text-slate-700 max-w-2xl mx-auto text-sm leading-relaxed">
+            <p class="text-slate-700 dark:text-emerald-200/80 max-w-2xl mx-auto text-sm leading-relaxed">
                 সব বয়সীদের জন্য সহজে কুরআন শিক্ষার নির্ভরযোগ্য মাধ্যম। আজই আপনার উপযুক্ত কোর্সে ভর্তি হোন।
             </p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Course Card 1 -->
-            <div class="islamic-card p-6 flex flex-col h-full relative overflow-hidden group">
-                <div class="w-14 h-14 bg-emerald-deep text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
+            <div class="islamic-card dark:bg-[#062c20] dark:border-emerald-800/60 p-6 flex flex-col h-full relative overflow-hidden group">
+                <div class="w-14 h-14 bg-emerald-deep dark:bg-emerald-950 text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-emerald-night mb-2">সহীহ কুরআন শিক্ষা</h3>
-                <p class="text-sm text-slate-600 mb-4 flex-grow">বড়দের জন্য শুদ্ধভাবে কুরআন তিলাওয়াত শেখার বিশেষ কোর্স।</p>
-                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant font-bold text-sm inline-flex items-center group-hover:text-gold-deep transition">
+                <h3 class="text-xl font-bold text-emerald-night dark:text-amber-100 mb-2">সহীহ কুরআন শিক্ষা</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">বড়দের জন্য শুদ্ধভাবে কুরআন তিলাওয়াত শেখার বিশেষ কোর্স।</p>
+                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant dark:text-amber-400 font-bold text-sm inline-flex items-center group-hover:text-gold-deep dark:group-hover:text-amber-300 transition">
                     বিস্তারিত 
                     <svg class="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -845,15 +845,15 @@ window.smoothScrollToContent = function() {
             </div>
             
             <!-- Course Card 2 -->
-            <div class="islamic-card p-6 flex flex-col h-full relative overflow-hidden group">
-                <div class="w-14 h-14 bg-emerald-deep text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
+            <div class="islamic-card dark:bg-[#062c20] dark:border-emerald-800/60 p-6 flex flex-col h-full relative overflow-hidden group">
+                <div class="w-14 h-14 bg-emerald-deep dark:bg-emerald-950 text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-emerald-night mb-2">হিফজুল কুরআন</h3>
-                <p class="text-sm text-slate-600 mb-4 flex-grow">শিশুদের জন্য আদর্শ হিফজ বিভাগ, আন্তরিক পরিবেশে পাঠদান।</p>
-                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant font-bold text-sm inline-flex items-center group-hover:text-gold-deep transition">
+                <h3 class="text-xl font-bold text-emerald-night dark:text-amber-100 mb-2">হিফজুল কুরআন</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">শিশুদের জন্য আদর্শ হিফজ বিভাগ, আন্তরিক পরিবেশে পাঠদান।</p>
+                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant dark:text-amber-400 font-bold text-sm inline-flex items-center group-hover:text-gold-deep dark:group-hover:text-amber-300 transition">
                     বিস্তারিত 
                     <svg class="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -862,15 +862,15 @@ window.smoothScrollToContent = function() {
             </div>
 
             <!-- Course Card 3 -->
-            <div class="islamic-card p-6 flex flex-col h-full relative overflow-hidden group">
-                <div class="w-14 h-14 bg-emerald-deep text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
+            <div class="islamic-card dark:bg-[#062c20] dark:border-emerald-800/60 p-6 flex flex-col h-full relative overflow-hidden group">
+                <div class="w-14 h-14 bg-emerald-deep dark:bg-emerald-950 text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-emerald-night mb-2">নাজেরা বিভাগ</h3>
-                <p class="text-sm text-slate-600 mb-4 flex-grow">কুরআন দেখে দ্রুত ও শুদ্ধভাবে পড়ার উন্নত প্রশিক্ষণ।</p>
-                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant font-bold text-sm inline-flex items-center group-hover:text-gold-deep transition">
+                <h3 class="text-xl font-bold text-emerald-night dark:text-amber-100 mb-2">নাজেরা বিভাগ</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">কুরআন দেখে দ্রুত ও শুদ্ধভাবে পড়ার উন্নত প্রশিক্ষণ।</p>
+                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant dark:text-amber-400 font-bold text-sm inline-flex items-center group-hover:text-gold-deep dark:group-hover:text-amber-300 transition">
                     বিস্তারিত 
                     <svg class="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -879,15 +879,15 @@ window.smoothScrollToContent = function() {
             </div>
 
             <!-- Course Card 4 -->
-            <div class="islamic-card p-6 flex flex-col h-full relative overflow-hidden group">
-                <div class="w-14 h-14 bg-emerald-deep text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
+            <div class="islamic-card dark:bg-[#062c20] dark:border-emerald-800/60 p-6 flex flex-col h-full relative overflow-hidden group">
+                <div class="w-14 h-14 bg-emerald-deep dark:bg-emerald-950 text-gold-shimmer rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-md group-hover:bg-gold-rich group-hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-emerald-night mb-2">তাজবীদ কোর্স</h3>
-                <p class="text-sm text-slate-600 mb-4 flex-grow">মাখরাজ ও সিফাত সহ কুরআন তিলাওয়াতের সৌন্দর্য বৃদ্ধি।</p>
-                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant font-bold text-sm inline-flex items-center group-hover:text-gold-deep transition">
+                <h3 class="text-xl font-bold text-emerald-night dark:text-amber-100 mb-2">তাজবীদ কোর্স</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">মাখরাজ ও সিফাত সহ কুরআন তিলাওয়াতের সৌন্দর্য বৃদ্ধি।</p>
+                <a href="<?= $baseUrl ?? '' ?>/courses" class="text-emerald-vibrant dark:text-amber-400 font-bold text-sm inline-flex items-center group-hover:text-gold-deep dark:group-hover:text-amber-300 transition">
                     বিস্তারিত 
                     <svg class="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -898,31 +898,31 @@ window.smoothScrollToContent = function() {
     </div>
 </section>
 
-<!-- Prayer Times & Widget Section (Soothing Soft Sage Tint, Zero Harsh Glare) -->
-<section class="bg-[#edf4ee] py-16 border-b border-[#dbe7de]">
+<!-- Prayer Times & Widget Section (Soothing Soft Sage Tint in Light Mode, Deep Obsidian Emerald in Dark Mode) -->
+<section class="bg-[#edf4ee] dark:bg-[#031c15] py-16 border-b border-[#dbe7de] dark:border-emerald-900/60 transition-colors duration-300">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             
             <!-- Widget Area -->
             <div>
-                <div class="bg-[#fffefb] border-2 border-[#d9e4db] rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
+                <div class="bg-[#fffefb] dark:bg-[#042017] border-2 border-[#d9e4db] dark:border-emerald-800/60 rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-night opacity-5 rounded-bl-[100px] -z-0"></div>
                     
-                    <div class="flex items-center justify-between mb-6 relative z-10 border-b border-[#e7eee8] pb-4">
-                        <h3 class="text-2xl font-bold text-emerald-night flex items-center">
+                    <div class="flex items-center justify-between mb-6 relative z-10 border-b border-[#e7eee8] dark:border-emerald-800/60 pb-4">
+                        <h3 class="text-2xl font-bold text-emerald-night dark:text-amber-300 flex items-center">
                             <svg class="w-6 h-6 text-gold-rich mr-2.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
                             নামাজের সময়সূচি
                         </h3>
-                        <span class="text-xs bg-emerald-50 text-emerald-800 font-bold px-3 py-1 rounded-full border border-emerald-200">
+                        <span class="text-xs bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-700/60">
                             ইসলামিক ফাউন্ডেশন
                         </span>
                     </div>
                     
                     <div class="mb-5 relative z-10">
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">আপনার জেলা নির্বাচন করুন</label>
-                        <select class="w-full px-4 py-2.5 border border-emerald-300/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-vibrant bg-[#f9fbf9] text-emerald-night font-semibold text-sm">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-emerald-200 mb-1.5">আপনার জেলা নির্বাচন করুন</label>
+                        <select class="w-full px-4 py-2.5 border border-emerald-300/80 dark:border-emerald-700/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-vibrant bg-[#f9fbf9] dark:bg-[#02150f] text-emerald-night dark:text-amber-200 font-semibold text-sm">
                             <option value="dhaka" selected>ঢাকা (Dhaka)</option>
                             <option value="chittagong">চট্টগ্রাম (Chittagong)</option>
                             <option value="sylhet">সিলেট (Sylhet)</option>
@@ -935,13 +935,13 @@ window.smoothScrollToContent = function() {
                     </div>
 
                     <div class="space-y-2.5 relative z-10 text-sm">
-                        <div class="flex justify-between items-center bg-[#f7f9f7] px-4 py-2.5 rounded-xl border border-[#e4ebe5]">
-                            <span class="font-bold text-slate-800">ফজর</span>
-                            <span class="font-bold text-emerald-vibrant">০৪:৪০ এএম</span>
+                        <div class="flex justify-between items-center bg-[#f7f9f7] dark:bg-[#062c20] px-4 py-2.5 rounded-xl border border-[#e4ebe5] dark:border-emerald-800/50">
+                            <span class="font-bold text-slate-800 dark:text-slate-200">ফজর</span>
+                            <span class="font-bold text-emerald-vibrant dark:text-emerald-300">০৪:৪০ এএম</span>
                         </div>
-                        <div class="flex justify-between items-center bg-[#f7f9f7] px-4 py-2.5 rounded-xl border border-[#e4ebe5]">
-                            <span class="font-bold text-slate-800">যোহর</span>
-                            <span class="font-bold text-slate-700">১২:১৫ পিএম</span>
+                        <div class="flex justify-between items-center bg-[#f7f9f7] dark:bg-[#062c20] px-4 py-2.5 rounded-xl border border-[#e4ebe5] dark:border-emerald-800/50">
+                            <span class="font-bold text-slate-800 dark:text-slate-200">যোহর</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300">১২:১৫ পিএম</span>
                         </div>
                         <div class="flex justify-between items-center bg-emerald-deep text-white px-4 py-2.5 rounded-xl border border-gold-rich shadow-md">
                             <span class="font-bold flex items-center text-gold-shimmer">
@@ -952,13 +952,13 @@ window.smoothScrollToContent = function() {
                             </span>
                             <span class="font-bold text-gold-shimmer">০৪:৩০ পিএম</span>
                         </div>
-                        <div class="flex justify-between items-center bg-[#f7f9f7] px-4 py-2.5 rounded-xl border border-[#e4ebe5]">
-                            <span class="font-bold text-slate-800">মাগরিব / ইফতার</span>
-                            <span class="font-bold text-slate-700">০৬:১০ পিএম</span>
+                        <div class="flex justify-between items-center bg-[#f7f9f7] dark:bg-[#062c20] px-4 py-2.5 rounded-xl border border-[#e4ebe5] dark:border-emerald-800/50">
+                            <span class="font-bold text-slate-800 dark:text-slate-200">মাগরিব / ইফতার</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300">০৬:১০ পিএম</span>
                         </div>
-                        <div class="flex justify-between items-center bg-[#f7f9f7] px-4 py-2.5 rounded-xl border border-[#e4ebe5]">
-                            <span class="font-bold text-slate-800">ইশা</span>
-                            <span class="font-bold text-slate-700">০৭:৩০ পিএম</span>
+                        <div class="flex justify-between items-center bg-[#f7f9f7] dark:bg-[#062c20] px-4 py-2.5 rounded-xl border border-[#e4ebe5] dark:border-emerald-800/50">
+                            <span class="font-bold text-slate-800 dark:text-slate-200">ইশা</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300">০৭:৩০ পিএম</span>
                         </div>
                     </div>
                 </div>
@@ -966,16 +966,16 @@ window.smoothScrollToContent = function() {
 
             <!-- Content Area -->
             <div class="space-y-6 lg:pl-8">
-                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-deep text-xs font-bold">
+                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-deep dark:text-emerald-300 text-xs font-bold">
                     <svg class="w-4 h-4 mr-1.5 text-gold-deep inline-block shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                     রমজান ও দৈনন্দিন ইবাদত
                 </div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night leading-tight">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night dark:text-amber-300 leading-tight">
                     প্রতিদিনের নামাজের সঠিক সময়সূচি
                 </h2>
-                <p class="text-slate-700 text-base leading-relaxed">
+                <p class="text-slate-700 dark:text-emerald-200/80 text-base leading-relaxed">
                     আমাদের ৬৪ জেলার নামাজের সময়সূচি টুল ব্যবহার করে আপনার জেলার সঠিক সময় জেনে নিন। সাথে থাকছে সেহরী, ইফতার ও তাহাজ্জুদের নিখুঁত হিসাব।
                 </p>
                 <div class="pt-2 flex flex-col sm:flex-row gap-4">
@@ -985,7 +985,7 @@ window.smoothScrollToContent = function() {
                         </svg>
                         সম্পূর্ণ সময়সূচি দেখুন
                     </a>
-                    <a href="<?= $baseUrl ?? '' ?>/tasbeeh" class="bg-[#fffdf9] border-2 border-emerald-deep text-emerald-night hover:bg-emerald-50 px-7 py-3 rounded-xl font-bold text-center transition flex items-center justify-center">
+                    <a href="<?= $baseUrl ?? '' ?>/tasbeeh" class="bg-[#fffdf9] dark:bg-[#042017] border-2 border-emerald-deep dark:border-emerald-600 text-emerald-night dark:text-amber-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/50 px-7 py-3 rounded-xl font-bold text-center transition flex items-center justify-center">
                         <svg class="w-5 h-5 mr-2 text-gold-deep inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
                         </svg>
@@ -998,22 +998,22 @@ window.smoothScrollToContent = function() {
     </div>
 </section>
 
-<!-- District Directors Organizational Network Showcase Section (Soft Warm Sand Backdrop) -->
-<section class="bg-[#f6f1e7] py-16 border-b border-[#e7ddcf]">
+<!-- District Directors Organizational Network Showcase Section (Soft Warm Sand Backdrop in Light Mode, Deep Obsidian Emerald in Dark Mode) -->
+<section class="bg-[#f6f1e7] dark:bg-[#02150f] py-16 border-b border-[#e7ddcf] dark:border-emerald-900/60 transition-colors duration-300">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-gold-rich/10 text-gold-deep text-xs font-bold mb-3 border border-gold-rich/30">
-                    <svg class="w-4 h-4 mr-1.5 inline-block shrink-0 text-gold-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-gold-rich/10 dark:bg-amber-900/40 text-gold-deep dark:text-amber-300 text-xs font-bold mb-3 border border-gold-rich/30 dark:border-amber-400/40">
+                    <svg class="w-4 h-4 mr-1.5 inline-block shrink-0 text-gold-deep dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     দেশব্যাপী শক্তিশালী সাংগঠনিক কাঠামো
                 </div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night dark:text-amber-300">
                     দেশব্যাপী জেলাভিত্তিক পরিচালক ও শিক্ষক নেটওয়ার্ক
                 </h2>
-                <div class="w-24 h-1 bg-gold-rich rounded-full mt-3 mb-4"></div>
-                <p class="text-slate-700 max-w-2xl text-base leading-relaxed">
+                <div class="w-24 h-1 bg-gold-rich mx-auto md:mx-0 rounded-full mt-3 mb-4"></div>
+                <p class="text-slate-700 dark:text-emerald-200/80 max-w-2xl text-base leading-relaxed">
                     ক্ব-রিয়ানা কুরআন শিক্ষা সোসাইটির কার্যক্রম সারা বাংলাদেশের ৬৪টি জেলায় পরিচালিত হচ্ছে। প্রতিটি জেলায় যোগ্য ও অভিজ্ঞ জেলা পরিচালকবৃন্দের তত্ত্বাবধানে সহীহ কুরআন শিক্ষা কার্যক্রম পরিচালিত হয়।
                 </p>
             </div>
@@ -1027,60 +1027,60 @@ window.smoothScrollToContent = function() {
             </div>
         </div>
 
-        <!-- Quick Stats Grid (Soft Ivory Boxes) -->
+        <!-- Quick Stats Grid (Soft Ivory Boxes in Light Mode, Deep Obsidian in Dark Mode) -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            <div class="bg-[#fffefb] p-5 rounded-2xl border border-[#e4dccb] shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-vibrant text-2xl shrink-0">
-                    <svg class="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-[#fffefb] dark:bg-[#042017] p-5 rounded-2xl border border-[#e4dccb] dark:border-emerald-800/60 shadow-sm flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-700/50 flex items-center justify-center text-emerald-vibrant dark:text-emerald-300 text-2xl shrink-0">
+                    <svg class="w-6 h-6 text-emerald-700 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 font-medium">জেলা পরিচালক</p>
-                    <h4 class="text-2xl font-extrabold text-emerald-night"><?= !empty($totalDirectorsCount) ? $totalDirectorsCount : '৫৯' ?>+ জন</h4>
+                    <p class="text-xs text-slate-500 dark:text-emerald-200/70 font-medium">জেলা পরিচালক</p>
+                    <h4 class="text-2xl font-extrabold text-emerald-night dark:text-amber-300"><?= !empty($totalDirectorsCount) ? $totalDirectorsCount : '৫৯' ?>+ জন</h4>
                 </div>
             </div>
-            <div class="bg-[#fffefb] p-5 rounded-2xl border border-[#e4dccb] shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep text-2xl shrink-0">
-                    <svg class="w-6 h-6 text-gold-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-[#fffefb] dark:bg-[#042017] p-5 rounded-2xl border border-[#e4dccb] dark:border-emerald-800/60 shadow-sm flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200/60 dark:border-amber-700/50 flex items-center justify-center text-gold-deep dark:text-amber-300 text-2xl shrink-0">
+                    <svg class="w-6 h-6 text-gold-deep dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 font-medium">জেলা কভারেজ</p>
-                    <h4 class="text-2xl font-extrabold text-slate-800">৬৪ টি জেলা</h4>
+                    <p class="text-xs text-slate-500 dark:text-emerald-200/70 font-medium">জেলা কভারেজ</p>
+                    <h4 class="text-2xl font-extrabold text-slate-800 dark:text-slate-100">৬৪ টি জেলা</h4>
                 </div>
             </div>
-            <div class="bg-[#fffefb] p-5 rounded-2xl border border-[#e4dccb] shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-vibrant text-2xl shrink-0">
-                    <svg class="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-[#fffefb] dark:bg-[#042017] p-5 rounded-2xl border border-[#e4dccb] dark:border-emerald-800/60 shadow-sm flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-700/50 flex items-center justify-center text-emerald-vibrant dark:text-emerald-300 text-2xl shrink-0">
+                    <svg class="w-6 h-6 text-emerald-700 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 font-medium">প্রত্যয়িত শিক্ষক</p>
-                    <h4 class="text-2xl font-extrabold text-emerald-night"><?= !empty($totalTeachersCount) ? $totalTeachersCount : '৩০০' ?>+ জন</h4>
+                    <p class="text-xs text-slate-500 dark:text-emerald-200/70 font-medium">প্রত্যয়িত শিক্ষক</p>
+                    <h4 class="text-2xl font-extrabold text-emerald-night dark:text-amber-300"><?= !empty($totalTeachersCount) ? $totalTeachersCount : '৩০০' ?>+ জন</h4>
                 </div>
             </div>
-            <div class="bg-[#fffefb] p-5 rounded-2xl border border-[#e4dccb] shadow-sm flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-gold-deep text-2xl shrink-0">
-                    <svg class="w-6 h-6 text-gold-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-[#fffefb] dark:bg-[#042017] p-5 rounded-2xl border border-[#e4dccb] dark:border-emerald-800/60 shadow-sm flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200/60 dark:border-amber-700/50 flex items-center justify-center text-gold-deep dark:text-amber-300 text-2xl shrink-0">
+                    <svg class="w-6 h-6 text-gold-deep dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-500 font-medium">অধ্যয়নরত শিক্ষার্থী</p>
-                    <h4 class="text-2xl font-extrabold text-slate-800">১০,০০০+</h4>
+                    <p class="text-xs text-slate-500 dark:text-emerald-200/70 font-medium">অধ্যয়নরত শিক্ষার্থী</p>
+                    <h4 class="text-2xl font-extrabold text-slate-800 dark:text-slate-100">১০,০০০+</h4>
                 </div>
             </div>
         </div>
 
-        <!-- Featured Directors Cards (Soft Warm Ivory Cards with Dignified Scholar Photo) -->
+        <!-- Featured Directors Cards -->
         <?php if (!empty($featuredDirectors)): ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php foreach ($featuredDirectors as $dir): ?>
-            <div class="bg-[#fffefb] rounded-2xl p-6 border border-[#e5ddcb] shadow-sm hover:shadow-xl hover:border-gold-rich/60 transition-all duration-300 flex flex-col justify-between group">
+            <div class="bg-[#fffefb] dark:bg-[#062c20] rounded-2xl p-6 border border-[#e5ddcb] dark:border-emerald-800/60 shadow-sm hover:shadow-xl hover:border-gold-rich/60 dark:hover:border-amber-400/80 transition-all duration-300 flex flex-col justify-between group">
                 <div>
                     <div class="flex items-center space-x-3 mb-4">
                         <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gold-rich/60 shadow-md shrink-0 bg-emerald-deep flex items-center justify-center">
@@ -1093,42 +1093,42 @@ window.smoothScrollToContent = function() {
                             </div>
                         </div>
                         <div class="overflow-hidden">
-                            <h4 class="font-bold text-slate-800 text-base group-hover:text-emerald-deep transition line-clamp-1">
+                            <h4 class="font-bold text-slate-800 dark:text-amber-100 text-base group-hover:text-emerald-deep dark:group-hover:text-amber-300 transition line-clamp-1">
                                 <?= htmlspecialchars($dir['name']) ?>
                             </h4>
-                            <span class="text-xs text-gold-deep font-semibold block">
+                            <span class="text-xs text-gold-deep dark:text-amber-300 font-semibold block">
                                 <?= htmlspecialchars($dir['designation']) ?>
                             </span>
                         </div>
                     </div>
 
-                    <div class="bg-[#f7f4ea] rounded-xl p-3 mb-4 border border-[#e8dfcb]">
-                        <p class="text-xs text-slate-500 mb-1 font-medium flex items-center">
+                    <div class="bg-[#f7f4ea] dark:bg-[#031d16] rounded-xl p-3 mb-4 border border-[#e8dfcb] dark:border-emerald-800/50">
+                        <p class="text-xs text-slate-500 dark:text-emerald-300/70 mb-1 font-medium flex items-center">
                             <svg class="w-3.5 h-3.5 text-emerald-vibrant mr-1 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                             দায়িত্বপ্রাপ্ত এলাকা:
                         </p>
-                        <p class="text-xs font-bold text-emerald-night line-clamp-2">
+                        <p class="text-xs font-bold text-emerald-night dark:text-emerald-200 line-clamp-2">
                             <?= htmlspecialchars($dir['district_name']) ?>
                         </p>
                     </div>
                 </div>
 
-                <div class="pt-3 border-t border-[#ede6d8] flex items-center justify-between">
+                <div class="pt-3 border-t border-[#ede6d8] dark:border-emerald-800/50 flex items-center justify-between">
                     <?php if ($dir['phone'] !== 'প্রযোজ্য নয়'): ?>
-                    <a href="tel:<?= htmlspecialchars($dir['phone']) ?>" class="text-xs font-bold text-emerald-vibrant hover:text-emerald-deep flex items-center">
+                    <a href="tel:<?= htmlspecialchars($dir['phone']) ?>" class="text-xs font-bold text-emerald-vibrant dark:text-emerald-300 hover:text-emerald-deep flex items-center">
                         <svg class="w-3.5 h-3.5 mr-1 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
                         কল করুন
                     </a>
                     <?php else: ?>
-                    <span class="text-xs text-slate-400">কেন্দ্রীয় দফতর</span>
+                    <span class="text-xs text-slate-400 dark:text-slate-500">কেন্দ্রীয় দফতর</span>
                     <?php endif; ?>
 
-                    <a href="<?= $baseUrl ?? '' ?>/directors/<?= !empty($dir['slug']) ? htmlspecialchars($dir['slug']) : $dir['id'] ?>" class="text-xs font-bold text-gold-deep hover:text-gold-rich inline-flex items-center">
+                    <a href="<?= $baseUrl ?? '' ?>/directors/<?= !empty($dir['slug']) ? htmlspecialchars($dir['slug']) : $dir['id'] ?>" class="text-xs font-bold text-gold-deep dark:text-amber-400 hover:text-gold-rich inline-flex items-center">
                         প্রোফাইল 
                         <svg class="w-3 h-3 ml-1 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -1179,30 +1179,30 @@ window.smoothScrollToContent = function() {
     </div>
 </div>
 
-<!-- Latest Islamic Articles & Blog Section (Soft Parchment Background) -->
+<!-- Latest Islamic Articles & Blog Section (Soft Parchment in Light Mode, Deep Obsidian Emerald in Dark Mode) -->
 <?php if (!empty($recentPosts)): ?>
-<section class="bg-[#f8f5ee] py-16">
+<section class="bg-[#f8f5ee] dark:bg-[#031c15] py-16 transition-colors duration-300">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-deep text-xs font-bold mb-3">
-                    <svg class="w-4 h-4 mr-1.5 text-gold-deep inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-deep dark:text-emerald-300 text-xs font-bold mb-3">
+                    <svg class="w-4 h-4 mr-1.5 text-gold-deep dark:text-amber-400 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                     জ্ঞান ও তিলাওয়াত সহায়িকা
                 </div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-night dark:text-amber-300">
                     সর্বশেষ ইসলামী ব্লগ ও টিপস
                 </h2>
                 <div class="w-24 h-1 bg-gold-rich rounded-full mt-3 mb-4"></div>
-                <p class="text-slate-700 max-w-2xl text-base leading-relaxed">
+                <p class="text-slate-700 dark:text-emerald-200/80 max-w-2xl text-base leading-relaxed">
                     সহীহ কুরআন তিলাওয়াতের নিয়মাবলী, তাজবীদের গুরুত্ব এবং দৈনন্দিন জীবনের প্রয়োজনীয় ইসলামী মাসায়েল সংক্রান্ত আর্টিকেলে সমৃদ্ধ আমাদের ব্লগ।
                 </p>
             </div>
             <div class="mt-4 md:mt-0">
-                <a href="<?= $baseUrl ?? '' ?>/blog" class="inline-flex items-center text-emerald-vibrant hover:text-emerald-deep font-bold transition">
+                <a href="<?= $baseUrl ?? '' ?>/blog" class="inline-flex items-center text-emerald-vibrant dark:text-amber-400 hover:text-emerald-deep dark:hover:text-amber-300 font-bold transition">
                     সকল ব্লগ পড়ুন 
-                    <svg class="w-4 h-4 ml-1.5 inline-block shrink-0 text-emerald-vibrant" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 ml-1.5 inline-block shrink-0 text-emerald-vibrant dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </a>
@@ -1211,7 +1211,7 @@ window.smoothScrollToContent = function() {
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <?php foreach ($recentPosts as $post): ?>
-            <article class="bg-[#fffefb] rounded-2xl overflow-hidden border border-[#e5ddcb] shadow-sm hover:shadow-xl hover:border-gold-rich/40 transition-all duration-300 flex flex-col group">
+            <article class="bg-[#fffefb] dark:bg-[#062c20] rounded-2xl overflow-hidden border border-[#e5ddcb] dark:border-emerald-800/60 shadow-sm hover:shadow-xl hover:border-gold-rich/40 dark:hover:border-amber-400/80 transition-all duration-300 flex flex-col group">
                 <div class="h-48 bg-emerald-deep relative overflow-hidden">
                     <img src="<?= htmlspecialchars($post['thumbnail_url'] ?? 'https://via.placeholder.com/600x400/064e3b/ffffff?text=Kariana+Quran+Blog') ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/600x400/064e3b/ffffff?text=Kariana+Quran+Blog'">
                     <div class="absolute top-3 left-3 bg-emerald-night/80 backdrop-blur-sm text-gold-shimmer text-xs px-2.5 py-1 rounded-full font-bold flex items-center">
@@ -1223,20 +1223,20 @@ window.smoothScrollToContent = function() {
                 </div>
                 <div class="p-6 flex flex-col flex-grow justify-between">
                     <div>
-                        <h3 class="text-xl font-bold text-emerald-night mb-3 group-hover:text-gold-deep transition line-clamp-2">
+                        <h3 class="text-xl font-bold text-emerald-night dark:text-amber-100 mb-3 group-hover:text-gold-deep dark:group-hover:text-amber-300 transition line-clamp-2">
                             <a href="<?= $baseUrl ?? '' ?>/blog/<?= htmlspecialchars($post['slug']) ?>">
                                 <?= htmlspecialchars($post['title']) ?>
                             </a>
                         </h3>
-                        <p class="text-sm text-slate-600 line-clamp-3 mb-4 leading-relaxed">
+                        <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4 leading-relaxed">
                             <?= htmlspecialchars($post['excerpt'] ?? mb_substr(strip_tags($post['content'] ?? ''), 0, 120, 'UTF-8') . '...') ?>
                         </p>
                     </div>
-                    <div class="pt-4 border-t border-[#ede6d8] flex items-center justify-between">
-                        <span class="text-xs text-slate-500 font-medium">কারিয়ানা রিসার্চ উইং</span>
-                        <a href="<?= $baseUrl ?? '' ?>/blog/<?= htmlspecialchars($post['slug']) ?>" class="text-emerald-vibrant hover:text-emerald-deep font-bold text-sm inline-flex items-center">
+                    <div class="pt-4 border-t border-[#ede6d8] dark:border-emerald-800/50 flex items-center justify-between">
+                        <span class="text-xs text-slate-500 dark:text-emerald-300/80 font-medium">কারিয়ানা রিসার্চ উইং</span>
+                        <a href="<?= $baseUrl ?? '' ?>/blog/<?= htmlspecialchars($post['slug']) ?>" class="text-emerald-vibrant dark:text-amber-400 hover:text-emerald-deep dark:hover:text-amber-300 font-bold text-sm inline-flex items-center">
                             সম্পূর্ণ পড়ুন 
-                            <svg class="w-3.5 h-3.5 ml-1 inline-block shrink-0 text-emerald-vibrant" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3.5 h-3.5 ml-1 inline-block shrink-0 text-emerald-vibrant dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
