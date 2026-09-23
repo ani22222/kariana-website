@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="bn" dir="ltr">
+<html lang="bn" dir="ltr" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="bn">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= isset($title) ? htmlspecialchars($title) : 'কারিয়ানা কুরআন শিক্ষা সোসাইটি' ?></title>
     
@@ -205,23 +207,55 @@
     <div id="networkAlertBar" class="hidden text-xs py-1.5 px-3 text-center font-bold z-50 transition-all duration-300"></div>
 
     <!-- PWA In-App Install Floating Banner for Mobile -->
-    <div id="pwaInstallBanner" class="hidden fixed top-3 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-md z-50 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 border-2 border-gold-rich text-white p-3 rounded-2xl shadow-2xl backdrop-blur-md transition-all duration-300">
+    <div id="pwaInstallBanner" class="hidden fixed top-2 left-2 right-2 max-w-lg mx-auto z-50 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] backdrop-blur-lg transition-all duration-300">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center space-x-2.5">
-                <img src="<?= $baseUrl ?? '' ?>/assets/images/icon-192.png" alt="App Icon" class="w-10 h-10 rounded-xl border border-gold-rich shadow shrink-0">
+                <img src="<?= $baseUrl ?? '' ?>/assets/images/icon-192.png" alt="App Icon" class="w-10 h-10 rounded-xl border border-amber-400 shadow shrink-0">
                 <div>
-                    <h4 class="text-xs font-bold text-gold-shimmer">কারিয়ানা মোবাইল অ্যাপ</h4>
-                    <p class="text-[11px] text-emerald-200">হোমস্ক্রিনে ১-ক্লিকে যুক্ত করুন</p>
+                    <h4 class="text-xs font-bold text-amber-300">কারিয়ানা মোবাইল অ্যাপ</h4>
+                    <p class="text-[11px] text-emerald-200">১-ক্লিকে ফোনে শর্টকাট যুক্ত করুন</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1.5 shrink-0">
-                <button id="pwaInstallBtn" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 text-xs font-black px-3.5 py-1.5 rounded-xl shadow transition transform active:scale-95">
-                    ইন্সটল
+                <button id="pwaInstallBtn" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 text-xs font-black px-3.5 py-1.5 rounded-xl shadow transition transform active:scale-95 flex items-center space-x-1">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <span>ইনস্টল করুন</span>
                 </button>
-                <button id="pwaDismissBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button id="pwaDismissBtn" type="button" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition" title="বিজ্ঞপ্তি বন্ধ করুন">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Visual Step-by-Step PWA / Shortcut Guide Modal -->
+    <div id="pwaGuideModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-[#022c22] via-[#064e3b] to-[#011a14] border-2 border-amber-400 rounded-3xl p-6 max-w-sm w-full text-white shadow-2xl relative text-center">
+            <button id="closeGuideModalBtn" type="button" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-amber-300 mb-1">ফোনে অ্যাপ/শর্টকাট যুক্ত করুন</h3>
+            <p class="text-xs text-emerald-200/90 mb-4">গুগল ক্রোম ব্রাউজারের মাধ্যমে সরাসরি ফোনে অ্যাপ যুক্ত করার ৩টি সহজ ধাপ:</p>
+            <div class="space-y-2.5 text-left text-xs bg-emerald-950/90 p-3.5 rounded-2xl border border-amber-400/30 mb-5">
+                <div class="flex items-start space-x-2.5">
+                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">১</span>
+                    <p class="text-slate-200">উপরে ডানদিকের তিনটি ডট ( <strong class="text-amber-300 text-sm">⋮</strong> ) মেনুতে চাপুন।</p>
+                </div>
+                <div class="flex items-start space-x-2.5">
+                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">২</span>
+                    <p class="text-slate-200">মেনু থেকে <strong class="text-amber-300">"Add to Home screen"</strong> (বা <strong class="text-amber-300">"Install app"</strong>) অপশনে চাপুন।</p>
+                </div>
+                <div class="flex items-start space-x-2.5">
+                    <span class="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 font-black flex items-center justify-center shrink-0 text-[11px]">৩</span>
+                    <p class="text-slate-200">এবার <strong class="text-amber-300">"Install"</strong> বা <strong class="text-amber-300">"Add"</strong> চাপলেই আপনার মোবাইলের হোমস্ক্রিনে কারিয়ানা অ্যাপ চলে আসবে!</p>
+                </div>
+            </div>
+            <button id="gotItGuideBtn" type="button" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-bold py-2.5 rounded-xl shadow text-sm">
+                ঠিক আছে, বুঝেছি
+            </button>
         </div>
     </div>
 
@@ -495,63 +529,94 @@
         const installBtn = document.getElementById('pwaInstallBtn');
         const dismissBtn = document.getElementById('pwaDismissBtn');
         const networkBar = document.getElementById('networkAlertBar');
+        const guideModal = document.getElementById('pwaGuideModal');
+        const closeGuideModalBtn = document.getElementById('closeGuideModalBtn');
+        const gotItGuideBtn = document.getElementById('gotItGuideBtn');
+
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const isDismissed = sessionStorage.getItem('pwa_banner_dismissed');
+
+        // Auto display banner on mobile devices if not standalone and not dismissed
+        if (!isStandalone && !isDismissed && installBanner) {
+            if (window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+                installBanner.classList.remove('hidden');
+                installBanner.classList.add('flex');
+            }
+        }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Check if dismissed in this session
-            if (!sessionStorage.getItem('pwa_banner_dismissed')) {
-                if (installBanner) {
-                    installBanner.classList.remove('hidden');
-                    installBanner.classList.add('flex');
-                }
+            if (!isStandalone && !isDismissed && installBanner) {
+                installBanner.classList.remove('hidden');
+                installBanner.classList.add('flex');
             }
-            // Show any in-page install buttons
             document.querySelectorAll('.btn-pwa-install').forEach(btn => {
                 btn.style.display = 'inline-flex';
             });
         });
 
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
+        function triggerInstallAction() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(({ outcome }) => {
                     if (outcome === 'accepted') {
-                        if (installBanner) installBanner.classList.add('hidden');
+                        if (installBanner) {
+                            installBanner.classList.add('hidden');
+                            installBanner.classList.remove('flex');
+                        }
                     }
                     deferredPrompt = null;
+                });
+            } else {
+                if (guideModal) {
+                    guideModal.classList.remove('hidden');
+                    guideModal.classList.add('flex');
                 }
-            });
+            }
         }
 
-        // Delegate click for any dedicated install button on login or director dashboard
-        document.addEventListener('click', async (e) => {
+        if (installBtn) {
+            installBtn.addEventListener('click', triggerInstallAction);
+        }
+
+        document.addEventListener('click', (e) => {
             const targetBtn = e.target.closest('.btn-pwa-install');
             if (targetBtn) {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        targetBtn.innerHTML = '✅ সফলভাবে যুক্ত হয়েছে!';
-                        setTimeout(() => targetBtn.style.display = 'none', 2000);
-                    }
-                    deferredPrompt = null;
-                } else {
-                    alert('আপনার ক্রোম ব্রাউজারের ৩-ডট (⋮) মেনু থেকে "Add to Home screen" বা "Install App" চাপুন।');
-                }
+                triggerInstallAction();
             }
         });
 
+        function closeGuideModal() {
+            if (guideModal) {
+                guideModal.classList.add('hidden');
+                guideModal.classList.remove('flex');
+            }
+        }
+
+        if (closeGuideModalBtn) closeGuideModalBtn.addEventListener('click', closeGuideModal);
+        if (gotItGuideBtn) gotItGuideBtn.addEventListener('click', closeGuideModal);
+        if (guideModal) {
+            guideModal.addEventListener('click', (e) => {
+                if (e.target === guideModal) closeGuideModal();
+            });
+        }
+
         if (dismissBtn) {
             dismissBtn.addEventListener('click', () => {
-                if (installBanner) installBanner.classList.add('hidden');
+                if (installBanner) {
+                    installBanner.classList.add('hidden');
+                    installBanner.classList.remove('flex');
+                }
                 sessionStorage.setItem('pwa_banner_dismissed', '1');
             });
         }
 
         window.addEventListener('appinstalled', () => {
-            if (installBanner) installBanner.classList.add('hidden');
+            if (installBanner) {
+                installBanner.classList.add('hidden');
+                installBanner.classList.remove('flex');
+            }
             deferredPrompt = null;
         });
 
