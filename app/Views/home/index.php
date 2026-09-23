@@ -103,7 +103,7 @@
                                     <?php endif; ?>
 
                                     <!-- Floating Interactive Flipbook Prompt Badge -->
-                                    <div class="absolute bottom-2 inset-x-2 z-20 bg-emerald-950/85 backdrop-blur-xs text-amber-300 text-[10px] sm:text-[11px] font-bold py-1 px-2 rounded-lg border border-amber-400/40 opacity-90 group-hover/card:opacity-100 group-hover/card:bg-emerald-900 transition-all flex items-center justify-center gap-1 shadow-md">
+                                    <div class="absolute bottom-2 inset-x-2 z-20 bg-emerald-950/85 backdrop-blur-xs text-amber-300 text-[10px] sm:text-[11px] font-bold py-1 px-2 rounded-lg border border-amber-400/40 opacity-90 group-hover/card:opacity-100 group-hover/card:bg-emerald-900 transition-all flex items-center justify-center gap-1 shadow-md pointer-events-none">
                                         <svg class="w-3 h-3 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                         </svg>
@@ -127,9 +127,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                                 </svg>
                                 <?= htmlspecialchars($pills['chipB']) ?>
-                            </span>
-                            <span class="orbit-chip chip-feature-c bg-amber-950/80 border-amber-400/60 text-amber-300">
-                                <span class="font-bold text-xs sm:text-sm">মূল্য: ৳<?= (int)$discPrice ?></span>
                             </span>
                         </div>
 
@@ -172,16 +169,6 @@
                         <span>অর্ডার করুন</span>
                     </a>
 
-                    <!-- 3D Sample Flipbook Reader Trigger Button -->
-                    <button type="button" 
-                            onclick="window.openFlipbook()" 
-                            class="inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 transition-all hover:scale-105 shadow-sm group">
-                        <svg class="w-4 h-4 mr-1.5 text-amber-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        <span>নমুনা পাতা দেখুন</span>
-                    </button>
-
                     <a id="heroDetailBtn" 
                        href="<?= $baseUrl ?? '' ?>/books/<?= htmlspecialchars($booksList[0]['slug'] ?? 'kariana-quran-flagship') ?>" 
                        class="hero-btn-secondary group">
@@ -204,12 +191,11 @@
                 </button>
             </div>
 
-            <!-- Discrete, Refined Slide Indicator Dots & Smooth 5s Autoplay Progress Bar -->
-            <div class="hero-dots-container flex flex-col items-center">
-                <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
-                <!-- 5-Second Autoplay Progress Bar Line -->
-                <div class="w-28 sm:w-36 h-1 bg-white/15 rounded-full overflow-hidden mt-2.5">
-                    <div id="heroProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-200 w-0 transition-all duration-100 ease-linear"></div>
+            <!-- Sleek Single Linear Autoplay Progress Bar (Pure Sweep Timer, Zero Dot Clutter) -->
+            <div class="hero-dots-container flex flex-col items-center mt-3">
+                <div class="hidden" id="heroDots" role="tablist"></div>
+                <div class="w-36 sm:w-48 h-1.5 bg-black/40 border border-amber-400/30 rounded-full overflow-hidden shadow-inner" title="পরবর্তী বই আসার অগ্রগতি">
+                    <div id="heroProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-200 w-0 transition-all duration-100 ease-linear shadow-[0_0_8px_rgba(251,191,36,0.6)]"></div>
                 </div>
             </div>
 

@@ -2264,7 +2264,53 @@ while (true) {
                         continue;
                     }
 
-                    if ($text === '/start' || $text === '🏠 মেইন মেনু' || $text === '/menu') {
+                    if (str_starts_with($text, '/start') || $text === '🏠 মেইন মেনু' || $text === '/menu') {
+                        // Detect deep link referral code like /start _tgr_KHdiM5ZlMDFl
+                        $parts = explode(' ', $text, 2);
+                        $refParam = isset($parts[1]) ? trim($parts[1]) : '';
+                        if (!empty($refParam)) {
+                            botLog("[REFERRAL] User {$chatId} started bot with referral code: {$refParam}");
+                            try {
+                                $db = \Core\Database::getInstance();
+                                $fromUser = $msg['from'] ?? [];
+                                $fullName = trim(($fromUser['first_name'] ?? '') . ' ' . ($fromUser['last_name'] ?? ''));
+                                
+                                // Record or update telegram_users
+                                $upUser = $db->prepare("
+                                    INSERT INTO `telegram_users` 
+                                    (`telegram_id`, `first_name`, `last_name`, `username`, `referral_code`, `last_active_at`, `created_at`, `updated_at`)
+                                    VALUES (:tgid, :fn, :ln, :un, :ref, NOW(), NOW(), NOW())
+                                    ON DUPLICATE KEY UPDATE 
+                                    `first_name` = VALUES(`first_name`),
+                                    `last_name` = VALUES(`last_name`),
+                                    `username` = VALUES(`username`),
+                                    `referral_code` = IF(`referral_code` IS NULL OR `referral_code` = '', VALUES(`referral_code`), `referral_code`),
+                                    `last_active_at` = NOW(),
+                                    `updated_at` = NOW()
+                                ");
+                                $upUser->execute([
+                                    ':tgid' => (string)$chatId,
+                                    ':fn'   => $fromUser['first_name'] ?? '',
+                                    ':ln'   => $fromUser['last_name'] ?? '',
+                                    ':un'   => $fromUser['username'] ?? '',
+                                    ':ref'  => $refParam
+                                ]);
+
+                                // Record in telegram_referrals
+                                $insRef = $db->prepare("
+                                    INSERT INTO `telegram_referrals`
+                                    (`referrer_code`, `referred_telegram_id`, `referred_name`, `status`, `created_at`)
+                                    VALUES (:ref, :tgid, :name, 'joined', NOW())
+                                ");
+                                $insRef->execute([
+                                    ':ref'  => $refParam,
+                                    ':tgid' => (string)$chatId,
+                                    ':name' => $fullName
+                                ]);
+                            } catch (\Throwable $e) {
+                                botLog("[REFERRAL DB ERROR] " . $e->getMessage());
+                            }
+                        }
                         renderMainMenu($chatId, $state);
                     } elseif (str_starts_with($text, '/admin') || str_starts_with($text, '/broadcast') || $text === '/stats' || $text === '/teachers' || $text === '/directors' || $text === '🌐 কারিয়ানা এডমিন') {
                         $res = $messagingService->processMessage('telegram', $chatId, $text);

@@ -188,6 +188,132 @@ $error = \Core\Session::getFlash('error');
     </div>
 
     <!-- ========================================================================= -->
+    <!-- TELEGRAM 24/7 MANAGEMENT HUB & MULTI-ADMIN COMMAND CENTER (টপিক ১৭) -->
+    <!-- ========================================================================= -->
+    <div class="bg-gradient-to-r from-[#031d16] via-[#07271e] to-[#041f17] border-2 border-amber-400/40 rounded-3xl p-6 mb-10 shadow-xl text-white">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-5 border-b border-amber-400/20">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-sky-500/20 border-2 border-sky-400/60 flex items-center justify-center text-sky-400 text-2xl shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.832.922z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <span class="px-2.5 py-0.5 rounded-full bg-sky-500/30 text-sky-300 border border-sky-400/50 text-[11px] font-black uppercase tracking-wider">
+                            অফিসিয়াল টেলিগ্রাম গেটওয়ে
+                        </span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            লাইভ সক্রিয় 🟢
+                        </span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black text-amber-300 flex items-center gap-2">
+                        <span>@karianaquranbot</span>
+                        <span class="text-xs text-slate-300 font-normal">(Kariana Quran Full Management)</span>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-emerald-100/80 mt-0.5">
+                        ২৪/৭ সার্বক্ষণিক কেন্দ্রীয় নোটিফিকেশন, ডিপ লিংক রেফারেল ট্র্যাকিং ও মাল্টি-অ্যাডমিন রোল ব্যবস্থাপনা
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons & Bot Quick Access -->
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="https://t.me/karianaquranbot" target="_blank" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-black shadow-md transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.832.922z"/></svg>
+                    <span>বটে প্রবেশ করুন</span>
+                </a>
+                <a href="https://t.me/karianaquranbot?start=_tgr_KHdiM5ZlMDFl" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/50 text-xs font-bold transition flex items-center gap-1.5" title="রেফারেল লিংক টেস্ট করুন">
+                    <span>🔗 রেফারেল লিংক টেস্ট</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3-Pillar Multi-Admin Role Matrix -->
+        <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- 1. Super Admin: Rasel Gazi -->
+            <div class="bg-black/30 border border-sky-400/30 rounded-2xl p-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-sky-300 bg-sky-500/20 px-2 py-0.5 rounded-md border border-sky-400/30">
+                            মেইন সিস্টেম অ্যাডমিন
+                        </span>
+                        <span class="text-xs text-emerald-400 font-mono">TG ID: 1827362508</span>
+                    </div>
+                    <h4 class="font-black text-sm text-white flex items-center gap-1.5">
+                        <span>রাসেল গাজী (Rasel Gazi)</span>
+                        <span class="text-xs text-sky-400 font-normal">(@mraselg)</span>
+                    </h4>
+                    <p class="text-[11px] text-slate-300 mt-1 leading-snug">
+                        সার্ভার, ডেমন, এআই মডেল সুইচিং, ব্যাকআপ ও এপিআই আর্কিটেকচারের পূর্ণ কমান্ড কন্ট্রোল।
+                    </p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>পারমিশন: <strong class="text-amber-300">১০০% আনলিমিটেড</strong></span>
+                    <span class="text-emerald-400">অনলাইন 🟢</span>
+                </div>
+            </div>
+
+            <!-- 2. Founder Owner: Maulana Saddam Hossain -->
+            <div class="bg-black/30 border border-amber-400/30 rounded-2xl p-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-md border border-amber-400/30">
+                            প্রতিষ্ঠানের মালিক ও প্রতিষ্ঠাতা
+                        </span>
+                        <span class="text-xs text-amber-300 font-mono">01717056816</span>
+                    </div>
+                    <h4 class="font-black text-sm text-white flex items-center gap-1.5">
+                        <span>মাওলানা সাদ্দাম হোসেন</span>
+                    </h4>
+                    <p class="text-[11px] text-slate-300 mt-1 leading-snug">
+                        ইসলামিক বোর্ড অনুমোদন, ৫৯ জেলা পরিচালক নিয়োগ/স্থগিত এবং কিতাব প্রকাশনা সিদ্ধান্ত।
+                    </p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>পারমিশন: <strong class="text-amber-300">প্রাতিষ্ঠানিক প্রধান</strong></span>
+                    <span class="text-emerald-400">সক্রিয় 🟢</span>
+                </div>
+            </div>
+
+            <!-- 3. Operations Manager -->
+            <div class="bg-black/30 border border-emerald-400/30 rounded-2xl p-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-md border border-emerald-400/30">
+                            প্রশাসনিক ও ডেলিভারি ম্যানেজার
+                        </span>
+                        <span class="text-xs text-slate-400 font-mono">অর্ডার ডেস্ক</span>
+                    </div>
+                    <h4 class="font-black text-sm text-white flex items-center gap-1.5">
+                        <span>সেন্ট্রাল ম্যানেজার</span>
+                    </h4>
+                    <p class="text-[11px] text-slate-300 mt-1 leading-snug">
+                        পাইকারি বই অর্ডার সমন্বয়, কুরিয়ার ট্র্যাকিং, চালান এবং ভর্তি লিড ফলোআপ।
+                    </p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>পারমিশন: <strong class="text-amber-300">অর্ডার ও স্টক</strong></span>
+                    <span class="text-emerald-400">স্ট্যান্ডবাই 🟡</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Telegram Live Counters -->
+        <div class="mt-4 pt-3 border-t border-amber-400/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-4 flex-wrap">
+                <span>🤖 বট ডেমন: <strong class="text-emerald-400 font-mono">Active (v5.0)</strong></span>
+                <span>👥 বট ব্যবহারকারী: <strong class="text-amber-300 font-bold"><?= \Core\BengaliHelper::toBengaliNumber($telegramUsersCount ?? 1) ?> জন</strong></span>
+                <span>🔗 রেফারেল ক্লিক: <strong class="text-sky-300 font-bold"><?= \Core\BengaliHelper::toBengaliNumber($telegramReferralsCount ?? 0) ?> টি</strong></span>
+            </div>
+            <div class="text-[11px] text-slate-400">
+                টেলিগ্রাম পুশ এপিআই ও এসএমএস গেটওয়ে সংযুক্ত
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
     <!-- DEDICATED DIRECTORS HUB (সকল পরিচালকের লিস্ট ও যাচাই-বাছাই কমান্ড সেন্টার) -->
     <!-- ========================================================================= -->
     <section id="directors-hub" class="bg-[#fffefb] rounded-3xl shadow-sm border-2 border-[#e6dece] overflow-hidden mb-12">
@@ -711,6 +837,12 @@ $error = \Core\Session::getFlash('error');
                                 <span>ড্যাশবোর্ড</span>
                             </a>
 
+                            <!-- 1-Click ID Card Preview -->
+                            <a href="<?= $baseUrl ?>/admin/id-card/director/<?= $dir['id'] ?>" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-white py-2 px-2.5 rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1 border border-amber-600/60" title="অফিসিয়াল আইডি কার্ড ও কিউআর সনদ">
+                                <span>🪪</span>
+                                <span>আইডি</span>
+                            </a>
+
                             <!-- Manage & Edit Notes Button (Opens Modal) -->
                             <button type="button" onclick='openDirectorModal(<?= $dirJson ?>)' class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 py-2 px-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center shrink-0" title="স্ট্যাটাস ও বিস্তারিত নোট পরিবর্তন করুন">
                                 <svg class="w-3.5 h-3.5 mr-1 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -838,6 +970,9 @@ $error = \Core\Session::getFlash('error');
                             <td class="px-4 py-3.5 text-right space-x-1">
                                 <a href="<?= $baseUrl ?>/admin/directors/impersonate/<?= $dir['id'] ?>" class="inline-flex items-center px-2.5 py-1 bg-emerald-night hover:bg-emerald-deep text-white text-xs font-bold rounded-lg transition" title="ড্যাশবোর্ডে প্রবেশ">
                                     ড্যাশবোর্ড
+                                </a>
+                                <a href="<?= $baseUrl ?>/admin/id-card/director/<?= $dir['id'] ?>" target="_blank" class="inline-flex items-center px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition" title="অফিসিয়াল আইডি কার্ড">
+                                    🪪 আইডি
                                 </a>
                                 <button type="button" onclick='openDirectorModal(<?= $dirJson ?>)' class="inline-flex items-center px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-extrabold rounded-lg transition" title="নোট ও ম্যানেজমেন্ট">
                                     ম্যানেজ

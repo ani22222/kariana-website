@@ -210,6 +210,14 @@ if (file_exists($routesFile)) {
         ]);
     });
 
+    // Privacy Policy Page (Telegram Bot & PWA Verified)
+    $router->get('/privacy', function (\Core\Request $request) {
+        return \Core\View::render('home/privacy', [
+            'title' => 'গোপনীয়তা নীতি (Privacy Policy) — কারিয়ানা কুরআন',
+            'metaDescription' => 'কারিয়ানা কুরআন শিক্ষা বোর্ড ও প্রকাশনীর গোপনীয়তা নীতি ও আইনি তথ্যাবলি।'
+        ]);
+    });
+
     // Prayer Times & Utilities
     $router->get('/prayer-times', function (\Core\Request $request) {
         if (class_exists('\\App\\Controllers\\UtilityController')) {
@@ -297,6 +305,60 @@ if (file_exists($routesFile)) {
         ]);
     });
 
+    // --- Centralized 2-Step KYC Verification & Public Credential Routes ---
+    $router->get('/verify/kyc', function (\Core\Request $request) {
+        return (new \App\Controllers\VerificationController())->kycPortal($request);
+    });
+    $router->post('/verify/kyc/send-otp', function (\Core\Request $request) {
+        return (new \App\Controllers\VerificationController())->sendOtp($request);
+    });
+    $router->post('/verify/kyc/verify-otp', function (\Core\Request $request) {
+        return (new \App\Controllers\VerificationController())->verifyOtp($request);
+    });
+    $router->post('/verify/kyc/verify-nid', function (\Core\Request $request) {
+        return (new \App\Controllers\VerificationController())->verifyNid($request);
+    });
+    $router->get('/verify/{uuid}', function (\Core\Request $request, string $uuid) {
+        return (new \App\Controllers\VerificationController())->publicCard($request, $uuid);
+    });
+
+    // --- Decoupled RESTful API (v1) for Mobile Clients & Android Studio Kotlin Quran App ---
+    $router->get('/api/v1/health', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->health($request);
+    });
+    $router->post('/api/v1/auth/login', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->login($request);
+    });
+    $router->get('/api/v1/books', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->books($request);
+    });
+    $router->post('/api/v1/books/order', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->orderBook($request);
+    });
+    $router->get('/api/v1/courses', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->courses($request);
+    });
+    $router->post('/api/v1/admissions', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->createAdmission($request);
+    });
+    $router->get('/api/v1/prayer-times', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->prayerTimes($request);
+    });
+    $router->get('/api/v1/kyc/status', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->kycStatus($request);
+    });
+    $router->post('/api/v1/kyc/verify-nid', function (\Core\Request $request) {
+        return (new \App\Controllers\Api\V1Controller())->verifyNid($request);
+    });
+
+    // --- Telegram Bot Bidirectional Webhook & Action Card Router ---
+    $router->post('/api/telegram/webhook', function (\Core\Request $request) {
+        return (new \App\Controllers\TelegramWebhookController())->handle($request);
+    });
+    $router->get('/api/telegram/webhook', function (\Core\Request $request) {
+        return \Core\Response::json(['status' => 'ok', 'gateway' => 'Telegram Webhook Gateway Ready']);
+    });
+
     // --- District Directors & Public Organization Routes ---
     $router->get('/directors', function (\Core\Request $request) {
         $controller = new \App\Controllers\DirectorController();
@@ -372,6 +434,11 @@ if (file_exists($routesFile)) {
     $router->get('/admin/dashboard', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
         return $controller->dashboard($request);
+    });
+
+    $router->get('/admin/id-card/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->generateIdCard($request, $type, $id);
     });
 
     $router->get('/admin/settings', function (\Core\Request $request) {

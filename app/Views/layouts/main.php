@@ -171,34 +171,145 @@
             }
         }
 
-        /* Royal Islamic Dark Mode Palette */
+        /* ============================================================
+           ROYAL ISLAMIC 100% CONTRAST PALETTE (LIGHT & DARK DUAL ENGINE)
+           ============================================================ */
+
+        /* 1. LIGHT MODE SPECIFICATION (Clean, Warm, Legible) */
+        html:not(.dark) body {
+            background-color: #f8f5ee !important;
+            color: #1e293b !important;
+        }
+        html:not(.dark) .islamic-card,
+        html:not(.dark) .bg-white {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            border-color: #e2e8f0;
+        }
+        html:not(.dark) input,
+        html:not(.dark) select,
+        html:not(.dark) textarea {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        /* 2. DARK MODE SPECIFICATION (Deep Obsidian Emerald & Royal Gold) */
         html.dark body {
             background-color: #031711 !important;
-            color: #f1f5f9 !important;
+            color: #f8fafc !important;
         }
-        html.dark .bg-\[\#f8f5ee\] {
-            background-color: #031711 !important;
+
+        /* Surfaces & Containers */
+        html.dark .bg-\[\#f8f5ee\],
+        html.dark .bg-parchment,
+        html.dark .bg-parchment-warm,
+        html.dark .bg-slate-50,
+        html.dark .bg-gray-50,
+        html.dark .bg-emerald-50 {
+            background-color: #041f17 !important;
+            border-color: #0e4435 !important;
         }
-        html.dark .bg-\[\#fffefb\] {
+
+        html.dark .bg-white,
+        html.dark .bg-\[\#fffefb\],
+        html.dark .islamic-card,
+        html.dark .card {
             background-color: #07271e !important;
+            color: #f8fafc !important;
+            border-color: rgba(251, 191, 36, 0.25) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        html.dark .border-\[\#e7dec6\],
+        html.dark .border-slate-100,
+        html.dark .border-slate-200,
+        html.dark .border-slate-300,
+        html.dark .border-gray-200,
+        html.dark .border-emerald-100,
+        html.dark .border-emerald-200 {
+            border-color: #0e4435 !important;
+        }
+
+        /* Typography Overrides in Dark Mode (High-Contrast, Zero Black-on-Dark) */
+        html.dark .text-emerald-950,
+        html.dark .text-emerald-900,
+        html.dark .text-slate-900,
+        html.dark .text-slate-800,
+        html.dark .text-gray-900,
+        html.dark .text-gray-800 {
+            color: #fef3c7 !important; /* Warm creamy gold for bold headings */
+        }
+
+        html.dark .text-emerald-800,
+        html.dark .text-emerald-700 {
+            color: #6ee7b7 !important; /* Soft mint emerald */
+        }
+
+        html.dark .text-slate-700,
+        html.dark .text-gray-700 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-slate-600,
+        html.dark .text-slate-500,
+        html.dark .text-gray-600,
+        html.dark .text-gray-500 {
+            color: #94a3b8 !important; /* Muted text still crisp & readable */
+        }
+
+        html.dark .text-amber-900,
+        html.dark .text-amber-950 {
+            color: #fbbf24 !important;
+        }
+
+        /* Form Controls & Inputs */
+        html.dark input,
+        html.dark select,
+        html.dark textarea {
+            background-color: #022017 !important;
             color: #f8fafc !important;
             border-color: #0e4435 !important;
         }
-        html.dark .border-\[\#e7dec6\] {
+
+        html.dark input::placeholder,
+        html.dark textarea::placeholder {
+            color: #64748b !important;
+        }
+
+        html.dark input:focus,
+        html.dark select:focus,
+        html.dark textarea:focus {
+            border-color: #fbbf24 !important;
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.25) !important;
+        }
+
+        /* Table Elements */
+        html.dark thead,
+        html.dark thead th {
+            background-color: #04271c !important;
+            color: #fef3c7 !important;
             border-color: #0e4435 !important;
         }
-        html.dark .text-slate-800 {
+
+        html.dark tbody td {
+            border-color: #0e4435 !important;
             color: #f1f5f9 !important;
         }
-        html.dark .text-slate-700 {
-            color: #cbd5e1 !important;
+
+        html.dark tbody tr:hover {
+            background-color: #083428 !important;
         }
-        html.dark .text-slate-600 {
-            color: #94a3b8 !important;
+
+        /* Pills, Badges & Tickers */
+        html.dark .bg-emerald-100 {
+            background-color: rgba(6, 78, 59, 0.6) !important;
+            color: #a7f3d0 !important;
         }
-        html.dark .bg-white {
-            background-color: #07271e !important;
-            color: #f8fafc !important;
+
+        html.dark .bg-amber-100 {
+            background-color: rgba(180, 83, 9, 0.3) !important;
+            color: #fde68a !important;
         }
     </style>
 </head>

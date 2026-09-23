@@ -182,15 +182,20 @@ $error = \Core\Session::getFlash('error');
                                 <?php endif; ?>
                             </td>
                             <td class="px-5 py-3 text-center">
-                                <form action="<?= $baseUrl ?>/admin/directors/status" method="POST" class="inline-flex gap-1">
-                                    <?= $csrfField ?>
-                                    <input type="hidden" name="director_id" value="<?= $d['id'] ?>">
-                                    <select name="status" onchange="this.form.submit()" class="text-[10px] px-2 py-1 rounded border border-slate-200 bg-white">
-                                        <option value="active" <?= $d['status'] === 'active' ? 'selected' : '' ?>>কর্মরত</option>
-                                        <option value="suspended" <?= $d['status'] === 'suspended' ? 'selected' : '' ?>>স্থগিত</option>
-                                        <option value="expelled" <?= $d['status'] === 'expelled' ? 'selected' : '' ?>>বহিষ্কৃত</option>
-                                    </select>
-                                </form>
+                                <div class="inline-flex items-center gap-1.5">
+                                    <form action="<?= $baseUrl ?>/admin/directors/status" method="POST" class="inline-flex">
+                                        <?= $csrfField ?>
+                                        <input type="hidden" name="director_id" value="<?= $d['id'] ?>">
+                                        <select name="status" onchange="this.form.submit()" class="text-[10px] px-2 py-1 rounded border border-slate-200 bg-white">
+                                            <option value="active" <?= $d['status'] === 'active' ? 'selected' : '' ?>>কর্মরত</option>
+                                            <option value="suspended" <?= $d['status'] === 'suspended' ? 'selected' : '' ?>>স্থগিত</option>
+                                            <option value="expelled" <?= $d['status'] === 'expelled' ? 'selected' : '' ?>>বহিষ্কৃত</option>
+                                        </select>
+                                    </form>
+                                    <a href="<?= $baseUrl ?>/admin/id-card/director/<?= $d['id'] ?>" target="_blank" class="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px] font-bold shadow-xs flex items-center gap-1" title="অফিসিয়াল আইডি কার্ড">
+                                        <span>🪪</span> আইডি
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>

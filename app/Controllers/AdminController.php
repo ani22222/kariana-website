@@ -207,6 +207,14 @@ class AdminController
             ORDER BY d.district_name ASC, t.id ASC
         ")->fetchAll();
 
+        // Fetch Telegram Hub Metrics
+        $telegramUsersCount = 0;
+        $telegramReferralsCount = 0;
+        try {
+            $telegramUsersCount = (int)$this->db->query("SELECT COUNT(*) FROM `telegram_users`")->fetchColumn();
+            $telegramReferralsCount = (int)$this->db->query("SELECT COUNT(*) FROM `telegram_referrals`")->fetchColumn();
+        } catch (\Throwable $e) {}
+
         return new Response(View::render('admin/dashboard', [
             'title'                  => 'অ্যাডমিন ড্যাশবোর্ড ও পরিচালক কমান্ড হাব | কারিয়ানা কুরআন',
             'stats'                  => [
@@ -216,7 +224,11 @@ class AdminController
                 'books'      => $booksCount,
                 'directors'  => $directorsCount,
                 'teachers'   => $teachersCount,
+                'tg_users'   => $telegramUsersCount,
+                'tg_refs'    => $telegramReferralsCount,
             ],
+            'telegramUsersCount'     => $telegramUsersCount,
+            'telegramReferralsCount' => $telegramReferralsCount,
             'recentAdmissions'       => $recentAdmissions,
             'allDirectors'           => $allDirectors,
             'allTeachers'            => $allTeachers,
@@ -1033,5 +1045,55 @@ class AdminController
         }
 
         return Response::redirect('/admin#dev-messages');
+    }
+
+    /**
+     * 1-Click SVG/Vector ID Card Generator
+     * URL: GET /admin/id-card/{type}/{id}
+     */
+    public function generateIdCard(Request $request, string $type, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $memberId = (int)$id;
+
+        $table = ($type === 'director') ? 'directors' : 'teachers';
+        $stmt = $this->db->prepare("SELECT * FROM `$table` WHERE `id` = :id LIMIT 1");
+        $stmt->execute(['id' => $memberId]);
+        $member = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$member) {
+            Session::flash('error', 'সদস্যের তথ্য পাওয়া যায়নি।');
+            return Response::redirect('/admin');
+        }
+
+        // Ensure UUID exists
+        if (empty($member['kyc_uuid'])) {
+            $uuid = bin2hex(random_bytes(16));
+            $up = $this->db->prepare("UPDATE `$table` SET `kyc_uuid` = :uuid WHERE `id` = :id");
+            $up->execute(['uuid' => $uuid, 'id' => $memberId]);
+            $member['kyc_uuid'] = $uuid;
+
+            // Also ensure in kyc_verifications
+            $checkKyc = $this->db->prepare("SELECT COUNT(*) FROM `kyc_verifications` WHERE `uuid` = ?");
+            $checkKyc->execute([$uuid]);
+            if ($checkKyc->fetchColumn() == 0) {
+                $insKyc = $this->db->prepare("
+                    INSERT INTO `kyc_verifications` 
+                    (`uuid`, `user_type`, `user_id`, `phone`, `is_phone_verified`, `kyc_level`, `kyc_status`, `verified_at`, `created_at`, `updated_at`)
+                    VALUES (?, ?, ?, ?, 1, 2, 'approved', NOW(), NOW(), NOW())
+                ");
+                $insKyc->execute([$uuid, $type, $memberId, $member['phone'] ?? '01827362508']);
+            }
+        }
+
+        return new Response(View::render('admin/id_card_preview', [
+            'title'   => 'অফিসিয়াল আইডি কার্ড জেনারেটর — ' . ($member['name'] ?? ''),
+            'type'    => $type,
+            'member'  => $member,
+        ]));
     }
 }
