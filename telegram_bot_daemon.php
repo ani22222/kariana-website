@@ -2192,6 +2192,34 @@ while (true) {
                         continue;
                     }
 
+                    // Handle Photos from User
+                    if (isset($msg['photo'])) {
+                        $photos = $msg['photo'];
+                        $largest = end($photos);
+                        $fileId = $largest['file_id'] ?? '';
+                        $caption = trim($msg['caption'] ?? '');
+                        botLog("[PHOTO] Received photo ({$largest['width']}x{$largest['height']}) from {$chatId}");
+
+                        $fileInfo = tgRequest('getFile', ['file_id' => $fileId]);
+                        if (!empty($fileInfo['result']['file_path'])) {
+                            $filePath = $fileInfo['result']['file_path'];
+                            $downloadUrl = "https://api.telegram.org/file/bot" . BOT_TOKEN . "/" . $filePath;
+
+                            $photosDir = PROJECT_ROOT . '/storage/logs/photos';
+                            if (!is_dir($photosDir)) @mkdir($photosDir, 0777, true);
+                            $savedPhoto = $photosDir . '/photo_' . date('Ymd_His') . '_' . substr(md5(uniqid()), 0, 6) . '.jpg';
+
+                            $imgData = @file_get_contents($downloadUrl);
+                            if ($imgData) {
+                                file_put_contents($savedPhoto, $imgData);
+                                botLog("[PHOTO SAVED] Saved to: {$savedPhoto}");
+                                sendMsg($chatId, "📸 *ছবি সফলভাবে পিসিতে সংরক্ষিত হয়েছে!*");
+                            }
+                        }
+                        if (empty($caption)) continue;
+                        $msg['text'] = $caption;
+                    }
+
                     $text = trim($msg['text'] ?? '');
                     if (empty($text)) continue;
 

@@ -3,6 +3,14 @@
    Royal Islamic Emerald Green (#064e3b, #047857) & Warm Quranic Gold (#d97706)
    ========================================================================== */
 
+/* Baseline Resets & Tailwind Fallbacks */
+svg { display: inline-block; vertical-align: middle; max-width: 100%; }
+.hidden { display: none !important; }
+@media (min-width: 768px) {
+    .md\:flex { display: flex !important; }
+    .md\:hidden { display: none !important; }
+}
+
 /* 1. Google Web Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
@@ -664,61 +672,71 @@ body {
 }
 
 /* ============================================================
-   HERO SECTION — Compact, Content-Driven Layout
-   Natural height based on content. No forced 100vh that creates
-   ugly gaps on mobile. Uses flexbox centering only on desktop
-   where there's enough room.
+   HERO SECTION — 100% Full-Viewport Immersive Layout (Mobile & Desktop)
+   Seamless A-to-Z Royal Emerald & Gold showcase.
+   Zero white gaps on initial mobile load.
    ============================================================ */
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    /* Full mobile viewport minus top navbar (~56px) */
+    min-height: calc(100dvh - 56px);
+    height: calc(100dvh - 56px);
     padding-top: 0.5rem;
-    padding-bottom: 1rem;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); /* Clear bottom floating nav */
+    box-sizing: border-box;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
 }
 
-/* Inner container must stretch to fill the wrapper */
+/* Fallback for browsers without dvh support */
+@supports not (min-height: 100dvh) {
+    #heroSectionWrapper {
+        min-height: calc(100vh - 56px);
+        height: calc(100vh - 56px);
+    }
+}
+
+/* Inner container fills available height */
 #heroSectionWrapper > .container {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+    height: 100%;
 }
 
-/* Hero shell holds all content as one centered group */
+/* Hero shell stretches and vertically distributes all elements gracefully */
 .hero-shell {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
+    height: 100%;
     gap: 0;
 }
 
-/* Scroll indicator stays part of the centered group, no artificial gap */
+/* Scroll indicator rests above the floating bottom nav */
 .hero-scroll-indicator {
-    padding-bottom: 0;
+    padding-bottom: 0.25rem;
+    margin-top: auto;
 }
 
-/* On desktop, give the hero a bit more room to breathe */
+/* Desktop: Expand hero comfortably */
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        min-height: min(calc(100dvh - 96px), 750px);
-        padding-top: 1rem;
+        min-height: calc(100dvh - 96px);
+        height: auto;
+        padding-top: 1.25rem;
         padding-bottom: 2rem;
     }
-}
-
-/* Fallback for browsers without dvh support (desktop only) */
-@supports not (min-height: 100dvh) {
-    @media (min-width: 768px) {
-        #heroSectionWrapper {
-            min-height: min(calc(100vh - 96px), 750px);
-        }
+    .hero-shell {
+        justify-content: center;
     }
 }
 
@@ -755,27 +773,13 @@ body {
 }
 
 /* ============================================================
-   SMOOTH SECTION SCROLL REVEAL (#mainContentSection)
-   Always visible on mobile (no hidden content gaps).
-   Subtle fade-up animation on larger screens only.
+   MAIN CONTENT SECTION (#mainContentSection)
+   Always visible, solid, seamless rendering across all devices.
    ============================================================ */
 #mainContentSection {
     opacity: 1;
-    transform: translateY(0);
-}
-
-@media (min-width: 768px) {
-    #mainContentSection {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
-    }
-
-    #mainContentSection.is-revealed {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    transform: none;
+    will-change: auto;
 }
 
 /* ============================================================

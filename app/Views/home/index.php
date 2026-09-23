@@ -422,77 +422,98 @@ window.smoothScrollToContent = function() {
 
 <!-- ============================================================
      5-PORTAL QUICK ACCESS HUB (বই, কোর্স, ভর্তি, ব্লগ, জেলা পরিচালকবৃন্দ)
+<!-- ============================================================
+     5-PORTAL QUICK ACCESS HUB (বই, কোর্স, ভর্তি, ব্লগ, জেলা পরিচালকবৃন্দ)
      ============================================================ -->
-<div id="mainContentSection" class="relative z-20 mt-0 md:mt-6 mx-4 md:mx-auto max-w-5xl">
-    <div class="bg-[#fffdf9] border-2 border-[#e6dcce] rounded-3xl p-4 sm:p-6 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] mb-6">
-        <!-- Header / Label -->
-        <div class="flex items-center justify-between mb-4 px-1">
-            <div class="flex items-center space-x-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                <h3 class="text-xs sm:text-sm font-extrabold text-emerald-night uppercase tracking-wider">কুইক এক্সেস পোর্টাল</h3>
+<section id="mainContentSection" class="relative z-20 pt-8 pb-10 sm:py-14 bg-gradient-to-b from-[#fbf8f1] via-[#fffdf9] to-[#f6f1e5] border-t-4 border-amber-400/50 shadow-sm">
+    <div class="container mx-auto px-3.5 sm:px-6 max-w-6xl">
+        <!-- Section Header -->
+        <div class="text-center mb-6 sm:mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/10 text-emerald-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 border border-emerald-800/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <span>কারিয়ানা কেন্দ্রীয় সেবা কেন্দ্র</span>
             </div>
-            <span class="text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60">
-                ৫টি প্রধান সেবা
-            </span>
+            <h2 class="text-lg sm:text-2xl md:text-3xl font-black text-emerald-night tracking-tight">
+                কুইক এক্সেস পোর্টাল ও মূল বিভাগসমূহ
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto mt-1">
+                সহীহ কুরআন শিক্ষা, প্রকাশনা ও দেশব্যাপী সাংগঠনিক কার্যক্রমের সরাসরি গেটওয়ে
+            </p>
         </div>
 
-        <!-- 5-Card Quick Access Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <!-- 5-Service Dynamic Grid (Responsive: 2x2 + Full-Width Leadership Banner on Mobile, 5-Cols on Desktop) -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3.5 mb-6">
             <!-- 1. বই ও প্রকাশনা -->
-            <a href="<?= $baseUrl ?? '' ?>/books" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="<?= $baseUrl ?? '' ?>/books" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">বই ও প্রকাশনা</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5">অর্ডার ও ক্যাটালগ</p>
+                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">বই ও প্রকাশনা</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">অর্ডার ও ক্যাটালগ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">বই সংগ্রহ করুন →</span>
             </a>
 
             <!-- 2. কোর্স ক্যাটালগ -->
-            <a href="<?= $baseUrl ?? '' ?>/courses" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="<?= $baseUrl ?? '' ?>/courses" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     </svg>
                 </div>
-                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">কোর্স ক্যাটালগ</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5">নাজেরা ও তাজবীদ</p>
+                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">কোর্স ক্যাটালগ</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">নাজেরা ও তাজবীদ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">কোর্স দেখুন →</span>
             </a>
 
             <!-- 3. ভর্তি আবেদন -->
-            <a href="<?= $baseUrl ?? '' ?>/courses#admission" class="group bg-white hover:bg-amber-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-12 h-12 rounded-2xl bg-amber-100/70 text-amber-800 flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-gold-rich group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="<?= $baseUrl ?? '' ?>/courses#admission" class="group bg-white hover:bg-amber-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-amber-500 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-gold-rich group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
-                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-amber-800 transition">ভর্তি আবেদন</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5">অনলাইন ফর্ম</p>
+                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-amber-800 transition">ভর্তি আবেদন</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">অনলাইন রেজিস্ট্রেশন</p>
+                <span class="mt-2 text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-300 group-hover:bg-amber-600 group-hover:text-white transition">আবেদন করুন →</span>
             </a>
 
-            <!-- 4. ব্লগ ও নিউজ -->
-            <a href="<?= $baseUrl ?? '' ?>/blog" class="group bg-white hover:bg-emerald-50/60 p-3.5 rounded-2xl border border-slate-200/90 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-night flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- 4. ব্লগ ও প্রবন্ধ -->
+            <a href="<?= $baseUrl ?? '' ?>/blog" class="group bg-white hover:bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border-2 border-[#e6dcce] hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-100/80 text-emerald-night flex items-center justify-center mb-2 group-hover:scale-108 group-hover:bg-emerald-night group-hover:text-amber-300 transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                     </svg>
                 </div>
-                <h4 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">ব্লগ ও নিউজ</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5">ইসলামী প্রবন্ধ</p>
+                <h3 class="font-black text-slate-800 text-xs sm:text-sm group-hover:text-emerald-night transition">ব্লগ ও নিউজ</h3>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">ইসলামী প্রবন্ধ ও পাঠ</p>
+                <span class="mt-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">প্রবন্ধ পড়ুন →</span>
             </a>
 
-            <!-- 5. জেলা পরিচালকবৃন্দ (৫৯ জেলা) - Highlight Quick Access -->
-            <a href="<?= $baseUrl ?? '' ?>/directors" class="group col-span-2 sm:col-span-1 bg-gradient-to-br from-emerald-night to-emerald-deep text-white p-3.5 rounded-2xl border-2 border-gold-rich/70 shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-200 flex flex-col items-center text-center relative overflow-hidden">
-                <span class="absolute top-1.5 right-1.5 bg-gold-rich text-white text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow">নতুন</span>
-                <div class="w-12 h-12 rounded-2xl bg-gold-rich text-white flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-amber-300 group-hover:text-emerald-night transition-all shadow">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+            <!-- 5. জেলা পরিচালকবৃন্দ (৫৯ জেলা নেটওয়ার্ক - Highlight Banner Card on Mobile & 5th Col on Desktop) -->
+            <a href="<?= $baseUrl ?? '' ?>/directors" class="group col-span-2 sm:col-span-2 lg:col-span-1 bg-gradient-to-r lg:bg-gradient-to-br from-emerald-night via-emerald-deep to-emerald-night text-white p-3.5 sm:p-4 rounded-2xl border-2 border-amber-400/80 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200 flex flex-row lg:flex-col items-center justify-between lg:justify-center text-left lg:text-center relative overflow-hidden">
+                <div class="flex items-center lg:flex-col space-x-3 lg:space-x-0">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-400/20 border border-amber-300/50 text-amber-300 flex items-center justify-center shrink-0 lg:mb-2 group-hover:scale-110 group-hover:bg-amber-400 group-hover:text-emerald-night transition-all shadow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="inline-block bg-amber-400 text-emerald-950 text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow">জাতীয় নেটওয়ার্ক</span>
+                        </div>
+                        <h3 class="font-black text-white text-xs sm:text-sm group-hover:text-amber-200 transition">জেলা পরিচালকবৃন্দ</h3>
+                        <p class="text-[10px] sm:text-[11px] text-emerald-200/90">দেশব্যাপী ৫৯ জেলা তালিকা</p>
+                    </div>
                 </div>
-                <h4 class="font-black text-white text-xs sm:text-sm group-hover:text-amber-200 transition">জেলা পরিচালকবৃন্দ</h4>
-                <p class="text-[11px] text-amber-200/90 mt-0.5">৫৯ জেলা তালিকা</p>
+                <div class="shrink-0 lg:mt-2">
+                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-300 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-amber-400/40 group-hover:bg-amber-400 group-hover:text-emerald-950 transition flex items-center gap-1">
+                        <span>তালিকা দেখুন</span>
+                        <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    </span>
+                </div>
             </a>
         </div>
     </div>
@@ -539,7 +560,7 @@ window.smoothScrollToContent = function() {
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Courses Grid Section (Warm Parchment Backdrop, Soft Ivory Cards) -->
 <section class="bg-[#f4efe4]/70 py-16 border-b border-[#e8dfce]">

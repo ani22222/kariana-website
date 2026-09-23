@@ -13,7 +13,7 @@ define('TELEGRAM_API_BASE',  'https://api.telegram.org/bot' . TELEGRAM_BOT_TOKEN
 // Project info
 define('PROJECT_NAME',       'কারিয়ানা ওয়েবসাইট');
 define('PROJECT_PORT',       '8015');
-define('CLOUDFLARE_URL',     'https://rev-mysql-stops-ext.trycloudflare.com');
+define('CLOUDFLARE_URL',     'https://wireless-docs-camel-mls.trycloudflare.com');
 define('GITHUB_URL',         'https://github.com/ani22222/kariana-website');
 define('WIFI_IP',            '192.168.0.100');
 
