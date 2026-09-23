@@ -53,32 +53,12 @@
                         </div>
 
                         <!-- Clean Prominent Book Title Headline -->
-                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md max-w-xl mx-auto mb-2 sm:mb-3 px-2 leading-snug" itemprop="name">
+                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md max-w-xl mx-auto mb-6 sm:mb-8 px-2 leading-snug" itemprop="name">
                             <?= htmlspecialchars($b['title']) ?>
                         </h1>
 
-                        <!-- Feature Badges Row (Clean, Non-colliding, Responsive & Spaced) -->
-                        <div class="hero-chips-bar flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-4 z-20">
-                            <span class="orbit-chip chip-feature-a">
-                                <span class="pulse"></span>
-                                <svg class="w-3.5 h-3.5 text-emerald-400 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <?= htmlspecialchars($pills['chipA']) ?>
-                            </span>
-                            <span class="orbit-chip chip-feature-b">
-                                <svg class="w-3.5 h-3.5 text-amber-300 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                </svg>
-                                <?= htmlspecialchars($pills['chipB']) ?>
-                            </span>
-                            <span class="orbit-chip chip-feature-c bg-amber-950/80 border-amber-400/60 text-amber-300">
-                                <span class="font-bold text-xs">মূল্য: ৳<?= (int)$discPrice ?></span>
-                            </span>
-                        </div>
-
                         <!-- Center 3D Floating Book Art (Real Cover Image + Hardcover 3D Spine) -->
-                        <div class="py-1 relative">
+                        <div class="py-1 relative w-full flex justify-center">
                             <div class="hero-art relative">
                                 <div class="halo"></div>
 
@@ -96,11 +76,6 @@
                                                  loading="<?= $idx === 0 ? 'eager' : 'lazy' ?>"
                                                  itemprop="image">
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none"></div>
-                                            <!-- Floating Price Tag over Image Corner -->
-                                            <div class="absolute bottom-2.5 right-2.5 bg-emerald-950/90 backdrop-blur-md border border-amber-400/60 px-2.5 py-1 rounded-lg shadow-lg flex items-baseline gap-1">
-                                                <span class="text-[10px] text-emerald-200">মূল্য</span>
-                                                <span class="text-sm font-black text-amber-300 font-mono">৳<?= (int)$discPrice ?></span>
-                                            </div>
                                         </div>
                                     <?php else: ?>
                                         <!-- Royal Islamic Fallback Book Design (No Real Image) -->
@@ -124,17 +99,30 @@
                                                     <?= htmlspecialchars($b['title']) ?>
                                                 </h3>
                                             </div>
-
-                                            <div class="pt-2 border-t border-amber-400/30 flex items-center justify-between text-xs z-10">
-                                                <span class="text-emerald-300/90 text-[11px] font-medium">সহজ নূরানী পদ্ধতি</span>
-                                                <span class="text-amber-300 font-black text-sm font-mono tracking-tight drop-shadow">
-                                                    ৳<?= (int)$discPrice ?>
-                                                </span>
-                                            </div>
                                         </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Feature Badges Row (Clean, Non-colliding, Responsive & Spaced) Below Book -->
+                        <div class="hero-chips-bar flex flex-wrap items-center justify-center gap-2 sm:gap-3 my-6 sm:my-8 z-20">
+                            <span class="orbit-chip chip-feature-a">
+                                <span class="pulse"></span>
+                                <svg class="w-3.5 h-3.5 text-emerald-400 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <?= htmlspecialchars($pills['chipA']) ?>
+                            </span>
+                            <span class="orbit-chip chip-feature-b">
+                                <svg class="w-3.5 h-3.5 text-amber-300 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                </svg>
+                                <?= htmlspecialchars($pills['chipB']) ?>
+                            </span>
+                            <span class="orbit-chip chip-feature-c bg-amber-950/80 border-amber-400/60 text-amber-300">
+                                <span class="font-bold text-xs sm:text-sm">মূল্য: ৳<?= (int)$discPrice ?></span>
+                            </span>
                         </div>
 
                         <!-- Hidden Microdata for Google Schema.org Offer (SEO Preserved) -->
