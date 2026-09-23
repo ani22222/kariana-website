@@ -98,6 +98,35 @@ $error = \Core\Session::flash('error');
         </p>
     </div>
 
+    <!-- WhatsApp Direct Connection & Instant Alert Hub for Teacher -->
+    <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-slate-900 text-white shadow border-2 border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h4 class="text-xs sm:text-sm font-black text-amber-200">শিক্ষক WhatsApp অটোমেশন ও নোটিফিকেশন</h4>
+                    <?php if (!empty($whatsappLinked)): ?>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white mr-1 animate-pulse"></span> সক্রিয় 🟢
+                    </span>
+                    <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950">
+                        কানেক্ট করুন 📲
+                    </span>
+                    <?php endif; ?>
+                </div>
+                <p class="text-[11px] text-slate-300">WhatsApp থেকেই ছাত্র সংখ্যা আপডেট এবং সবক ক্লাসের আবেদন করা যাবে।</p>
+            </div>
+        </div>
+        <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $whatsappBotPhone ?? '8801717056816') ?>?text=<?= rawurlencode('কানেক্ট ' . ($teacher['phone'] ?? '')) ?>" 
+           target="_blank"
+           class="w-full sm:w-auto px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 shadow active:scale-95 shrink-0">
+            <i class="fab fa-whatsapp"></i> <?= !empty($whatsappLinked) ? 'WhatsApp চ্যাট খুলুন' : 'WhatsApp কানেক্ট করুন' ?>
+        </a>
+    </div>
+
     <!-- 2 Touch KPI Cards: Students & Requests -->
     <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
         <div @click="showStudentModal = true" class="bg-[#fffefb] p-4 rounded-2xl border-2 border-emerald-600/30 hover:border-gold-rich shadow-sm cursor-pointer transition transform active:scale-95 text-center">

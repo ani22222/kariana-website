@@ -33,6 +33,11 @@ define('LINK_WIFI', 'http://192.168.0.100:8015');
 define('LINK_CLOUDFLARE', 'https://crowd-passenger-martin-passport.trycloudflare.com');
 define('LINK_GITHUB', 'https://github.com/ani22222/kariana-website');
 
+// Zero-Vendor Autoloader & Unified Messaging Core
+require_once __DIR__ . '/core/Autoloader.php';
+\Core\Autoloader::register();
+$messagingService = new \App\Services\UnifiedMessagingService();
+
 // Logging to file & console
 function botLog(string $msg): void {
     $time = date('Y-m-d H:i:s');
@@ -1740,8 +1745,12 @@ while (true) {
                     $chatId = (string)($cb['message']['chat']['id'] ?? $state['chat_id']);
                     $senderId = (string)($cb['from']['id'] ?? $chatId);
                     if ($senderId !== ADMIN_CHAT_ID && $chatId !== ADMIN_CHAT_ID) {
-                        botLog("[SECURITY BLOCKED] Unauthorized button click from Sender: {$senderId}, Chat: {$chatId}");
-                        answerCallback($cbId, '⛔ Access Denied');
+                        botLog("[MULTI-USER BOT] Button click from {$senderId}: {$data}");
+                        $res = $messagingService->processCallback('telegram', $chatId, $data);
+                        answerCallback($cbId);
+                        if (!empty($res['text'])) {
+                            sendMsg($chatId, $res['text'], $res['buttons'] ?? []);
+                        }
                         continue;
                     }
                     $state['chat_id'] = $chatId;
@@ -1750,6 +1759,15 @@ while (true) {
                     answerCallback($cbId);
 
                     botLog("[BUTTON CLICK] Data: {$data} from {$chatId}");
+
+                    // Support Website Management Callbacks (Admin / Directors / Teachers Hub)
+                    if (str_starts_with($data, 'adm_') || str_starts_with($data, 'dir_') || str_starts_with($data, 'tea_') || str_starts_with($data, 'mgr_')) {
+                        $res = $messagingService->processCallback('telegram', $chatId, $data);
+                        if (!empty($res['text'])) {
+                            sendMsg($chatId, $res['text'], $res['buttons'] ?? []);
+                        }
+                        continue;
+                    }
 
                     // Voice Module Callback Handlers
                     if (strpos($data, 'vsend_') === 0) {
@@ -2117,7 +2135,15 @@ while (true) {
                     $chatId = (string)($msg['chat']['id'] ?? '');
                     $senderId = (string)($msg['from']['id'] ?? $chatId);
                     if ($senderId !== ADMIN_CHAT_ID && $chatId !== ADMIN_CHAT_ID) {
-                        botLog("[SECURITY BLOCKED] Unauthorized message from Sender: {$senderId}, Chat: {$chatId}");
+                        botLog("[MULTI-USER BOT] Message from {$senderId}: " . ($msg['text'] ?? '[non-text]'));
+                        $extra = [];
+                        if (isset($msg['contact']['phone_number'])) {
+                            $extra['contact_phone'] = $msg['contact']['phone_number'];
+                        }
+                        $res = $messagingService->processMessage('telegram', $chatId, $msg['text'] ?? '', $extra);
+                        if (!empty($res['text'])) {
+                            sendMsg($chatId, $res['text'], $res['buttons'] ?? []);
+                        }
                         continue;
                     }
                     $state['chat_id'] = $chatId;
@@ -2239,6 +2265,10 @@ while (true) {
 
                     if ($text === '/start' || $text === '🏠 মেইন মেনু' || $text === '/menu') {
                         renderMainMenu($chatId, $state);
+                    } elseif (str_starts_with($text, '/admin') || str_starts_with($text, '/broadcast') || $text === '/stats' || $text === '/teachers' || $text === '/directors' || $text === '🌐 কারিয়ানা এডমিন') {
+                        $res = $messagingService->processMessage('telegram', $chatId, $text);
+                        sendMsg($chatId, $res['text'], $res['buttons'] ?? []);
+                        continue;
                     } elseif ($text === '/latest' || $text === '💬 স্ক্রিনের সর্বশেষ উত্তর') {
                         renderLatestResponseView($chatId, $state);
                     } elseif ($text === '📁 সাম্প্রতিক প্রজেক্ট' || $text === '/recent') {

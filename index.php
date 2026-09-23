@@ -604,6 +604,17 @@ if (file_exists($routesFile)) {
         return new \Core\Response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     });
 
+    // --- WhatsApp Server Gateway & Bidirectional Webhook ---
+    $router->get('/api/whatsapp/webhook', function (\Core\Request $request) {
+        return (new \App\Controllers\WhatsAppWebhookController())->verify($request);
+    });
+    $router->post('/api/whatsapp/webhook', function (\Core\Request $request) {
+        return (new \App\Controllers\WhatsAppWebhookController())->receive($request);
+    });
+    $router->post('/api/whatsapp/send', function (\Core\Request $request) {
+        return (new \App\Controllers\WhatsAppWebhookController())->sendTest($request);
+    });
+
     // --- Global Maximum-Level SEO: Dynamic Robots.txt ---
     $router->get('/robots.txt', function (\Core\Request $request) {
         $base = \Core\SeoHelper::getBaseUrl();

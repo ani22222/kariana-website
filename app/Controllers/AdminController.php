@@ -688,6 +688,11 @@ class AdminController
             'custom_head_scripts',
             'custom_body_start_scripts',
             'custom_body_end_scripts',
+            'whatsapp_enabled',
+            'whatsapp_bot_phone',
+            'whatsapp_gateway_url',
+            'whatsapp_api_token',
+            'whatsapp_verify_token',
         ];
 
         $stmt = $this->db->prepare(

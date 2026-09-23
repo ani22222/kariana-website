@@ -143,11 +143,18 @@ class TeacherController
         $actStmt->execute(['tid' => $teacherId]);
         $activities = $actStmt->fetchAll();
 
+        // WhatsApp Gateway Integration status
+        $botPhoneStmt = $this->db->query("SELECT setting_value FROM `site_settings` WHERE `setting_key` = 'whatsapp_bot_phone' LIMIT 1");
+        $whatsappBotPhone = $botPhoneStmt ? ($botPhoneStmt->fetchColumn() ?: '01717056816') : '01717056816';
+        $whatsappLinked = (bool)$this->db->query("SELECT COUNT(*) FROM `bot_user_links` WHERE `channel` = 'whatsapp' AND `user_type` = 'teacher' AND `user_id` = " . (int)$teacherId . " AND `is_active` = 1")->fetchColumn();
+
         return new Response(View::render('teacher/dashboard', [
-            'title'      => 'শিক্ষক ড্যাশবোর্ড ও কার্যক্রম | কারিয়ানা কুরআন',
-            'teacher'    => $teacher,
-            'books'      => $books,
-            'activities' => $activities,
+            'title'            => 'শিক্ষক ড্যাশবোর্ড ও কার্যক্রম | কারিয়ানা কুরআন',
+            'teacher'          => $teacher,
+            'books'            => $books,
+            'activities'       => $activities,
+            'whatsappBotPhone' => $whatsappBotPhone,
+            'whatsappLinked'   => $whatsappLinked,
         ], 'layouts/main'));
     }
 
@@ -163,7 +170,6 @@ class TeacherController
         $sessTeacher = Session::get('teacher');
         $teacherId = (int)$sessTeacher['id'];
         $directorId = (int)$sessTeacher['director_id'];
-
         $activityType = (string)$request->post('activity_type', 'general');
         $title = trim((string)$request->post('title', ''));
         $details = trim((string)$request->post('details', ''));
@@ -190,6 +196,20 @@ class TeacherController
             'pdate' => $preferredDate ?: null,
         ]);
 
+        // Notify Director via WhatsApp / Telegram
+        try {
+            if ($directorId > 0) {
+                $typeBn = match($activityType) {
+                    'book_order'  => 'বইয়ের চাহিদা 📦',
+                    'sabak_class' => 'সবক ক্লাস উদ্বোধন 🎓',
+                    default       => 'সাধারণ আবেদন 📝'
+                };
+                $msg = "📢 *শিক্ষকের নতুন আবেদন ({$typeBn})*\nশিক্ষক: {$sessTeacher['name']}\nবিষয়: {$title}\nবিবরণ: {$details}";
+                if ($quantity > 0) $msg .= "\nসংখ্যা: {$quantity} কপি";
+                (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('director', $directorId, $msg);
+            }
+        } catch (\Throwable $e) {}
+
         Session::flash('success', 'আলহামদুলিল্লাহ! আপনার আবেদনটি জেলা পরিচালকের নিকট সফলভাবে পাঠানো হয়েছে।');
         return Response::redirect('/teacher/dashboard');
     }
@@ -206,6 +226,7 @@ class TeacherController
 
         $sessTeacher = Session::get('teacher');
         $teacherId = (int)$sessTeacher['id'];
+        $directorId = (int)$sessTeacher['director_id'];
         $count = (int)$request->post('total_students', 0);
 
         if ($count < 0) {
@@ -214,6 +235,14 @@ class TeacherController
 
         $stmt = $this->db->prepare("UPDATE `teachers` SET `total_students` = :cnt, `updated_at` = NOW() WHERE `id` = :id");
         $stmt->execute(['cnt' => $count, 'id' => $teacherId]);
+
+        // Notify Director via WhatsApp / Telegram
+        try {
+            if ($directorId > 0) {
+                $msg = "📢 *শিক্ষার্থীর সংখ্যা আপডেট*\nআপনার আওতাধীন শিক্ষক *{$sessTeacher['name']}* তার মাদরাসা/মক্তবের বর্তমান শিক্ষার্থী সংখ্যা হালনাগাদ করে *{$count} জন* করেছেন।";
+                (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('director', $directorId, $msg);
+            }
+        } catch (\Throwable $e) {}
 
         Session::flash('success', 'শিক্ষার্থীর সংখ্যা সফলভাবে হালনাগাদ করা হয়েছে।');
         return Response::redirect('/teacher/dashboard');

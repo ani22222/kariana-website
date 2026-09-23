@@ -163,6 +163,76 @@ $error = \Core\Session::getFlash('error');
             </div>
         </div>
 
+        <!-- WhatsApp Gateway & Multi-Role Automation Settings -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-emerald-800 to-emerald-950 px-6 py-4 border-b border-emerald-700/50 flex items-center justify-between">
+                <h3 class="text-base font-bold text-white flex items-center">
+                    <i class="fab fa-whatsapp text-emerald-400 text-xl mr-2.5"></i>
+                    WhatsApp গেটওয়ে ও পরিচালক/শিক্ষক অটোমেশন
+                </h3>
+                <span class="text-xs bg-emerald-500/30 text-emerald-200 px-3 py-1 rounded-full font-mono">/api/whatsapp/webhook</span>
+            </div>
+            <div class="p-6 space-y-5">
+                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed">
+                    <p class="font-bold mb-1"><i class="fas fa-info-circle mr-1"></i> পরিচালকদের প্রধান সামাজিক মাধ্যম কানেকশন:</p>
+                    জেলা পরিচালক ও শিক্ষকগণ এই নম্বরে WhatsApp মেসেজ দিয়ে বই রিকুইজিশন, ছাত্র সংখ্যা আপডেট এবং সবক ক্লাসের তথ্য আদান-প্রদান করতে পারেন।
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            WhatsApp গেটওয়ে স্ট্যাটাস
+                        </label>
+                        <select name="whatsapp_enabled" class="w-full text-sm px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-vibrant bg-white">
+                            <option value="1" <?= ($settings['whatsapp_enabled'] ?? '1') === '1' ? 'selected' : '' ?>>সক্রিয় (Active) 🟢</option>
+                            <option value="0" <?= ($settings['whatsapp_enabled'] ?? '') === '0' ? 'selected' : '' ?>>নিষ্ক্রিয় (Disabled) ⚪</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            অফিসিয়াল WhatsApp বট/গেটওয়ে নম্বর
+                        </label>
+                        <input type="text" name="whatsapp_bot_phone" 
+                            value="<?= htmlspecialchars($settings['whatsapp_bot_phone'] ?? '01717056816') ?>"
+                            class="w-full text-sm px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-vibrant"
+                            placeholder="যেমন: 01717056816">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            WhatsApp Gateway API URL (Meta / Baileys / UltraMsg)
+                        </label>
+                        <input type="text" name="whatsapp_gateway_url" 
+                            value="<?= htmlspecialchars($settings['whatsapp_gateway_url'] ?? 'http://localhost:3000/api/send') ?>"
+                            class="w-full font-mono text-xs px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-vibrant"
+                            placeholder="http://localhost:3000/api/send">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            Gateway API Token / Secret
+                        </label>
+                        <input type="password" name="whatsapp_api_token" 
+                            value="<?= htmlspecialchars($settings['whatsapp_api_token'] ?? '') ?>"
+                            class="w-full font-mono text-xs px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-vibrant"
+                            placeholder="Bearer Token বা Secret Key">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">
+                        Webhook Verify Token (Meta Cloud API এর জন্য)
+                    </label>
+                    <input type="text" name="whatsapp_verify_token" 
+                        value="<?= htmlspecialchars($settings['whatsapp_verify_token'] ?? 'kariana_webhook_verify_2026') ?>"
+                        class="w-full font-mono text-xs px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-vibrant">
+                </div>
+            </div>
+        </div>
+
         <div class="flex justify-end">
             <button type="submit" class="bg-emerald-night hover:bg-emerald-deep text-white px-8 py-3 rounded-xl font-bold shadow-lg transition flex items-center text-base">
                 <i class="fas fa-save mr-2"></i> সেটিংস সংরক্ষণ করুন

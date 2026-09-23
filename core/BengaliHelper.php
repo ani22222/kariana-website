@@ -141,4 +141,28 @@ class BengaliHelper
         }
         return '৳ ' . self::toBengaliNumber($num);
     }
+
+    /**
+     * Format date and time with Bengali numerals and month names
+     */
+    public static function formatDate(string|int|null $date): string
+    {
+        if (empty($date)) return '';
+        $timestamp = is_numeric($date) ? (int)$date : strtotime($date);
+        if (!$timestamp) return (string)$date;
+
+        $bnMonths = [
+            'Jan' => 'জানুয়ারি', 'Feb' => 'ফেব্রুয়ারি', 'Mar' => 'মার্চ',
+            'Apr' => 'এপ্রিল', 'May' => 'মে', 'Jun' => 'জুন',
+            'Jul' => 'জুলাই', 'Aug' => 'আগস্ট', 'Sep' => 'সেপ্টেম্বর',
+            'Oct' => 'অক্টোবর', 'Nov' => 'নভেম্বর', 'Dec' => 'ডিসেম্বর'
+        ];
+
+        $d = self::toBengaliNumber(date('d', $timestamp));
+        $m = $bnMonths[date('M', $timestamp)] ?? date('M', $timestamp);
+        $y = self::toBengaliNumber(date('Y', $timestamp));
+        $time = self::toBengaliNumber(date('h:i', $timestamp)) . ' ' . (date('A', $timestamp) === 'PM' ? 'অপরাহ্ন' : 'পূর্বাহ্ন');
+
+        return "{$d} {$m} {$y}, {$time}";
+    }
 }

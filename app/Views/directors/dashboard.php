@@ -87,6 +87,44 @@ $pendingActivities = array_filter($teacherActivities ?? [], fn($a) => ($a['statu
     </div>
     <?php endif; ?>
 
+    <!-- WhatsApp Direct Connection & Instant Alert Hub -->
+    <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-800 to-emerald-950 text-white shadow-lg border-2 border-emerald-500/30 relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 opacity-10 pointer-events-none text-emerald-300">
+            <i class="fab fa-whatsapp text-8xl"></i>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-2xl text-emerald-300 shrink-0 shadow-inner">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h4 class="font-black text-sm sm:text-base text-amber-200">পরিচালক WhatsApp সরাসরি সংযোগ ও নোটিফিকেশন</h4>
+                        <?php if (!empty($whatsappLinked)): ?>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white shadow-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1 animate-pulse"></span> সক্রিয় ও সংযুক্ত 🟢
+                        </span>
+                        <?php else: ?>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 shadow-sm">
+                            কানেক্ট করুন 📲
+                        </span>
+                        <?php endif; ?>
+                    </div>
+                    <p class="text-xs text-slate-300 mt-0.5">
+                        WhatsApp থেকেই বই রিকুইজিশন, শিক্ষকদের ছাত্র সংখ্যা আপডেট ও কেন্দ্রীয় সাংগঠনিক বার্তার লাইভ নোটিফিকেশন পাবেন।
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $whatsappBotPhone ?? '8801717056816') ?>?text=<?= rawurlencode('কানেক্ট ' . ($director['phone'] ?? '')) ?>" 
+                   target="_blank"
+                   class="w-full sm:w-auto px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs sm:text-sm font-black shadow-md transition flex items-center justify-center gap-2 active:scale-95">
+                    <i class="fab fa-whatsapp text-lg"></i> <?= !empty($whatsappLinked) ? 'WhatsApp চ্যাট খুলুন' : '১-ট্যাপে WhatsApp চালু করুন' ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- 4 Mobile KPI Counter Cards (Touch Grid) -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <div @click="activeSection = 'teachers'" class="bg-[#fffefb] p-4 rounded-2xl border-2 border-emerald-600/20 hover:border-gold-rich shadow-sm cursor-pointer transition transform active:scale-95 text-center">

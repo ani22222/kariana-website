@@ -205,6 +205,11 @@ class DirectorController
         // Get official books for visual book order requisitions
         $books = $this->db->query("SELECT * FROM `books` ORDER BY `sort_order` ASC, `id` ASC")->fetchAll();
 
+        // WhatsApp Gateway Integration status
+        $botPhoneStmt = $this->db->query("SELECT setting_value FROM `site_settings` WHERE `setting_key` = 'whatsapp_bot_phone' LIMIT 1");
+        $whatsappBotPhone = $botPhoneStmt ? ($botPhoneStmt->fetchColumn() ?: '01717056816') : '01717056816';
+        $whatsappLinked = (bool)$this->db->query("SELECT COUNT(*) FROM `bot_user_links` WHERE `channel` = 'whatsapp' AND `user_type` = 'director' AND `user_id` = " . (int)$directorId . " AND `is_active` = 1")->fetchColumn();
+
         return new Response(View::render('directors/dashboard', [
             'title'             => 'জেলা পরিচালক ড্যাশবোর্ড | ' . $director['district_name'],
             'director'          => $director,
@@ -212,6 +217,8 @@ class DirectorController
             'requests'          => $requests,
             'teacherActivities' => $teacherActivities,
             'books'             => $books,
+            'whatsappBotPhone'  => $whatsappBotPhone,
+            'whatsappLinked'    => $whatsappLinked,
         ], 'layouts/main'));
     }
 
@@ -246,6 +253,25 @@ class DirectorController
             'did'   => $directorId,
         ]);
 
+        // Notify Teacher via WhatsApp / Telegram
+        try {
+            $stmtAct = $this->db->prepare("SELECT teacher_id, title FROM `teacher_activities` WHERE `id` = :id LIMIT 1");
+            $stmtAct->execute(['id' => $activityId]);
+            $actData = $stmtAct->fetch();
+            if ($actData) {
+                $statusBn = match($status) {
+                    'approved'  => 'অনুমোদিত ✅',
+                    'scheduled' => 'তারিখ নির্ধারিত 📅',
+                    'completed' => 'সম্পন্ন 🏆',
+                    'cancelled' => 'বাতিল ❌',
+                    default     => 'গৃহীত ⏳'
+                };
+                $msg = "📢 *সবক/আবেদন আপডেট*\nসম্মানিত শিক্ষক, জেলা পরিচালক আপনার আবেদনটি '{$statusBn}' করেছেন।\nবিষয়: {$actData['title']}";
+                if ($notes) $msg .= "\nপরিচালকের মন্তব্য: {$notes}";
+                (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('teacher', (int)$actData['teacher_id'], $msg);
+            }
+        } catch (\Throwable $e) {}
+
         Session::flash('success', 'শিক্ষকের আবেদনটির স্ট্যাটাস ও নোট সফলভাবে আপডেট করা হয়েছে।');
         return Response::redirect('/director/dashboard');
     }
@@ -279,6 +305,14 @@ class DirectorController
             'details' => $details,
             'qty'     => $qty,
         ]);
+
+        // Notify Admin via WhatsApp / Telegram
+        try {
+            $dirName = Session::get('director_name') ?: 'জেলা পরিচালক';
+            $dirDist = Session::get('director_district') ?: '';
+            $msg = "📢 *নতুন রিকুইজিশন (পরিচালক পোর্টাল)*\nপরিচালক: {$dirName} ({$dirDist})\nধরন: {$type}\nসংখ্যা: {$qty} কপি\nবিবরণ: {$details}";
+            (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('admin', 1, $msg);
+        } catch (\Throwable $e) {}
 
         Session::flash('success', 'আপনার আবেদনটি কেন্দ্রীয় কার্যালয়ে সফলভাবে পাঠানো হয়েছে। পর্যালোচনার পর ব্যবস্থা গ্রহণ করা হবে।');
         return Response::redirect('/director/dashboard');
