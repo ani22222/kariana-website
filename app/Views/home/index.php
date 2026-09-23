@@ -181,17 +181,17 @@
             </div>
 
             <!-- Refined Touch-Friendly Scroll Down Indicator (Clean & Natural, Zero Awkward Gaps) -->
-            <div class="hero-scroll-indicator text-center mt-3 sm:mt-5 z-20">
+            <div class="hero-scroll-indicator text-center mt-2 sm:mt-4 pb-1 z-20">
                 <button type="button" 
                         id="heroScrollBtn"
                         onclick="smoothScrollToContent();" 
                         class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-all focus:outline-none"
                         aria-label="নিচের সেকশনে যান">
-                    <span class="text-xs font-bold tracking-wider text-amber-300/90 group-hover:text-amber-300 mb-1 flex items-center gap-1.5 drop-shadow">
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wider text-amber-300/80 group-hover:text-amber-300 mb-0.5 flex items-center gap-1.5 drop-shadow">
                         নিচে স্ক্রল করুন
                     </span>
-                    <div class="w-6 h-6 rounded-full bg-emerald-900/80 border border-amber-400/50 flex items-center justify-center group-hover:border-amber-300 group-hover:bg-emerald-800 transition-all shadow-sm">
-                        <svg class="w-3.5 h-3.5 text-amber-300 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-900/80 border border-amber-400/50 flex items-center justify-center group-hover:border-amber-300 group-hover:bg-emerald-800 transition-all shadow-sm">
+                        <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
@@ -423,7 +423,7 @@ window.smoothScrollToContent = function() {
 <!-- ============================================================
      5-PORTAL QUICK ACCESS HUB (বই, কোর্স, ভর্তি, ব্লগ, জেলা পরিচালকবৃন্দ)
      ============================================================ -->
-<div id="mainContentSection" class="relative z-20 mt-4 md:mt-8 mx-4 md:mx-auto max-w-5xl">
+<div id="mainContentSection" class="relative z-20 mt-0 md:mt-6 mx-4 md:mx-auto max-w-5xl">
     <div class="bg-[#fffdf9] border-2 border-[#e6dcce] rounded-3xl p-4 sm:p-6 shadow-[0_12px_35px_-8px_rgba(6,78,59,0.08)] mb-6">
         <!-- Header / Label -->
         <div class="flex items-center justify-between mb-4 px-1">

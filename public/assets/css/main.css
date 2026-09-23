@@ -426,10 +426,10 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.65rem;
-    padding: 0.5rem 0.5rem 0.25rem;
+    padding: 0.35rem 0.5rem 0.15rem;
     position: relative;
     z-index: 30;
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
 }
 
 .hero-action-group {
@@ -548,7 +548,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.25rem 0 0.5rem;
+    padding: 0.15rem 0 0.25rem;
 }
 
 .hero-dots {
@@ -601,8 +601,8 @@ body {
     }
     .hero-controls-bar {
         gap: 0.45rem;
-        margin-top: 0.85rem;
-        padding: 0.25rem;
+        margin-top: 0.5rem;
+        padding: 0.2rem;
     }
     .hero-action-group {
         gap: 0.45rem;
@@ -664,29 +664,20 @@ body {
 }
 
 /* ============================================================
-   HERO SECTION — Full-Viewport Immersive Layout
-   flex-column: content centers via auto-margins on #heroCarousel,
-   scroll indicator pushed to bottom via margin-top: auto.
-   No ugly gaps, no forced centering of the whole block.
+   HERO SECTION — Compact, Content-Driven Layout
+   Natural height based on content. No forced 100vh that creates
+   ugly gaps on mobile. Uses flexbox centering only on desktop
+   where there's enough room.
    ============================================================ */
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
-    /* dvh accounts for mobile browser chrome (address bar hide/show) */
-    min-height: calc(100dvh - 80px);
     display: flex;
     flex-direction: column;
-    padding-top: 0.75rem;
-    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
-}
-
-/* Fallback for browsers without dvh support */
-@supports not (min-height: 100dvh) {
-    #heroSectionWrapper {
-        min-height: calc(100vh - 80px);
-    }
 }
 
 /* Inner container must stretch to fill the wrapper */
@@ -697,7 +688,7 @@ body {
     align-items: center;
 }
 
-/* Hero shell stretches and vertically centers all content as one unit */
+/* Hero shell holds all content as one centered group */
 .hero-shell {
     flex: 1;
     display: flex;
@@ -713,19 +704,21 @@ body {
     padding-bottom: 0;
 }
 
+/* On desktop, give the hero a bit more room to breathe */
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        min-height: calc(100dvh - 96px);
+        min-height: min(calc(100dvh - 96px), 750px);
         padding-top: 1rem;
-        padding-bottom: 2rem; /* No bottom nav on desktop */
+        padding-bottom: 2rem;
     }
 }
 
-/* Very short screens: don't force min-height */
-@media (max-height: 580px) {
-    #heroSectionWrapper {
-        min-height: auto;
-        padding-top: 0.5rem;
+/* Fallback for browsers without dvh support (desktop only) */
+@supports not (min-height: 100dvh) {
+    @media (min-width: 768px) {
+        #heroSectionWrapper {
+            min-height: min(calc(100vh - 96px), 750px);
+        }
     }
 }
 
@@ -763,17 +756,26 @@ body {
 
 /* ============================================================
    SMOOTH SECTION SCROLL REVEAL (#mainContentSection)
+   Always visible on mobile (no hidden content gaps).
+   Subtle fade-up animation on larger screens only.
    ============================================================ */
 #mainContentSection {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
-}
-
-#mainContentSection.is-revealed {
     opacity: 1;
     transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+    #mainContentSection {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+
+    #mainContentSection.is-revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ============================================================
