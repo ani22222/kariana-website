@@ -30,7 +30,8 @@ define('BRAIN_DIR', 'C:/Users/UseR/.gemini/antigravity/brain');
 // Standard Access Links
 define('LINK_LOCAL', 'http://localhost:8015');
 define('LINK_WIFI', 'http://192.168.0.100:8015');
-define('LINK_CLOUDFLARE', 'https://crowd-passenger-martin-passport.trycloudflare.com');
+define('LINK_VPS', 'http://104.207.93.68:8015');
+define('LINK_CLOUDFLARE', 'https://run-closest-ministries-decorating.trycloudflare.com');
 define('LINK_GITHUB', 'https://github.com/ani22222/kariana-website');
 
 // Zero-Vendor Autoloader & Unified Messaging Core
