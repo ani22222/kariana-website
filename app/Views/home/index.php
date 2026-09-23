@@ -63,7 +63,7 @@
                                 <div class="halo"></div>
 
                                 <!-- Authentic 3D Book Showcase with Physical Cover -->
-                                <div class="hero-book-card relative select-none">
+                                <div class="hero-book-card relative select-none cursor-pointer group/card" onclick="window.openFlipbook()" title="৫টি নমুনা পৃষ্ঠা পড়তে ক্লিক করুন">
                                     <?php 
                                     $hasRealCover = !empty($b['cover_image']) && file_exists(__DIR__ . '/../../../public/' . $b['cover_image']);
                                     if ($hasRealCover): 
@@ -72,10 +72,10 @@
                                         <div class="w-full h-full relative rounded-[18px] overflow-hidden">
                                             <img src="<?= $baseUrl ?? '' ?>/<?= htmlspecialchars($b['cover_image']) ?>" 
                                                  alt="<?= htmlspecialchars($b['title']) ?>" 
-                                                 class="w-full h-full object-cover object-center shadow-inner"
+                                                 class="w-full h-full object-cover object-center shadow-inner group-hover/card:scale-102 transition-transform duration-300"
                                                  loading="<?= $idx === 0 ? 'eager' : 'lazy' ?>"
                                                  itemprop="image">
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none"></div>
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
                                         </div>
                                     <?php else: ?>
                                         <!-- Royal Islamic Fallback Book Design (No Real Image) -->
@@ -101,6 +101,14 @@
                                             </div>
                                         </div>
                                     <?php endif; ?>
+
+                                    <!-- Floating Interactive Flipbook Prompt Badge -->
+                                    <div class="absolute bottom-2 inset-x-2 z-20 bg-emerald-950/85 backdrop-blur-xs text-amber-300 text-[10px] sm:text-[11px] font-bold py-1 px-2 rounded-lg border border-amber-400/40 opacity-90 group-hover/card:opacity-100 group-hover/card:bg-emerald-900 transition-all flex items-center justify-center gap-1 shadow-md">
+                                        <svg class="w-3 h-3 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                        </svg>
+                                        <span>📖 নমুনা পাতা পড়ুন</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -164,13 +172,23 @@
                         <span>অর্ডার করুন</span>
                     </a>
 
+                    <!-- 3D Sample Flipbook Reader Trigger Button -->
+                    <button type="button" 
+                            onclick="window.openFlipbook()" 
+                            class="inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 transition-all hover:scale-105 shadow-sm group">
+                        <svg class="w-4 h-4 mr-1.5 text-amber-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span>নমুনা পাতা দেখুন</span>
+                    </button>
+
                     <a id="heroDetailBtn" 
                        href="<?= $baseUrl ?? '' ?>/books/<?= htmlspecialchars($booksList[0]['slug'] ?? 'kariana-quran-flagship') ?>" 
                        class="hero-btn-secondary group">
                         <svg class="w-4 h-4 mr-1.5 text-amber-300 shrink-0 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>বিস্তারিত দেখুন</span>
+                        <span>বিস্তারিত</span>
                     </a>
                 </div>
 
@@ -186,13 +204,105 @@
                 </button>
             </div>
 
-            <!-- Discrete, Refined Slide Indicator Dots (Small & Delicate, Positioned Underneath) -->
-            <div class="hero-dots-container">
+            <!-- Discrete, Refined Slide Indicator Dots & Smooth 5s Autoplay Progress Bar -->
+            <div class="hero-dots-container flex flex-col items-center">
                 <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
+                <!-- 5-Second Autoplay Progress Bar Line -->
+                <div class="w-28 sm:w-36 h-1 bg-white/15 rounded-full overflow-hidden mt-2.5">
+                    <div id="heroProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-200 w-0 transition-all duration-100 ease-linear"></div>
+                </div>
             </div>
 
         </div>
 
+    </div>
+</div>
+
+<!-- ============================================================
+     3D SAMPLE FLIPBOOK VIEWER MODAL (5 AUTHENTIC PROOFING PAGES)
+     ============================================================ -->
+<div id="sampleFlipbookModal" class="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-label="কারিয়ানা কুরআন স্যাম্পল পৃষ্ঠা প্রিভিউ">
+    <div class="relative w-full max-w-4xl max-h-[96vh] bg-gradient-to-b from-[#064e3b] via-[#022c22] to-[#011a14] rounded-2xl sm:rounded-3xl border-2 border-amber-400/50 shadow-2xl flex flex-col overflow-hidden text-white">
+        <!-- Modal Top Bar -->
+        <div class="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3.5 border-b border-amber-400/20 bg-emerald-950/60 shrink-0">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+                <h3 class="text-xs sm:text-base font-black text-amber-300 tracking-wide flex items-center gap-1.5">
+                    📖 কারিয়ানা নূরানী কুরআন — স্যাম্পল পৃষ্ঠা প্রিভিউ
+                </h3>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Page Indicator Pill -->
+                <span class="bg-amber-400/20 border border-amber-400/40 text-amber-300 font-bold px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-mono">
+                    পৃষ্ঠা <span id="flipPageNum">১</span> / ৫
+                </span>
+                
+                <!-- Zoom Toggle Button -->
+                <button type="button" id="flipZoomBtn" onclick="window.toggleFlipZoom()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-amber-300 transition" title="জুম ইন / আউট">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                </button>
+                
+                <!-- Close Button -->
+                <button type="button" onclick="window.closeFlipbook()" class="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-200 hover:text-white transition" title="বন্ধ করুন">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Flipbook Page Stage -->
+        <div class="relative flex-1 flex items-center justify-center p-2 sm:p-4 overflow-auto min-h-[360px] sm:min-h-[500px]" id="flipStageContainer">
+            <!-- Nav Prev Arrow -->
+            <button type="button" onclick="window.flipPrev()" class="absolute left-2 sm:left-4 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-amber-500 text-amber-300 hover:text-slate-950 flex items-center justify-center border border-amber-400/40 shadow-lg transition-all" aria-label="পূর্ববর্তী পাতা">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+
+            <!-- 3D Book Frame -->
+            <div id="flipBookFrame" class="relative max-w-xl w-full flex items-center justify-center transition-transform duration-300 select-none">
+                <!-- Book Spine Accent -->
+                <div class="hidden sm:block w-3 sm:w-4 self-stretch bg-gradient-to-r from-amber-900 via-amber-700 to-amber-950 rounded-l-md shadow-[inset_-2px_0_5px_rgba(0,0,0,0.5)] border-y border-l border-amber-400/40"></div>
+                
+                <!-- Page Container with 3D shadow and border -->
+                <div class="relative bg-white rounded-r-md sm:rounded-r-lg overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.6)] border border-amber-400/30 flex items-center justify-center max-h-[75vh]">
+                    <img id="flipPageImg" 
+                         src="<?= $baseUrl ?? '' ?>/assets/images/sample_pages/para01_proof_p1.png" 
+                         alt="কারিয়ানা নূরানী কুরআন স্যাম্পল পৃষ্ঠা" 
+                         class="max-h-[72vh] w-auto object-contain transition-all duration-300">
+                </div>
+            </div>
+
+            <!-- Nav Next Arrow -->
+            <button type="button" onclick="window.flipNext()" class="absolute right-2 sm:right-4 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/60 hover:bg-amber-500 text-amber-300 hover:text-slate-950 flex items-center justify-center border border-amber-400/40 shadow-lg transition-all" aria-label="পরবর্তী পাতা">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <!-- Modal Bottom Toolbar -->
+        <div class="px-3 sm:px-6 py-2.5 sm:py-3 border-t border-amber-400/20 bg-emerald-950/70 flex flex-wrap items-center justify-between gap-2 shrink-0">
+            <!-- 5 Page Indicators -->
+            <div class="flex items-center gap-1.5" id="flipThumbDots">
+                <?php for ($p = 1; $p <= 5; $p++): ?>
+                    <button type="button" onclick="window.flipGoTo(<?= $p ?>)" id="flipDot<?= $p ?>" class="w-6 h-6 rounded-full text-[11px] font-bold border transition flex items-center justify-center <?= $p === 1 ? 'bg-amber-400 text-slate-950 border-amber-300' : 'bg-black/40 text-amber-200 border-amber-400/30 hover:bg-white/10' ?>">
+                        <?= \Core\BengaliHelper::toBengaliNumber($p) ?>
+                    </button>
+                <?php endfor; ?>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+                <a id="flipOrderBtn" 
+                   href="https://wa.me/8801711756391?text=<?= urlencode('আসসালামু আলাইকুম, আমি স্যাম্পল পৃষ্ঠা দেখে কারিয়ানা নূরানী কুরআন বইটি অর্ডার করতে চাই।') ?>" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm px-3.5 py-1.5 sm:py-2 rounded-xl shadow-md transition-all hover:scale-105">
+                    <svg class="w-4 h-4 text-slate-950" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    <span>বইটি অর্ডার করুন</span>
+                </a>
+                <button type="button" onclick="window.closeFlipbook()" class="text-xs sm:text-sm text-slate-300 hover:text-white px-2.5 py-1.5 transition">
+                    বন্ধ করুন
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -314,12 +424,40 @@
     window.heroPrev = function() { go(-1, true, true); };
     window.heroNext = function() { go(1, true, true); };
 
+    // Progress Bar Animation Engine (5-Second Smooth Linear Fill)
+    var progressBar = document.getElementById('heroProgressBar');
+    var progressInterval = null;
+    var progressVal = 0;
+    var AUTO_PLAY_MS = 5000;
+    var TICK_MS = 50;
+
+    function startProgressBar() {
+        if (!progressBar || reduceMotion || total <= 1) return;
+        clearInterval(progressInterval);
+        progressVal = 0;
+        progressBar.style.width = '0%';
+        progressInterval = setInterval(function() {
+            if (window.isFlipbookOpen || document.hidden) return;
+            progressVal += (TICK_MS / AUTO_PLAY_MS) * 100;
+            if (progressVal >= 100) {
+                progressVal = 0;
+                progressBar.style.width = '100%';
+                clearInterval(progressInterval);
+                go(1, false, true);
+            } else {
+                progressBar.style.width = Math.min(progressVal, 100) + '%';
+            }
+        }, TICK_MS);
+    }
+
+    function resetProgressBar() {
+        clearInterval(progressInterval);
+        if (progressBar) progressBar.style.width = '0%';
+    }
+
     function restart() {
         if (reduceMotion || total <= 1) return;
-        clearInterval(timer);
-        timer = setInterval(function() {
-            if (!document.hidden) go(1, false, true);
-        }, 5500);
+        startProgressBar();
     }
 
     var prevBtn = document.getElementById('heroPrev');
@@ -327,6 +465,7 @@
         prevBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            resetProgressBar();
             window.heroPrev();
         });
     }
@@ -336,6 +475,7 @@
         nextBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            resetProgressBar();
             window.heroNext();
         });
     }
@@ -351,6 +491,7 @@
             dragging = true;
             try { shell.setPointerCapture(e.pointerId); } catch (err) {}
             if (slides[idx]) slides[idx].style.transition = 'none';
+            resetProgressBar();
         });
 
         shell.addEventListener('pointermove', function(e) {
@@ -377,12 +518,137 @@
 
         shell.addEventListener('pointerup', function() { endDrag(true); });
         shell.addEventListener('pointercancel', function() { endDrag(false); });
-        shell.addEventListener('pointerenter', function() { clearInterval(timer); });
+        shell.addEventListener('pointerenter', function() { clearInterval(progressInterval); });
         shell.addEventListener('pointerleave', restart);
     }
 
     if (dots.length) dots[0].classList.add('is-active');
     restart();
+})();
+
+// ============================================================
+// 3D SAMPLE FLIPBOOK VIEWER MODAL ENGINE (5 PAGES)
+// ============================================================
+(function() {
+    var samplePages = [
+        'assets/images/sample_pages/para01_proof_p1.png',
+        'assets/images/sample_pages/para01_proof_p2.png',
+        'assets/images/sample_pages/para01_proof_p3.png',
+        'assets/images/sample_pages/para01_proof_p4.png',
+        'assets/images/sample_pages/para01_proof_p5.png'
+    ];
+    var currentFlipPage = 1;
+    var flipZoomed = false;
+    window.isFlipbookOpen = false;
+
+    window.openFlipbook = function(startPage) {
+        window.isFlipbookOpen = true;
+        currentFlipPage = startPage || 1;
+        var modal = document.getElementById('sampleFlipbookModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(function() {
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+        }, 20);
+        document.body.style.overflow = 'hidden';
+        renderFlipPage();
+    };
+
+    window.closeFlipbook = function() {
+        window.isFlipbookOpen = false;
+        var modal = document.getElementById('sampleFlipbookModal');
+        if (!modal) return;
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        setTimeout(function() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 300);
+    };
+
+    window.flipNext = function() {
+        if (currentFlipPage < samplePages.length) {
+            currentFlipPage++;
+            renderFlipPage('next');
+        } else {
+            currentFlipPage = 1;
+            renderFlipPage('next');
+        }
+    };
+
+    window.flipPrev = function() {
+        if (currentFlipPage > 1) {
+            currentFlipPage--;
+            renderFlipPage('prev');
+        } else {
+            currentFlipPage = samplePages.length;
+            renderFlipPage('prev');
+        }
+    };
+
+    window.flipGoTo = function(page) {
+        if (page >= 1 && page <= samplePages.length) {
+            currentFlipPage = page;
+            renderFlipPage();
+        }
+    };
+
+    window.toggleFlipZoom = function() {
+        flipZoomed = !flipZoomed;
+        var img = document.getElementById('flipPageImg');
+        if (!img) return;
+        if (flipZoomed) {
+            img.classList.remove('max-h-[72vh]');
+            img.classList.add('max-h-[105vh]', 'scale-120');
+        } else {
+            img.classList.add('max-h-[72vh]');
+            img.classList.remove('max-h-[105vh]', 'scale-120');
+        }
+    };
+
+    function toBnNumber(num) {
+        var bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+        return String(num).replace(/[0-9]/g, function(d) { return bn[d]; });
+    }
+
+    function renderFlipPage(dir) {
+        var img = document.getElementById('flipPageImg');
+        var numEl = document.getElementById('flipPageNum');
+        if (!img) return;
+
+        // 3D Page flip micro-animation
+        img.style.opacity = '0.4';
+        img.style.transform = dir === 'next' ? 'rotateY(-20deg) scale(0.97)' : (dir === 'prev' ? 'rotateY(20deg) scale(0.97)' : 'scale(0.98)');
+
+        setTimeout(function() {
+            img.src = '<?= $baseUrl ?? '' ?>/' + samplePages[currentFlipPage - 1];
+            if (numEl) numEl.textContent = toBnNumber(currentFlipPage);
+
+            // Update indicator dots
+            for (var p = 1; p <= samplePages.length; p++) {
+                var dot = document.getElementById('flipDot' + p);
+                if (dot) {
+                    if (p === currentFlipPage) {
+                        dot.className = 'w-6 h-6 rounded-full text-[11px] font-bold border transition flex items-center justify-center bg-amber-400 text-slate-950 border-amber-300 shadow-sm scale-110';
+                    } else {
+                        dot.className = 'w-6 h-6 rounded-full text-[11px] font-bold border transition flex items-center justify-center bg-black/40 text-amber-200 border-amber-400/30 hover:bg-white/10';
+                    }
+                }
+            }
+
+            img.style.opacity = '1';
+            img.style.transform = 'rotateY(0deg) scale(1)';
+        }, 140);
+    }
+
+    // Keyboard Navigation (Arrow keys and Esc)
+    window.addEventListener('keydown', function(e) {
+        if (!window.isFlipbookOpen) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') window.flipNext();
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') window.flipPrev();
+        if (e.key === 'Escape') window.closeFlipbook();
+    });
 })();
 
 // Smooth Section Handover & Reveal on Scroll or Button Click
