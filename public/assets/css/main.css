@@ -182,7 +182,8 @@ body {
 #heroCarousel {
     position: relative;
     z-index: 2;
-    min-height: 440px;
+    min-height: 500px;
+    width: 100%;
     perspective: 1200px;
 }
 
@@ -318,22 +319,18 @@ body {
     100% { transform: scale(1.08); opacity: 1; }
 }
 
-/* Authentic 3D Book Shape Card (Exact Match: media_1790102812320.png) */
+/* Authentic 3D Book Shape Card */
 .hero-book-card {
     position: relative;
     z-index: 5;
     width: 100%;
     height: 100%;
-    border-radius: 22px;
+    border-radius: 20px;
     background: linear-gradient(145deg, #02231b 0%, #064e3b 55%, #022c22 100%);
     border: 2px solid #fbbf24;
-    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), 0 0 25px rgba(251, 191, 36, 0.25);
-    padding: 1.15rem 1rem 0.95rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    box-shadow: 0 18px 40px -8px rgba(0, 0, 0, 0.75), 0 0 25px rgba(251, 191, 36, 0.25);
     color: #ffffff;
-    transform: perspective(1000px) rotateY(-8deg) rotateX(3deg);
+    transform: perspective(1000px) rotateY(-7deg) rotateX(2deg);
     transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, border-color 0.3s ease;
     overflow: hidden;
 }
@@ -344,9 +341,9 @@ body {
     position: absolute;
     inset: 4px;
     border: 1px solid rgba(251, 191, 36, 0.5);
-    border-radius: 18px;
+    border-radius: 17px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 6;
 }
 
 /* Realistic hardcover spine depth on left edge */
@@ -357,8 +354,8 @@ body {
     left: 0;
     bottom: 0;
     width: 22px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(255, 255, 255, 0.14) 4%, rgba(0, 0, 0, 0.15) 8%, transparent 100%);
-    z-index: 6;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(255, 255, 255, 0.2) 6%, rgba(0, 0, 0, 0.2) 12%, transparent 100%);
+    z-index: 8;
     pointer-events: none;
 }
 
@@ -368,65 +365,47 @@ body {
     box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.85), 0 0 35px rgba(251, 191, 36, 0.45);
 }
 
-/* Overlapping Floating Badges (Top-Right & Bottom-Left over the Golden Frame) */
-.orbit-chip {
-    position: absolute;
+/* Modern Clean Feature Badges (Non-overlapping, High Contrast & Polished) */
+.hero-chips-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
     z-index: 20;
+}
+
+.orbit-chip {
     background: rgba(2, 44, 34, 0.95);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1.5px solid #fbbf24;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 191, 36, 0.55);
     color: #ffffff;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 700;
-    padding: 0.4rem 0.9rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 9999px;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55), 0 0 14px rgba(251, 191, 36, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(251, 191, 36, 0.15);
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
-    animation: floatChip 3s ease-in-out infinite alternate;
-    pointer-events: auto;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.orbit-chip:hover {
+    border-color: #fde047;
+    transform: translateY(-1px);
 }
 
 .orbit-chip .pulse {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #10b981;
     box-shadow: 0 0 8px #10b981;
-    margin-right: 0.45rem;
+    margin-right: 0.4rem;
 }
 
-.chip-a {
-    top: -12px;
-    right: -12px;
-    animation-delay: 0s;
-}
-
-.chip-b {
-    bottom: -12px;
-    left: -12px;
-    animation-delay: 1.5s;
-}
-
-.hero-slide .chip-a,
-.hero-slide .chip-b {
-    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
-}
-.hero-slide:not(.is-active) .chip-a {
-    transform: translate(14px, -14px) scale(0.8);
-    opacity: 0;
-}
-.hero-slide:not(.is-active) .chip-b {
-    transform: translate(-14px, 14px) scale(0.8);
-    opacity: 0;
-}
-
-@keyframes floatChip {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-6px); }
-}
 
 /* Unified Navigation & Action Controls Bar */
 .hero-controls-bar {
@@ -605,27 +584,27 @@ body {
 /* Responsive Mobile Polish for Hero Slider and Touch Viewports (< 640px) */
 @media (max-width: 640px) {
     #heroCarousel {
-        min-height: auto;
+        min-height: 460px;
     }
     .hero-controls-bar {
-        gap: 0.45rem;
-        margin-top: 0.5rem;
+        gap: 0.5rem;
+        margin-top: 1rem;
         padding: 0.2rem;
     }
     .hero-action-group {
-        gap: 0.45rem;
+        gap: 0.5rem;
     }
     .hero-btn-primary {
-        font-size: 0.82rem;
-        padding: 0.42rem 0.85rem;
+        font-size: 0.84rem;
+        padding: 0.48rem 0.95rem;
     }
     .hero-btn-secondary {
-        font-size: 0.82rem;
-        padding: 0.42rem 0.82rem;
+        font-size: 0.84rem;
+        padding: 0.48rem 0.92rem;
     }
     .hero-nav-btn, .hero-arrow {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
     }
     .hero-dots {
         padding: 3px 8px;
@@ -639,138 +618,61 @@ body {
         width: 16px;
     }
     .hero-art {
-        width: min(210px, 52vw);
-        height: min(280px, 38vh);
+        width: 200px;
+        height: 285px;
     }
     .hero-book-card {
-        padding: 0.95rem 0.85rem 0.8rem;
-        border-radius: 20px;
+        padding: 0;
+        border-radius: 18px;
     }
     .hero-book-card::after {
         inset: 3px;
-        border-radius: 17px;
+        border-radius: 15px;
     }
     .hero-shape-ring {
-        width: 210px;
-        height: 210px;
+        width: 220px;
+        height: 220px;
     }
     .hero-slide {
-        padding: 0.2rem 0.5rem;
-    }
-    .chip-a {
-        right: -8px;
-        top: -8px;
-        font-size: 0.72rem;
-        padding: 0.25rem 0.7rem;
-    }
-    .chip-b {
-        left: -8px;
-        bottom: -8px;
-        font-size: 0.72rem;
-        padding: 0.25rem 0.7rem;
+        padding: 0.25rem 0.5rem;
     }
 }
 
 /* ============================================================
-   HERO SECTION — 100% Full-Viewport Immersive Layout (Mobile & Desktop)
+   HERO SECTION — Natural Responsive Layout with Breathing Room
    Seamless A-to-Z Royal Emerald & Gold showcase.
-   Zero white gaps on initial mobile load.
+   Zero overlapping elements, natural native touch scrolling.
    ============================================================ */
 #heroSectionWrapper {
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    /* Full mobile viewport minus top navbar (~56px) */
-    min-height: calc(100dvh - 56px);
-    height: calc(100dvh - 56px);
-    padding-top: 0.5rem;
-    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); /* Clear bottom floating nav */
+    min-height: auto;
+    height: auto;
+    padding-top: 1.25rem;
+    padding-bottom: 2.25rem;
     box-sizing: border-box;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
 }
 
-/* Fallback for browsers without dvh support */
-@supports not (min-height: 100dvh) {
-    #heroSectionWrapper {
-        min-height: calc(100vh - 56px);
-        height: calc(100vh - 56px);
-    }
-}
-
-/* Inner container fills available height */
 #heroSectionWrapper > .container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-}
-
-/* Hero shell stretches and vertically distributes all elements gracefully */
-.hero-shell {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
-    height: 100%;
-    gap: 0;
 }
 
-/* Scroll indicator rests above the floating bottom nav */
-.hero-scroll-indicator {
-    padding-bottom: 0.25rem;
-    margin-top: auto;
+.hero-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Desktop: Expand hero comfortably */
 @media (min-width: 768px) {
     #heroSectionWrapper {
-        min-height: calc(100dvh - 96px);
-        height: auto;
-        padding-top: 1.25rem;
-        padding-bottom: 2rem;
-    }
-    .hero-shell {
-        justify-content: center;
+        padding-top: 2.5rem;
+        padding-bottom: 3.5rem;
     }
 }
 
-/* Animated Scroll Down Indicator */
-.hero-scroll-indicator {
-    transition: all 0.3s ease;
-}
-
-.scroll-indicator-mouse {
-    width: 24px;
-    height: 38px;
-    border: 2px solid rgba(251, 191, 36, 0.6);
-    border-radius: 9999px;
-    display: flex;
-    justify-content: center;
-    padding-top: 5px;
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
-    background: rgba(2, 44, 34, 0.6);
-    backdrop-filter: blur(8px);
-}
-
-.scroll-indicator-wheel {
-    width: 3.5px;
-    height: 7px;
-    background: #fbbf24;
-    border-radius: 9999px;
-    animation: scrollWheelAnim 2s ease-in-out infinite;
-}
-
-@keyframes scrollWheelAnim {
-    0% { transform: translateY(0); opacity: 1; }
-    50% { transform: translateY(12px); opacity: 0.2; }
-    100% { transform: translateY(0); opacity: 1; }
-}
 
 /* ============================================================
    MAIN CONTENT SECTION (#mainContentSection)

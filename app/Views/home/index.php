@@ -52,65 +52,87 @@
                             </span>
                         </div>
 
-                        <!-- Single-Line Clean Headline -->
-                        <h1 class="text-base sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md truncate max-w-xl mx-auto mb-1.5 sm:mb-3 px-2" itemprop="name">
+                        <!-- Clean Prominent Book Title Headline -->
+                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md max-w-xl mx-auto mb-2 sm:mb-3 px-2 leading-snug" itemprop="name">
                             <?= htmlspecialchars($b['title']) ?>
                         </h1>
 
-                        <!-- Center 3D Floating Book Art (Generated AI Realistic 3D Mockup) -->
+                        <!-- Feature Badges Row (Clean, Non-colliding, Responsive & Spaced) -->
+                        <div class="hero-chips-bar flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-4 z-20">
+                            <span class="orbit-chip chip-feature-a">
+                                <span class="pulse"></span>
+                                <svg class="w-3.5 h-3.5 text-emerald-400 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <?= htmlspecialchars($pills['chipA']) ?>
+                            </span>
+                            <span class="orbit-chip chip-feature-b">
+                                <svg class="w-3.5 h-3.5 text-amber-300 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                </svg>
+                                <?= htmlspecialchars($pills['chipB']) ?>
+                            </span>
+                            <span class="orbit-chip chip-feature-c bg-amber-950/80 border-amber-400/60 text-amber-300">
+                                <span class="font-bold text-xs">মূল্য: ৳<?= (int)$discPrice ?></span>
+                            </span>
+                        </div>
+
+                        <!-- Center 3D Floating Book Art (Real Cover Image + Hardcover 3D Spine) -->
                         <div class="py-1 relative">
                             <div class="hero-art relative">
                                 <div class="halo"></div>
 
-                                <!-- Orbit Floating Chips with SVGs -->
-                                <span class="orbit-chip chip-a">
-                                    <span class="pulse"></span>
-                                    <svg class="w-3.5 h-3.5 text-emerald-400 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    <?= htmlspecialchars($pills['chipA']) ?>
-                                </span>
-                                <span class="orbit-chip chip-b">
-                                    <svg class="w-3.5 h-3.5 text-amber-300 mr-1.5 inline-block shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                    </svg>
-                                    <?= htmlspecialchars($pills['chipB']) ?>
-                                </span>
-
-                                <!-- Authentic 3D Book Shape Card (Exact Match: media_1790102812320.png) -->
-                                <div class="hero-book-card relative flex flex-col justify-between select-none">
-                                    <!-- Top Row: Category Tag & Book Index -->
-                                    <div class="flex items-center justify-between z-10">
-                                        <span class="text-[10px] sm:text-[11px] bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold px-2.5 py-0.5 rounded-full shadow-sm border border-amber-300/30">
-                                            কারিয়ানা নূরানী
-                                        </span>
-                                        <span class="text-[11px] sm:text-xs text-amber-300 font-mono font-bold tracking-wider">
-                                            <?= ($idx + 1) ?>/<?= count($booksList) ?>
-                                        </span>
-                                    </div>
-
-                                    <!-- Center Emblem & Dynamic Title -->
-                                    <div class="text-center my-auto py-2 sm:py-3 z-10 px-1">
-                                        <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto bg-amber-400/15 border-2 border-amber-400/60 rounded-full flex items-center justify-center text-amber-300 mb-1.5 sm:mb-2 shadow-[inset_0_0_10px_rgba(251,191,36,0.3)]">
-                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                            </svg>
+                                <!-- Authentic 3D Book Showcase with Physical Cover -->
+                                <div class="hero-book-card relative select-none">
+                                    <?php 
+                                    $hasRealCover = !empty($b['cover_image']) && file_exists(__DIR__ . '/../../../public/' . $b['cover_image']);
+                                    if ($hasRealCover): 
+                                    ?>
+                                        <!-- Real HD Book Cover Image with Golden Frame & 3D Lighting -->
+                                        <div class="w-full h-full relative rounded-[18px] overflow-hidden">
+                                            <img src="<?= $baseUrl ?? '' ?>/<?= htmlspecialchars($b['cover_image']) ?>" 
+                                                 alt="<?= htmlspecialchars($b['title']) ?>" 
+                                                 class="w-full h-full object-cover object-center shadow-inner"
+                                                 loading="<?= $idx === 0 ? 'eager' : 'lazy' ?>"
+                                                 itemprop="image">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none"></div>
+                                            <!-- Floating Price Tag over Image Corner -->
+                                            <div class="absolute bottom-2.5 right-2.5 bg-emerald-950/90 backdrop-blur-md border border-amber-400/60 px-2.5 py-1 rounded-lg shadow-lg flex items-baseline gap-1">
+                                                <span class="text-[10px] text-emerald-200">মূল্য</span>
+                                                <span class="text-sm font-black text-amber-300 font-mono">৳<?= (int)$discPrice ?></span>
+                                            </div>
                                         </div>
-                                        <h3 class="font-black text-xs sm:text-sm md:text-base text-white line-clamp-2 px-1 leading-snug drop-shadow-sm">
-                                            <?= htmlspecialchars($b['title']) ?>
-                                        </h3>
-                                        <span class="text-[10px] sm:text-[11px] text-emerald-200/90 font-medium block mt-1 tracking-wide">
-                                            তাজবীদ কালার কোডেড
-                                        </span>
-                                    </div>
+                                    <?php else: ?>
+                                        <!-- Royal Islamic Fallback Book Design (No Real Image) -->
+                                        <div class="flex flex-col justify-between h-full p-4">
+                                            <div class="flex items-center justify-between z-10">
+                                                <span class="text-[11px] bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold px-2.5 py-0.5 rounded-full shadow-sm border border-amber-300/30">
+                                                    কারিয়ানা প্রকাশনী
+                                                </span>
+                                                <span class="text-xs text-amber-300 font-mono font-bold tracking-wider">
+                                                    <?= ($idx + 1) ?>/<?= count($booksList) ?>
+                                                </span>
+                                            </div>
 
-                                    <!-- Bottom Feature Tag & Price in Gold -->
-                                    <div class="pt-1.5 sm:pt-2 border-t border-amber-400/30 flex items-center justify-between text-xs z-10">
-                                        <span class="text-emerald-300/90 text-[10px] sm:text-[11px] font-medium">নূরানী পদ্ধতি</span>
-                                        <span class="text-amber-300 font-black text-xs sm:text-base font-mono tracking-tight drop-shadow">
-                                            ৳<?= (int)$discPrice ?>
-                                        </span>
-                                    </div>
+                                            <div class="text-center my-auto py-3 z-10 px-1">
+                                                <div class="w-14 h-14 mx-auto bg-amber-400/15 border-2 border-amber-400/60 rounded-full flex items-center justify-center text-amber-300 mb-2 shadow-[inset_0_0_10px_rgba(251,191,36,0.3)]">
+                                                    <svg class="w-7 h-7 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                    </svg>
+                                                </div>
+                                                <h3 class="font-black text-sm sm:text-base text-white line-clamp-2 px-1 leading-snug drop-shadow-sm">
+                                                    <?= htmlspecialchars($b['title']) ?>
+                                                </h3>
+                                            </div>
+
+                                            <div class="pt-2 border-t border-amber-400/30 flex items-center justify-between text-xs z-10">
+                                                <span class="text-emerald-300/90 text-[11px] font-medium">সহজ নূরানী পদ্ধতি</span>
+                                                <span class="text-amber-300 font-black text-sm font-mono tracking-tight drop-shadow">
+                                                    ৳<?= (int)$discPrice ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -124,6 +146,7 @@
 
                     </div>
                 </article>
+
                 <?php endforeach; ?>
             </div>
 
@@ -180,27 +203,11 @@
                 <div class="hero-dots" id="heroDots" role="tablist" aria-label="বই স্লাইডার তালিকা"></div>
             </div>
 
-            <!-- Refined Touch-Friendly Scroll Down Indicator (Clean & Natural, Zero Awkward Gaps) -->
-            <div class="hero-scroll-indicator text-center mt-2 sm:mt-4 pb-1 z-20">
-                <button type="button" 
-                        id="heroScrollBtn"
-                        onclick="smoothScrollToContent();" 
-                        class="group inline-flex flex-col items-center justify-center text-emerald-200 hover:text-amber-300 transition-all focus:outline-none"
-                        aria-label="নিচের সেকশনে যান">
-                    <span class="text-[10px] sm:text-xs font-bold tracking-wider text-amber-300/80 group-hover:text-amber-300 mb-0.5 flex items-center gap-1.5 drop-shadow">
-                        নিচে স্ক্রল করুন
-                    </span>
-                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-900/80 border border-amber-400/50 flex items-center justify-center group-hover:border-amber-300 group-hover:bg-emerald-800 transition-all shadow-sm">
-                        <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
-                </button>
-            </div>
         </div>
 
     </div>
 </div>
+
 
 <!-- Vape-Inspired Smooth Slider JavaScript Engine (Dynamic 1 to 10+ Books with 3D Transitions) -->
 <script>
