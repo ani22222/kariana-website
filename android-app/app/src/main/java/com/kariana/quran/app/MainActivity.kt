@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     // Standard Kariana Endpoints
     companion object {
-        const val PRIMARY_URL = "http://104.207.93.68:8015/"
+        const val PRIMARY_URL = "https://project.rasel.cloud/kariana/"
         const val BACKUP_URL = "http://192.168.0.100:8015/"
         const val USER_AGENT_SUFFIX = " KarianaQuranAndroidApp/1.0.0"
     }
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
                 // 4. In-App Navigation for Kariana Host
                 val host = Uri.parse(url).host
-                if (host != null && (host.contains("104.207.93.68") || host.contains("192.168.0.100") || host.contains("localhost") || host.contains("trycloudflare.com"))) {
+                if (host != null && (host.contains("project.rasel.cloud") || host.contains("104.207.93.68") || host.contains("192.168.0.100") || host.contains("localhost") || host.contains("trycloudflare.com"))) {
                     return false
                 }
 

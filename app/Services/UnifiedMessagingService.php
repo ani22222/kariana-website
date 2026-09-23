@@ -273,7 +273,7 @@ class UnifiedMessagingService
                         . "📌 *উদাহরণ:* `01717056816`\nবা লিখুন: `কানেক্ট 01717xxxxxx`\n\n"
                         . "👑 মেইন অ্যাডমিন, জেলা পরিচালক, শিক্ষক ও ম্যানেজারগণ সরাসরি WhatsApp বা টেলিগ্রাম থেকেই ড্যাশবোর্ড নিয়ন্ত্রণ করতে পারেন।",
                 'buttons' => [
-                    [['text' => '🌐 কারিয়ানা ওয়েবসাইট ভিজিট করুন', 'url' => 'http://104.207.93.68:8015/']]
+                    [['text' => '🌐 কারিয়ানা ওয়েবসাইট ভিজিট করুন', 'url' => 'https://project.rasel.cloud/kariana/']]
                 ]
             ];
         }
@@ -389,7 +389,7 @@ class UnifiedMessagingService
               . "👨‍🏫 নিবন্ধিত শিক্ষক (মুয়াল্লিম): *{$totTeas} জন*\n"
               . "📖 অধ্যায়নরত মোট শিক্ষার্থী: *{$totStus} জন*\n"
               . "📦 বিতরণকৃত কায়দা/আমপারা: *{$totOrders} কপি*\n\n"
-              . "🔗 [ওয়েব অ্যাডমিন প্যানেল](http://104.207.93.68:8015/admin)";
+              . "🔗 [ওয়েব অ্যাডমিন প্যানেল](https://project.rasel.cloud/kariana/admin)";
 
         return [
             'text'    => $text,
@@ -415,7 +415,7 @@ class UnifiedMessagingService
         return [
             'text'    => $text,
             'buttons' => [
-                [['text' => '🌐 পূর্ণাঙ্গ তালিকা খুলুন', 'url' => 'http://104.207.93.68:8015/admin#directors-hub']],
+                [['text' => '🌐 পূর্ণাঙ্গ তালিকা খুলুন', 'url' => 'https://project.rasel.cloud/kariana/admin#directors-hub']],
                 [['text' => '🔙 অ্যাডমিন ড্যাশবোর্ড', 'callback_data' => 'adm_dashboard']]
             ]
         ];
@@ -437,7 +437,7 @@ class UnifiedMessagingService
         return [
             'text'    => $text,
             'buttons' => [
-                [['text' => '🌐 সারাদেশের শিক্ষক হাব খুলুন', 'url' => 'http://104.207.93.68:8015/admin#teachers-hub']],
+                [['text' => '🌐 সারাদেশের শিক্ষক হাব খুলুন', 'url' => 'https://project.rasel.cloud/kariana/admin#teachers-hub']],
                 [['text' => '🔙 অ্যাডমিন ড্যাশবোর্ড', 'callback_data' => 'adm_dashboard']]
             ]
         ];
@@ -542,8 +542,8 @@ class UnifiedMessagingService
 
         if (in_array($clean, ['5', '৫', 'ওয়েব', 'ওয়েবসাইট', 'অ্যাপ', 'dashboard', 'web'], true)) {
             return [
-                'text' => "🌐 *পরিচালক মোবাইল ওয়েব অ্যাপ লিংক:*\nhttp://104.207.93.68:8015/director/dashboard",
-                'buttons' => [[['text' => '🌐 অ্যাপে প্রবেশ করুন', 'url' => 'http://104.207.93.68:8015/director/dashboard']]]
+                'text' => "🌐 *পরিচালক মোবাইল ওয়েব অ্যাপ লিংক:*\nhttps://project.rasel.cloud/kariana/director/dashboard",
+                'buttons' => [[['text' => '🌐 অ্যাপে প্রবেশ করুন', 'url' => 'https://project.rasel.cloud/kariana/director/dashboard']]]
             ];
         }
 
@@ -732,17 +732,17 @@ class UnifiedMessagingService
 
         if (in_array($cleanText, ['3', '৩', 'সবক', 'সবক ক্লাস', 'আবেদন', 'sabak'], true)) {
             return [
-                'text' => "🎓 *সবক ক্লাস উদ্বোধন আবেদন:* নতুন ব্যাচের সবক উদ্বোধনের জন্য শিক্ষক মোবাইল অ্যাপে প্রবেশ করে আবেদন জমা দিন।\n\n🌐 অ্যাপ লিংক:\nhttp://104.207.93.68:8015/teacher/dashboard",
+                'text' => "🎓 *সবক ক্লাস উদ্বোধন আবেদন:* নতুন ব্যাচের সবক উদ্বোধনের জন্য শিক্ষক মোবাইল অ্যাপে প্রবেশ করে আবেদন জমা দিন।\n\n🌐 অ্যাপ লিংক:\nhttps://project.rasel.cloud/kariana/teacher/dashboard",
                 'buttons' => [
-                    [['text' => '🌐 শিক্ষক অ্যাপ খুলুন', 'url' => 'http://104.207.93.68:8015/teacher/dashboard']]
+                    [['text' => '🌐 শিক্ষক অ্যাপ খুলুন', 'url' => 'https://project.rasel.cloud/kariana/teacher/dashboard']]
                 ]
             ];
         }
 
         if (in_array($cleanText, ['4', '৪', 'ওয়েব', 'ওয়েবসাইট', 'অ্যাপ', 'dashboard', 'web'], true)) {
             return [
-                'text' => "🌐 *শিক্ষক মোবাইল ওয়েব অ্যাপ লিংক:*\nhttp://104.207.93.68:8015/teacher/dashboard",
-                'buttons' => [[['text' => '🌐 অ্যাপে প্রবেশ করুন', 'url' => 'http://104.207.93.68:8015/teacher/dashboard']]]
+                'text' => "🌐 *শিক্ষক মোবাইল ওয়েব অ্যাপ লিংক:*\nhttps://project.rasel.cloud/kariana/teacher/dashboard",
+                'buttons' => [[['text' => '🌐 অ্যাপে প্রবেশ করুন', 'url' => 'https://project.rasel.cloud/kariana/teacher/dashboard']]]
             ];
         }
 
@@ -824,7 +824,7 @@ class UnifiedMessagingService
                         . "মোট বিতরণকৃত বই: *{$totOrders} কপি*\n\n"
                         . "নতুন বইয়ের চাহিদা ও চালানের বিস্তারিত তথ্যের জন্য ওয়েব প্যানেলে প্রবেশ করুন।",
                 'buttons' => [
-                    [['text' => '🌐 ওয়েব পোর্টাল', 'url' => 'http://104.207.93.68:8015/login']],
+                    [['text' => '🌐 ওয়েব পোর্টাল', 'url' => 'https://project.rasel.cloud/kariana/login']],
                     [['text' => '🔙 ম্যানেজার ড্যাশবোর্ড', 'callback_data' => 'mgr_dashboard']]
                 ]
             ];
@@ -874,7 +874,7 @@ class UnifiedMessagingService
                         ['text' => '📢 জরুরি ব্রডকাস্ট বার্তা', 'callback_data' => 'adm_broadcast']
                     ],
                     [
-                        ['text' => '🌐 পূর্ণাঙ্গ ওয়েব প্যানেল', 'url' => 'http://104.207.93.68:8015/admin'],
+                        ['text' => '🌐 পূর্ণাঙ্গ ওয়েব প্যানেল', 'url' => 'https://project.rasel.cloud/kariana/admin'],
                         ['text' => '🚪 লগআউট', 'callback_data' => 'action_logout']
                     ]
                 ]
@@ -899,7 +899,7 @@ class UnifiedMessagingService
                         ['text' => '📞 সাদ্দাম হুজুর হেল্পলাইন', 'callback_data' => 'dir_founder']
                     ],
                     [
-                        ['text' => '🌐 মোবাইল ওয়েব অ্যাপ', 'url' => 'http://104.207.93.68:8015/director/dashboard'],
+                        ['text' => '🌐 মোবাইল ওয়েব অ্যাপ', 'url' => 'https://project.rasel.cloud/kariana/director/dashboard'],
                         ['text' => '🚪 লগআউট', 'callback_data' => 'action_logout']
                     ]
                 ]
@@ -920,7 +920,7 @@ class UnifiedMessagingService
                     ],
                     [
                         ['text' => '📦 বইয়ের চাহিদা', 'callback_data' => 'tea_books'],
-                        ['text' => '🌐 শিক্ষক ওয়েব অ্যাপ', 'url' => 'http://104.207.93.68:8015/teacher/dashboard']
+                        ['text' => '🌐 শিক্ষক ওয়েব অ্যাপ', 'url' => 'https://project.rasel.cloud/kariana/teacher/dashboard']
                     ],
                     [
                         ['text' => '🚪 লগআউট', 'callback_data' => 'action_logout']
@@ -934,7 +934,7 @@ class UnifiedMessagingService
                 'buttons' => [
                     [
                         ['text' => '📦 স্টক ও কিতাব', 'callback_data' => 'mgr_stock'],
-                        ['text' => '🌐 ওয়েব পোর্টাল', 'url' => 'http://104.207.93.68:8015/login']
+                        ['text' => '🌐 ওয়েব পোর্টাল', 'url' => 'https://project.rasel.cloud/kariana/login']
                     ],
                     [
                         ['text' => '🚪 লগআউট', 'callback_data' => 'action_logout']
@@ -947,11 +947,11 @@ class UnifiedMessagingService
                         . "কুরআন শিক্ষা ও ইসলামিক টুলসের জন্য নিচের লিংকগুলো ব্যবহার করুন:",
                 'buttons' => [
                     [
-                        ['text' => '📖 কুরআন রিডার', 'url' => 'http://104.207.93.68:8015/quran-app'],
-                        ['text' => '🕌 নামাজের সময়', 'url' => 'http://104.207.93.68:8015/prayer-times']
+                        ['text' => '📖 কুরআন রিডার', 'url' => 'https://project.rasel.cloud/kariana/quran-app'],
+                        ['text' => '🕌 নামাজের সময়', 'url' => 'https://project.rasel.cloud/kariana/prayer-times']
                     ],
                     [
-                        ['text' => '👤 ব্যক্তিগত প্রোফাইল', 'url' => 'http://104.207.93.68:8015/profile'],
+                        ['text' => '👤 ব্যক্তিগত প্রোফাইল', 'url' => 'https://project.rasel.cloud/kariana/profile'],
                         ['text' => '🚪 লগআউট', 'callback_data' => 'action_logout']
                     ]
                 ]

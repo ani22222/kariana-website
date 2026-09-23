@@ -37,7 +37,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="104.207.93.68" android:port="8015" />
+                <data android:scheme="https" android:host="project.rasel.cloud" android:pathPrefix="/kariana" />
             </intent-filter>
         </activity>
     </application>
