@@ -377,6 +377,16 @@ if (file_exists($routesFile)) {
         return $controller->createDirector($request);
     });
 
+    $router->post('/admin/developer-message', function (\Core\Request $request) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->sendDeveloperMessage($request);
+    });
+
+    $router->post('/admin/developer-message/delete/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->deleteDeveloperMessage($request, $id);
+    });
+
     $router->post('/admin/directors/delete/{id}', function (\Core\Request $request, string $id) {
         $controller = new \App\Controllers\AdminController();
         return $controller->deleteDirector($request, $id);

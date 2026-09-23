@@ -195,9 +195,13 @@ class AdminController
             }
         }
 
+        // Fetch developer messages sent by Owner / Huzur
+        $developerMessages = $this->db->query("SELECT * FROM `developer_messages` ORDER BY `id` DESC LIMIT 50")->fetchAll();
+        $unreadDevMessagesCount = (int)$this->db->query("SELECT COUNT(*) FROM `developer_messages` WHERE `is_read` = 0")->fetchColumn();
+
         return new Response(View::render('admin/dashboard', [
-            'title'            => 'অ্যাডমিন ড্যাশবোর্ড ও পরিচালক কমান্ড হাব | কারিয়ানা কুরআন',
-            'stats'            => [
+            'title'                  => 'অ্যাডমিন ড্যাশবোর্ড ও পরিচালক কমান্ড হাব | কারিয়ানা কুরআন',
+            'stats'                  => [
                 'posts'      => $postsCount,
                 'courses'    => $coursesCount,
                 'admissions' => $admissionsCount,
@@ -205,10 +209,12 @@ class AdminController
                 'directors'  => $directorsCount,
                 'teachers'   => $teachersCount,
             ],
-            'recentAdmissions' => $recentAdmissions,
-            'allDirectors'     => $allDirectors,
-            'divisions'        => $divisions,
-            'statusCounts'     => $statusCounts,
+            'recentAdmissions'       => $recentAdmissions,
+            'allDirectors'           => $allDirectors,
+            'divisions'              => $divisions,
+            'statusCounts'           => $statusCounts,
+            'developerMessages'      => $developerMessages,
+            'unreadDevMessagesCount' => $unreadDevMessagesCount,
         ], 'layouts/main'));
     }
 
@@ -917,5 +923,101 @@ class AdminController
         }
 
         return Response::redirect('/admin/books');
+    }
+
+    /**
+     * Send Developer Message & Alert on Telegram
+     */
+    public function sendDeveloperMessage(Request $request): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $senderName = trim((string)$request->post('sender_name', ''));
+        if ($senderName === '') {
+            $senderName = Session::getUser()['name'] ?? 'মাওলানা সাদ্দাম হোসেন';
+        }
+        $senderPhone = trim((string)$request->post('sender_phone', ''));
+        if ($senderPhone === '') {
+            $senderPhone = Session::getUser()['phone'] ?? '01717056816';
+        }
+        $subject = trim((string)$request->post('subject', 'মালিক/হুজুরের বিশেষ বার্তা ও নির্দেশনা'));
+        $message = trim((string)$request->post('message', ''));
+
+        if ($message === '') {
+            if ($request->isAjax() || str_contains($request->header('Accept') ?? '', 'application/json')) {
+                return Response::json(['success' => false, 'message' => 'বার্তার বিবরণ প্রদান করুন।']);
+            }
+            Session::flash('error', 'বার্তার বিবরণ প্রদান করুন।');
+            return Response::redirect('/admin#developerMessagePanel');
+        }
+
+        $stmt = $this->db->prepare("
+            INSERT INTO `developer_messages` (`sender_name`, `sender_phone`, `subject`, `message`, `is_read`, `created_at`)
+            VALUES (:name, :phone, :subj, :msg, 0, NOW())
+        ");
+        $stmt->execute([
+            'name'  => $senderName,
+            'phone' => $senderPhone,
+            'subj'  => $subject,
+            'msg'   => $message,
+        ]);
+        $msgId = (int)$this->db->lastInsertId();
+
+        // Push Telegram alert to developer
+        $tgConfigFile = dirname(__DIR__, 2) . '/telegram_config.php';
+        if (file_exists($tgConfigFile)) {
+            require_once $tgConfigFile;
+            if (function_exists('tg_send')) {
+                $tgText = "🚨 <b>কারিয়ানা কুরআন — হুজুর/মালিকের নতুন বার্তা!</b>\n";
+                $tgText .= "━━━━━━━━━━━━━━━━━━━━\n";
+                $tgText .= "👤 <b>প্রেরক:</b> " . htmlspecialchars($senderName) . " (" . htmlspecialchars($senderPhone) . ")\n";
+                if (!empty($subject)) {
+                    $tgText .= "📌 <b>বিষয়:</b> " . htmlspecialchars($subject) . "\n";
+                }
+                $tgText .= "⏰ <b>সময়:</b> " . date('d M Y, h:i A', strtotime('+6 hours')) . "\n";
+                $tgText .= "━━━━━━━━━━━━━━━━━━━━\n";
+                $tgText .= "📝 <b>বার্তা:</b>\n" . htmlspecialchars($message) . "\n\n";
+                $tgText .= "🌐 <b>ড্যাশবোর্ডে দেখুন:</b>\n";
+                $tgText .= "• <b>Local:</b> http://localhost:8015/admin#dev-messages\n";
+                $tgText .= "• <b>Cloudflare:</b> https://crowd-passenger-martin-passport.trycloudflare.com/admin#dev-messages";
+                tg_send($tgText, 'HTML');
+            }
+        }
+
+        if ($request->isAjax() || str_contains($request->header('Accept') ?? '', 'application/json')) {
+            return Response::json([
+                'success' => true,
+                'message' => 'হুজুরের বার্তাটি সফলভাবে ডেভেলপারের কাছে পৌঁছে দেওয়া হয়েছে!',
+                'id'      => $msgId,
+            ]);
+        }
+
+        Session::flash('success', 'হুজুরের বার্তাটি সফলভাবে ডেভেলপারের কাছে পৌঁছে দেওয়া হয়েছে এবং টেলিগ্রামে পাঠানো হয়েছে!');
+        return Response::redirect('/admin#developerMessagePanel');
+    }
+
+    /**
+     * Delete Developer Message
+     */
+    public function deleteDeveloperMessage(Request $request, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $msgId = (int)$id;
+        if ($msgId > 0) {
+            $stmt = $this->db->prepare("DELETE FROM `developer_messages` WHERE `id` = :id");
+            $stmt->execute(['id' => $msgId]);
+            Session::flash('success', 'বার্তাটি সফলভাবে মুছে ফেলা হয়েছে।');
+        }
+
+        if ($request->isAjax() || str_contains($request->header('Accept') ?? '', 'application/json')) {
+            return Response::json(['success' => true, 'message' => 'বার্তাটি মুছে ফেলা হয়েছে।']);
+        }
+
+        return Response::redirect('/admin#dev-messages');
     }
 }

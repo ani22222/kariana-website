@@ -215,6 +215,14 @@ $error = \Core\Session::getFlash('error');
                     <span>নতুন পরিচালক যুক্ত করুন</span>
                 </button>
 
+                <button type="button" onclick="toggleDeveloperMessagePanel()" class="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-700 hover:from-sky-500 hover:to-indigo-600 text-white border border-sky-300/40 px-3.5 py-2.5 rounded-xl text-xs font-black transition shadow flex items-center justify-center shrink-0 cursor-pointer relative" title="ডেভেলপারকে যেকোনো তথ্য, সংশোধন বা বার্তা পাঠান">
+                    <svg class="w-4 h-4 mr-1.5 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    <span>ডেভেলপারকে তথ্য দিন</span>
+                    <?php if (!empty($unreadDevMessagesCount) && $unreadDevMessagesCount > 0): ?>
+                        <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white animate-pulse"><?= \Core\BengaliHelper::toBengaliNumber($unreadDevMessagesCount) ?></span>
+                    <?php endif; ?>
+                </button>
+
                 <a href="<?= $baseUrl ?>/admin/directors/export" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition shadow flex items-center justify-center shrink-0" title="চূড়ান্ত যাচাইকৃত তালিকা এক্সেল CSV ফরম্যাটে ডাউনলোড করুন">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     তালিকা ডাউনলোড (CSV)
@@ -310,6 +318,132 @@ $error = \Core\Session::getFlash('error');
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- DEVELOPER MESSAGE TEXT-BOX PANEL (ডেভেলপারকে যেকোনো তথ্য দেওয়ার টেক্সটবক্স) -->
+        <!-- ========================================================================= -->
+        <div id="developerMessagePanel" class="hidden bg-gradient-to-br from-sky-50/90 via-indigo-50/40 to-white border-b-2 border-sky-300 p-6 transition-all duration-300 shadow-inner">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-sky-200/80">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-700 text-white flex items-center justify-center shadow">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        </span>
+                        <div>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                                <span>ডেভেলপারকে যেকোনো তথ্য, সংশোধন বা পরামর্শ পাঠান</span>
+                                <span class="text-[11px] px-2 py-0.5 bg-sky-100 text-sky-800 rounded-full font-bold">সরাসরি টেলিগ্রাম নোটিফিকেশন</span>
+                            </h3>
+                            <p class="text-xs text-slate-600">সম্মানিত মাওলানা সাদ্দাম হোসেন হুজুর—পরিচালক তালিকা বা ওয়েবসাইটে যেকোনো ধরনের পরিবর্তন ও নির্দেশ নিচের টেক্সটবক্সে লিখুন, সরাসরি ডেভেলপারের কাছে পৌঁছে যাবে:</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="toggleDeveloperMessagePanel()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-white/80 transition cursor-pointer" title="বন্ধ করুন">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <form id="sendDeveloperMessageForm" onsubmit="submitDeveloperMessage(event)" class="space-y-4">
+                    <?= $csrfField ?>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                আপনার নাম (প্রেরক)
+                            </label>
+                            <input type="text" id="devMsgSenderName" name="sender_name" value="<?= htmlspecialchars($user['name'] ?? 'মাওলানা সাদ্দাম হোসেন') ?>" required class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-xs font-medium">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                আপনার মোবাইল নম্বর
+                            </label>
+                            <input type="text" id="devMsgSenderPhone" name="sender_phone" value="<?= htmlspecialchars($user['phone'] ?? '01717056816') ?>" required class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white font-mono shadow-xs">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-800 mb-1">
+                                বার্তার বিষয় / ক্যাটাগরি
+                            </label>
+                            <select id="devMsgSubject" name="subject" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-xs cursor-pointer">
+                                <option value="পরিচালক তালিকা সংক্রান্ত সংশোধন ও নির্দেশনা">পরিচালক তালিকা সংক্রান্ত সংশোধন ও নির্দেশনা</option>
+                                <option value="নতুন পরিচালক যুক্ত করার অনুরোধ">নতুন পরিচালক যুক্ত করার অনুরোধ</option>
+                                <option value="কোনো পরিচালকের তথ্য বা মোবাইল পরিবর্তন">কোনো পরিচালকের তথ্য বা মোবাইল পরিবর্তন</option>
+                                <option value="ওয়েবসাইটের সাধারণ নির্দেশনা বা পরামর্শ">ওয়েবসাইটের সাধারণ নির্দেশনা বা পরামর্শ</option>
+                                <option value="অন্যান্য বিশেষ নির্দেশনা">অন্যান্য বিশেষ নির্দেশনা</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-extrabold text-slate-900">
+                                বিস্তারিত তথ্য / হুজুরের বার্তা <span class="text-red-500">*</span>
+                            </label>
+                            <span class="text-[11px] text-slate-500">পরিষ্কার ও বিস্তারিতভাবে লিখুন</span>
+                        </div>
+                        <textarea id="devMsgContent" name="message" rows="4" required placeholder="হুজুর, ওয়েবসাইট বা পরিচালকদের তালিকা সম্পর্কিত যেকোনো নির্দেশনা, পরিবর্তন, বা নতুন কোনো পরামর্শ এখানে লিখুন... যেমন: 'চট্টগ্রাম জেলার পরিচালকের ফোন নাম্বার হবে 018xxxxxxxx' অথবা 'সিলেটে অমুক হুজুরকে নতুন পরিচালক হিসেবে যুক্ত করতে হবে'..." class="w-full text-xs sm:text-sm px-4 py-3 rounded-xl border border-sky-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-sm leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Quick suggestion badges for 1-click typing -->
+                    <div class="flex items-center gap-2 flex-wrap text-xs">
+                        <span class="text-[11px] font-bold text-slate-500">কুইক টেমপ্লেট:</span>
+                        <button type="button" onclick="appendDevMsgTemplate('পরিচালক তালিকায় এই নতুন ব্যক্তির নাম যুক্ত করুন: নাম: , জেলা: , মোবাইল: ')" class="px-2.5 py-1 bg-white hover:bg-sky-50 text-sky-800 border border-sky-200 rounded-lg text-[11px] font-medium transition cursor-pointer">➕ নতুন পরিচালক সংযোজন</button>
+                        <button type="button" onclick="appendDevMsgTemplate('অমুক জেলার পরিচালকের মোবাইল নাম্বার সংশোধন করুন: নতুন নাম্বার: ')" class="px-2.5 py-1 bg-white hover:bg-sky-50 text-sky-800 border border-sky-200 rounded-lg text-[11px] font-medium transition cursor-pointer">✏️ মোবাইল নম্বর সংশোধন</button>
+                        <button type="button" onclick="appendDevMsgTemplate('অমুক জেলার পরিচালককে তালিকা থেকে বাতিল বা স্থগিত রাখুন, কারণ: ')" class="px-2.5 py-1 bg-white hover:bg-sky-50 text-sky-800 border border-sky-200 rounded-lg text-[11px] font-medium transition cursor-pointer">⚠️ পরিচালক বাতিল/স্থগিত</button>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                        <div class="text-[11px] text-slate-500 flex items-center">
+                            <svg class="w-4 h-4 mr-1 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            <span>বার্তাটি পাঠালে ডেভেলপার সাথে সাথে টেলিগ্রাম (@raselcodebot) ও সিস্টেমে দেখতে পাবেন।</span>
+                        </div>
+
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <button type="button" onclick="toggleDeveloperMessagePanel()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-slate-300 transition cursor-pointer">
+                                বন্ধ করুন
+                            </button>
+                            <button type="submit" id="btnSubmitDevMsg" class="px-6 py-2.5 rounded-xl text-xs font-black text-white bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-700 hover:from-sky-500 hover:to-indigo-600 shadow-md hover:shadow-lg transition flex items-center cursor-pointer">
+                                <svg class="w-4 h-4 mr-1.5 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                <span>ডেভেলপারকে পাঠান</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- DEVELOPER INBOX / বার্তা ইতিহাস (যদি পূর্বে কোনো বার্তা পাঠানো হয়ে থাকে) -->
+                <?php if (!empty($developerMessages)): ?>
+                    <div id="dev-messages" class="mt-6 pt-5 border-t border-sky-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 flex items-center">
+                                <svg class="w-4 h-4 mr-1.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                প্রেরিত বার্তার ইতিহাস ও ডেভেলপারের ইনবক্স (<?= \Core\BengaliHelper::toBengaliNumber(count($developerMessages)) ?>টি)
+                            </h4>
+                            <span class="text-[11px] text-slate-500 font-medium">সর্বশেষ প্রেরিত তথ্যসমূহ</span>
+                        </div>
+
+                        <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1" id="devMessagesListContainer">
+                            <?php foreach ($developerMessages as $dMsg): ?>
+                                <div id="dev-msg-card-<?= $dMsg['id'] ?>" class="bg-white p-3.5 rounded-xl border border-sky-200/80 shadow-xs flex flex-col sm:flex-row sm:items-start justify-between gap-3 text-xs">
+                                    <div class="space-y-1 flex-1">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="font-extrabold text-slate-800"><?= htmlspecialchars($dMsg['sender_name']) ?></span>
+                                            <span class="text-slate-400 font-mono text-[11px]">(<?= htmlspecialchars($dMsg['sender_phone']) ?>)</span>
+                                            <?php if (!empty($dMsg['subject'])): ?>
+                                                <span class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold"><?= htmlspecialchars($dMsg['subject']) ?></span>
+                                            <?php endif; ?>
+                                            <span class="text-[10px] text-slate-400 ml-auto sm:ml-0 font-medium"><?= \Core\BengaliHelper::formatDate($dMsg['created_at']) ?></span>
+                                        </div>
+                                        <p class="text-slate-700 whitespace-pre-wrap leading-relaxed bg-slate-50/80 p-2.5 rounded-lg border border-slate-100"><?= nl2br(htmlspecialchars($dMsg['message'])) ?></p>
+                                    </div>
+                                    <button type="button" onclick="deleteDevMessage(<?= $dMsg['id'] ?>)" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition self-end sm:self-start shrink-0 cursor-pointer" title="বার্তাটি মুছে ফেলুন">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -1038,6 +1172,96 @@ function toggleAddDirectorPanel() {
         const nameInput = document.getElementById('newDirName');
         if (nameInput) setTimeout(() => nameInput.focus(), 300);
     }
+}
+
+// Toggle Developer Message Text-box Panel
+function toggleDeveloperMessagePanel() {
+    const panel = document.getElementById('developerMessagePanel');
+    if (!panel) return;
+
+    panel.classList.toggle('hidden');
+    if (!panel.classList.contains('hidden')) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const contentInput = document.getElementById('devMsgContent');
+        if (contentInput) setTimeout(() => contentInput.focus(), 300);
+    }
+}
+
+// Append quick template to developer message
+function appendDevMsgTemplate(text) {
+    const textarea = document.getElementById('devMsgContent');
+    if (!textarea) return;
+    if (textarea.value.trim() === '') {
+        textarea.value = text;
+    } else {
+        textarea.value += "\n" + text;
+    }
+    textarea.focus();
+}
+
+// Submit Developer Message via AJAX
+function submitDeveloperMessage(e) {
+    e.preventDefault();
+    const form = document.getElementById('sendDeveloperMessageForm');
+    const formData = new FormData(form);
+    const btn = document.getElementById('btnSubmitDevMsg');
+
+    const originalBtnHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> <span>পাঠানো হচ্ছে...</span>';
+
+    fetch(BASE_URL + '/admin/developer-message', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+
+        if (data.success) {
+            showToast(data.message || 'ডেভেলপারের কাছে আপনার বার্তা সফলভাবে পাঠানো হয়েছে!');
+            const msgInput = document.getElementById('devMsgContent');
+            if (msgInput) msgInput.value = '';
+            // Reload page smoothly to display newly inserted message in list
+            setTimeout(() => {
+                window.location.reload();
+            }, 1200);
+        } else {
+            showToast(data.message || 'বার্তা পাঠাতে সমস্যা হয়েছে।', false);
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+        showToast('সার্ভার যোগাযোগে সমস্যা হয়েছে।', false);
+    });
+}
+
+// Delete Developer Message via AJAX
+function deleteDevMessage(id) {
+    if (!confirm('আপনি কি নিশ্চিতভাবে এই বার্তাটি মুছে ফেলতে চান?')) return;
+
+    fetch(BASE_URL + '/admin/developer-message/delete/' + id, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast('বার্তাটি মুছে ফেলা হয়েছে।');
+            const card = document.getElementById('dev-msg-card-' + id);
+            if (card) {
+                card.remove();
+            }
+        } else {
+            showToast('বার্তা ডিলিট করতে সমস্যা হয়েছে।', false);
+        }
+    })
+    .catch(err => {
+        showToast('সার্ভার যোগাযোগে সমস্যা হয়েছে।', false);
+    });
 }
 
 // Submit New Director Form via AJAX
