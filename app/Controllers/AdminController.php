@@ -199,6 +199,14 @@ class AdminController
         $developerMessages = $this->db->query("SELECT * FROM `developer_messages` ORDER BY `id` DESC LIMIT 50")->fetchAll();
         $unreadDevMessagesCount = (int)$this->db->query("SELECT COUNT(*) FROM `developer_messages` WHERE `is_read` = 0")->fetchColumn();
 
+        // Fetch all 218 teachers nationwide with associated director info
+        $allTeachers = $this->db->query("
+            SELECT t.*, d.name as director_name, d.district_name, d.phone as director_phone
+            FROM `teachers` t
+            JOIN `directors` d ON t.director_id = d.id
+            ORDER BY d.district_name ASC, t.id ASC
+        ")->fetchAll();
+
         return new Response(View::render('admin/dashboard', [
             'title'                  => 'অ্যাডমিন ড্যাশবোর্ড ও পরিচালক কমান্ড হাব | কারিয়ানা কুরআন',
             'stats'                  => [
@@ -211,6 +219,7 @@ class AdminController
             ],
             'recentAdmissions'       => $recentAdmissions,
             'allDirectors'           => $allDirectors,
+            'allTeachers'            => $allTeachers,
             'divisions'              => $divisions,
             'statusCounts'           => $statusCounts,
             'developerMessages'      => $developerMessages,

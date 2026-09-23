@@ -35,7 +35,7 @@ class AuthController
             if (($user['role'] ?? '') === 'admin') {
                 return Response::redirect('/admin');
             }
-            return Response::redirect('/');
+            return Response::redirect('/profile');
         }
         if (Session::has('manager')) {
             return Response::redirect('/manager/dashboard');
@@ -141,9 +141,9 @@ class AuthController
                 return Response::redirect('/admin');
             }
 
-            // Normal user / student stays directly on the frontend
-            Session::flash('success', 'স্বাগতম, ' . $user['name'] . '! কারিয়ানা কুরআনে আপনাকে স্বাগতম।');
-            return Response::redirect($redirectUrl ?: '/');
+            // Normal user / student redirected to dedicated student portal
+            Session::flash('success', 'স্বাগতম, ' . $user['name'] . '! কারিয়ানা কুরআন শিক্ষার্থী পোর্টালে আপনাকে স্বাগতম।');
+            return Response::redirect($redirectUrl ?: '/profile');
         }
 
         // 2. Check Operations & Accounts Managers in `managers` table
@@ -319,7 +319,7 @@ class AuthController
             ]);
 
             Session::flash('success', "আলহামদুলিল্লাহ! আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে। স্বাগতম, {$name}!");
-            return Response::redirect('/courses');
+            return Response::redirect('/profile');
         } catch (\Throwable $e) {
             Session::flash('error', 'রেজিস্ট্রেশনে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
             return Response::redirect('/login?tab=register');

@@ -156,6 +156,42 @@
     <?php endif; ?>
 
     <!-- Top Breaking News / Prayer Ticker -->
+    <?php
+    $authLabel = 'প্রবেশ / লগইন';
+    $authUrl = ($baseUrl ?? '') . '/login';
+    $authRoleBadge = '';
+    $isAuthed = false;
+
+    if (\Core\Session::isLoggedIn()) {
+        $currUser = \Core\Session::getUser();
+        $isAuthed = true;
+        if (($currUser['role'] ?? '') === 'admin') {
+            $authLabel = 'অ্যাডমিন কন্ট্রোল';
+            $authUrl = ($baseUrl ?? '') . '/admin';
+            $authRoleBadge = 'এডমিন';
+        } else {
+            $authLabel = htmlspecialchars($currUser['name'] ?? 'শিক্ষার্থী প্রোফাইল');
+            $authUrl = ($baseUrl ?? '') . '/profile';
+            $authRoleBadge = 'শিক্ষার্থী';
+        }
+    } elseif (\Core\Session::has('director_id')) {
+        $isAuthed = true;
+        $authLabel = htmlspecialchars(\Core\Session::get('director_name') ?? 'পরিচালক ড্যাশবোর্ড');
+        $authUrl = ($baseUrl ?? '') . '/director/dashboard';
+        $authRoleBadge = 'পরিচালক';
+    } elseif (\Core\Session::has('teacher')) {
+        $isAuthed = true;
+        $tSess = \Core\Session::get('teacher');
+        $authLabel = htmlspecialchars($tSess['name'] ?? 'শিক্ষক ড্যাশবোর্ড');
+        $authUrl = ($baseUrl ?? '') . '/teacher/dashboard';
+        $authRoleBadge = 'মুয়াল্লিম';
+    } elseif (\Core\Session::has('manager')) {
+        $isAuthed = true;
+        $authLabel = 'ম্যানেজার ডেস্ক';
+        $authUrl = ($baseUrl ?? '') . '/manager/dashboard';
+        $authRoleBadge = 'ব্যবস্থাপক';
+    }
+    ?>
     <div id="topTickerBar" class="bg-emerald-night text-white text-xs sm:text-sm py-1 sm:py-1.5 px-3 sm:px-4 border-b border-gold-deep/30 flex items-center h-[26px] sm:h-auto overflow-hidden">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-2 space-x-reverse overflow-hidden whitespace-nowrap">
@@ -172,12 +208,15 @@
                     ১৪ রবিউল আউয়াল, ১৪৪৬ হিজরী
                 </span>
                 <span class="text-emerald-600">|</span>
-                <a href="<?= $baseUrl ?? '' ?>/login" 
+                <a href="<?= $authUrl ?>" 
                    class="text-amber-300 hover:text-white font-bold flex items-center bg-emerald-900/80 px-3 py-1 rounded-full border border-gold-rich/40 transition text-xs shadow-sm">
                     <svg class="w-3.5 h-3.5 mr-1.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    প্রবেশ / লগইন
+                    <?php if ($authRoleBadge): ?>
+                        <span class="px-1.5 py-0.2 bg-gold-rich text-white text-[9px] font-bold rounded mr-1.5"><?= $authRoleBadge ?></span>
+                    <?php endif; ?>
+                    <?= $authLabel ?>
                 </a>
             </div>
         </div>
@@ -244,13 +283,16 @@
 
                     <a href="<?= $baseUrl ?? '' ?>/blog" class="hover:text-amber-300 transition py-2 border-b-2 border-transparent hover:border-amber-300">ব্লগ</a>
 
-                    <!-- Direct Universal Single Login Link -->
-                    <a href="<?= $baseUrl ?? '' ?>/login" 
+                    <!-- Dynamic Multi-Role Profile / Login Link -->
+                    <a href="<?= $authUrl ?>" 
                        class="bg-emerald-night/80 hover:bg-emerald-night border border-gold-rich/50 text-amber-300 px-4 py-2 rounded-full font-bold text-xs flex items-center transition shadow-sm">
                         <svg class="w-3.5 h-3.5 mr-1.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        প্রবেশ / লগইন
+                        <?php if ($authRoleBadge): ?>
+                            <span class="px-1.5 py-0.2 bg-gold-rich text-white text-[9px] font-bold rounded mr-1.5"><?= $authRoleBadge ?></span>
+                        <?php endif; ?>
+                        <?= $authLabel ?>
                     </a>
                     
                     <a href="<?= $baseUrl ?? '' ?>/books" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-5 py-2 rounded-full font-bold text-xs shadow-lg shadow-gold-rich/30 transition transform hover:-translate-y-0.5 flex items-center">
@@ -348,7 +390,7 @@
     $isCourses = str_starts_with($currentUri, '/courses');
     $isBooks = str_starts_with($currentUri, '/books');
     $isPrayer = str_starts_with($currentUri, '/prayer-times') || str_starts_with($currentUri, '/tasbeeh') || str_starts_with($currentUri, '/zakat');
-    $isLogin = str_starts_with($currentUri, '/login') || str_starts_with($currentUri, '/admin') || str_starts_with($currentUri, '/directors/login') || str_starts_with($currentUri, '/teacher/login') || str_starts_with($currentUri, '/manager/login');
+    $isProfileActive = str_starts_with($currentUri, '/profile') || str_starts_with($currentUri, '/director/dashboard') || str_starts_with($currentUri, '/teacher/dashboard') || str_starts_with($currentUri, '/admin') || str_starts_with($currentUri, '/login') || str_starts_with($currentUri, '/manager/dashboard');
     ?>
     <div class="bottom-nav-wrapper" role="navigation" aria-label="মোবাইল নেভিগেশন">
         <nav class="bottom-nav">
@@ -385,12 +427,12 @@
                     <span>নামাজ</span>
                 </a>
 
-                <!-- 5. Profile / Login (প্রোফাইল) -->
-                <a href="<?= $baseUrl ?? '' ?>/login" class="bottom-nav-item <?= $isLogin ? 'is-active' : '' ?>">
+                <!-- 5. Profile / Multi-Role Portal (প্রোফাইল) -->
+                <a href="<?= $authUrl ?>" class="bottom-nav-item <?= $isProfileActive ? 'is-active' : '' ?>">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    <span>প্রোফাইল</span>
+                    <span><?= $authRoleBadge ?: 'প্রোফাইল' ?></span>
                 </a>
             </div>
 

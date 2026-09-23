@@ -1,270 +1,326 @@
 <?php
 /**
- * Teacher Dashboard View - Kariana Quran
+ * Dedicated Teacher / Muallim Dashboard View - Kariana Quran
+ * Re-Architected as an Ultra-Simple, Zero-Confusion Mobile App UI
  */
 $csrfToken = \Core\Csrf::getToken();
+$baseUrl = isset($baseUrl) ? rtrim($baseUrl, '/') : '';
+$success = \Core\Session::flash('success');
+$error = \Core\Session::flash('error');
 ?>
-<div class="container mx-auto px-4 py-8">
-    <!-- Top Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-6 border-b border-[#e5ddcb] mb-8">
-        <div>
-            <div class="inline-flex items-center px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-full text-xs font-bold mb-2">
-                <i class="fas fa-chalkboard-user mr-1.5 text-gold-deep"></i> কারিয়ানা মুয়াল্লিম পোর্টাল
+<div class="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl" x-data="{ activeTab: 'sabak', showStudentModal: false }">
+
+    <!-- Teacher App Header Card -->
+    <div class="bg-gradient-to-br from-emerald-night via-emerald-deep to-emerald-night rounded-3xl p-5 sm:p-7 text-white shadow-xl mb-6 border border-gold-rich/40 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+            <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <!-- Avatar -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-gold-rich to-amber-300 text-emerald-night flex items-center justify-center text-3xl font-extrabold shadow-lg border-2 border-white/40 shrink-0">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+
+                <div>
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mb-1.5">
+                        <span class="px-2.5 py-0.5 bg-gold-rich text-white text-[11px] font-black rounded-full shadow-sm">
+                            মুয়াল্লিমুল কুরআন
+                        </span>
+                        <span class="px-2.5 py-0.5 bg-emerald-800 text-emerald-100 text-[11px] font-bold rounded-full border border-emerald-600">
+                            <i class="fas fa-mosque text-amber-300 mr-1"></i> <?= htmlspecialchars($teacher['area_name']) ?>
+                        </span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                        <?= htmlspecialchars($teacher['name']) ?>
+                    </h1>
+                    <p class="text-xs text-emerald-100/80 mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <span><i class="fas fa-phone-alt text-amber-300 mr-1"></i> <?= htmlspecialchars($teacher['phone']) ?></span>
+                        <span class="opacity-40">|</span>
+                        <span><i class="fas fa-id-badge text-amber-300 mr-1"></i> আইডি: <?= htmlspecialchars($teacher['username'] ?? '') ?></span>
+                    </p>
+                </div>
             </div>
-            <h1 class="text-3xl font-extrabold text-emerald-night">শিক্ষক ড্যাশবোর্ড</h1>
-            <p class="text-sm text-slate-600 mt-0.5">
-                স্বাগতম, <strong><?= htmlspecialchars($teacher['name']) ?></strong> | এলাকা/মাদ্রাসা: <?= htmlspecialchars($teacher['area_name']) ?>
-            </p>
-        </div>
-        <div class="mt-4 md:mt-0 flex gap-2.5">
-            <a href="tel:<?= htmlspecialchars($teacher['director_phone']) ?>" class="bg-emerald-deep hover:bg-emerald-night text-white px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold shadow transition flex items-center">
-                <i class="fas fa-phone mr-2 text-gold-shimmer"></i> জেলা পরিচালককে কল করুন
-            </a>
-            <a href="<?= $baseUrl ?>/teacher/logout" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition flex items-center">
-                <i class="fas fa-sign-out-alt mr-1"></i> প্রস্থান
+
+            <!-- Logout -->
+            <a href="<?= $baseUrl ?>/teacher/logout" class="bg-red-500/20 hover:bg-red-600/40 border border-red-400/40 text-red-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center shadow-sm">
+                <i class="fas fa-sign-out-alt mr-1.5"></i> প্রস্থান
             </a>
         </div>
     </div>
 
     <!-- Flash Messages -->
-    <?php if ($success = \Core\Session::flash('success')): ?>
-    <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold flex items-center shadow-sm">
-        <i class="fas fa-check-circle text-xl text-emerald-600 mr-3"></i> <?= htmlspecialchars($success) ?>
-    </div>
-    <?php endif; ?>
-    <?php if ($error = \Core\Session::flash('error')): ?>
-    <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-300 text-red-900 font-bold flex items-center shadow-sm">
-        <i class="fas fa-exclamation-circle text-xl text-red-600 mr-3"></i> <?= htmlspecialchars($error) ?>
+    <?php if ($success): ?>
+    <div class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold flex items-center shadow-sm text-sm">
+        <i class="fas fa-check-circle text-xl text-emerald-600 mr-3 shrink-0"></i>
+        <span><?= htmlspecialchars($success) ?></span>
     </div>
     <?php endif; ?>
 
-    <!-- Assigned District Director Card -->
-    <div class="bg-[#f7f3e8] border-2 border-gold-rich/50 rounded-2xl p-6 mb-8 shadow-sm">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center space-x-4">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-deep text-gold-shimmer flex items-center justify-center text-2xl font-bold border-2 border-gold-rich/40 shadow-inner shrink-0">
+    <?php if ($error): ?>
+    <div class="mb-5 p-4 rounded-2xl bg-red-50 border border-red-300 text-red-900 font-bold flex items-center shadow-sm text-sm">
+        <i class="fas fa-exclamation-circle text-xl text-red-600 mr-3 shrink-0"></i>
+        <span><?= htmlspecialchars($error) ?></span>
+    </div>
+    <?php endif; ?>
+
+    <!-- Prominent Assigned District Director Contact Card -->
+    <div class="bg-gradient-to-r from-[#fefbf3] to-[#f7f2e4] border-2 border-gold-rich rounded-3xl p-5 sm:p-6 mb-6 shadow-md">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-night text-gold-shimmer flex items-center justify-center text-2xl font-bold border-2 border-gold-rich/40 shadow shrink-0">
                     <i class="fas fa-user-tie"></i>
                 </div>
                 <div>
-                    <span class="text-xs text-gold-deep font-bold uppercase tracking-wider block">আপনার দায়িত্বপ্রাপ্ত জেলা পরিচালক</span>
-                    <h3 class="text-xl font-extrabold text-emerald-night">
+                    <span class="text-[11px] text-gold-deep font-black uppercase tracking-wider block">আপনার দায়িত্বপ্রাপ্ত জেলা পরিচালক</span>
+                    <h3 class="text-lg sm:text-xl font-black text-emerald-night leading-tight">
                         <?= htmlspecialchars($teacher['director_name']) ?>
                     </h3>
                     <p class="text-xs text-slate-600 mt-0.5">
-                        <i class="fas fa-map-marker-alt text-emerald-vibrant mr-1"></i> জেলা: <strong><?= htmlspecialchars($teacher['district_name']) ?></strong> | পদবী: <?= htmlspecialchars($teacher['director_designation']) ?>
+                        <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i> জেলা: <strong><?= htmlspecialchars($teacher['district_name']) ?></strong>
                     </p>
                 </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="tel:<?= htmlspecialchars($teacher['director_phone']) ?>" class="bg-white hover:bg-slate-50 border border-[#d6ccb9] text-emerald-night px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center">
-                    <i class="fas fa-phone-alt text-emerald-vibrant mr-2"></i> <?= htmlspecialchars($teacher['director_phone']) ?>
+            <!-- 1-Tap Touch Call & WhatsApp Buttons -->
+            <div class="flex items-center gap-2">
+                <a href="tel:<?= htmlspecialchars($teacher['director_phone']) ?>" class="flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-xs sm:text-sm font-black shadow-md transition flex items-center justify-center gap-1.5">
+                    <i class="fas fa-phone-alt"></i> সরাসরি কল
                 </a>
                 <?php if (!empty($teacher['director_whatsapp'])): ?>
-                <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $teacher['director_whatsapp']) ?>" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center">
-                    <i class="fab fa-whatsapp mr-1.5 text-base"></i> হোয়াটসঅ্যাপ
+                <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $teacher['director_whatsapp']) ?>" target="_blank" class="flex-1 sm:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-black shadow-md transition flex items-center justify-center gap-1.5">
+                    <i class="fab fa-whatsapp text-base"></i> হোয়াটসঅ্যাপ
                 </a>
                 <?php endif; ?>
             </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-[#e8deca] text-xs text-slate-700 leading-relaxed">
-            <i class="fas fa-info-circle text-gold-deep mr-1"></i> <strong>ক্বারীয়ানা সাংগঠনিক নীতি:</strong> সম্মানিত শিক্ষক মহোদয় যেকোনো বই, কায়দা বা প্রকাশনার জন্য সরাসরি নিজ জেলা পরিচালকের নিকট আবেদন করবেন। শিক্ষার্থীরা কুরআন মাজীদ খতম বা নাজেরা সম্পন্ন করলে পরিচালকের উপস্থিতিতে <strong>সবক ক্লাস (Sabak Class)</strong> ও দোয়া মাহফিলের তারিখ নির্ধারণ করবেন।
+        <p class="mt-3 pt-3 border-t border-[#e8deca] text-[11px] sm:text-xs text-slate-600 leading-relaxed flex items-center">
+            <i class="fas fa-info-circle text-gold-deep mr-1.5 shrink-0"></i>
+            <span>যেকোনো কিতাব রিকুইজিশন বা সমাপনী সবক ক্লাসের শিডিউলের জন্য জেলা পরিচালকের পরামর্শ গ্রহণ করুন।</span>
+        </p>
+    </div>
+
+    <!-- 2 Touch KPI Cards: Students & Requests -->
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+        <div @click="showStudentModal = true" class="bg-[#fffefb] p-4 rounded-2xl border-2 border-emerald-600/30 hover:border-gold-rich shadow-sm cursor-pointer transition transform active:scale-95 text-center">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">আমার শিক্ষার্থী</p>
+            <h3 class="text-2xl sm:text-3xl font-black text-emerald-night mt-0.5">
+                <?= \Core\BengaliHelper::toBengaliNumber($teacher['total_students']) ?> <span class="text-xs font-bold text-slate-500">জন</span>
+            </h3>
+            <span class="inline-block mt-1 text-[11px] text-gold-deep font-bold hover:underline">
+                <i class="fas fa-edit mr-0.5"></i> সংখ্যা পরিবর্তন করুন
+            </span>
+        </div>
+
+        <div class="bg-[#fffefb] p-4 rounded-2xl border-2 border-emerald-600/30 shadow-sm text-center">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">মোট প্রেরিত আবেদন</p>
+            <h3 class="text-2xl sm:text-3xl font-black text-gold-deep mt-0.5">
+                <?= \Core\BengaliHelper::toBengaliNumber(count($activities ?? [])) ?> <span class="text-xs font-bold text-slate-500">টি</span>
+            </h3>
+            <span class="inline-block mt-1 text-[11px] text-slate-400 font-bold">
+                কার্যক্রম হিস্ট্রি
+            </span>
         </div>
     </div>
 
-    <!-- 3 Action Forms Grid: 1. Sabak Class, 2. Book Order, 3. Problem Escalation -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <!-- 1. Sabak Class Booking -->
-        <div class="bg-[#fffefb] rounded-2xl border-2 border-emerald-600/40 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg mb-3">
+    <!-- Student Count Modal (Alpine.js) -->
+    <div x-show="showStudentModal" x-cloak class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#fffefb] rounded-3xl border-2 border-gold-rich p-6 max-w-sm w-full shadow-2xl" @click.away="showStudentModal = false">
+            <h3 class="font-black text-base text-emerald-night mb-1 flex items-center">
+                <i class="fas fa-user-graduate text-gold-rich mr-2"></i> শিক্ষার্থী সংখ্যা আপডেট
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">আপনার মাদরাসা বা মক্তবের বর্তমান শিক্ষার্থীর সংখ্যা লিখুন।</p>
+
+            <form action="<?= $baseUrl ?>/teacher/students/update" method="POST" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">মোট শিক্ষার্থীর সংখ্যা</label>
+                    <input type="number" min="0" name="total_students" value="<?= htmlspecialchars((string)$teacher['total_students']) ?>" required class="w-full px-4 py-2.5 border-2 border-[#d6ccb9] rounded-xl text-base font-black text-center bg-[#fdfbf7] outline-none focus:border-gold-rich">
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="button" @click="showStudentModal = false" class="flex-1 py-2.5 border border-slate-300 rounded-xl text-xs font-bold text-slate-600">বাতিল</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-night text-amber-300 hover:text-white rounded-xl text-xs font-black shadow transition">
+                        সংরক্ষণ করুন
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3 Big Action Navigation Tabs for Muallim -->
+    <div class="flex items-center space-x-2 bg-[#ece4d0] p-1.5 rounded-2xl mb-6 border border-[#dfd4bd]">
+        <button @click="activeTab = 'sabak'" 
+                :class="activeTab === 'sabak' ? 'bg-[#fffefb] text-emerald-night font-black shadow-md' : 'text-slate-600 font-bold hover:text-emerald-night'" 
+                class="flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5">
+            <i class="fas fa-graduation-cap text-gold-deep"></i>
+            <span>সবক ক্লাস আবেদন</span>
+        </button>
+
+        <button @click="activeTab = 'books'" 
+                :class="activeTab === 'books' ? 'bg-[#fffefb] text-emerald-night font-black shadow-md' : 'text-slate-600 font-bold hover:text-emerald-night'" 
+                class="flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5">
+            <i class="fas fa-boxes-stacked text-gold-deep"></i>
+            <span>কিতাব চাহিদা</span>
+        </button>
+
+        <button @click="activeTab = 'history'" 
+                :class="activeTab === 'history' ? 'bg-[#fffefb] text-emerald-night font-black shadow-md' : 'text-slate-600 font-bold hover:text-emerald-night'" 
+                class="flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5">
+            <i class="fas fa-clock-rotate-left text-gold-deep"></i>
+            <span>আবেদনের অবস্থা</span>
+        </button>
+    </div>
+
+    <!-- Tab 1: Sabak Class Booking Form -->
+    <div x-show="activeTab === 'sabak'" x-cloak class="space-y-4">
+        <div class="bg-[#fffefb] rounded-3xl border-2 border-emerald-600/30 p-5 sm:p-6 shadow-sm">
+            <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-[#e5ddcb]">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-900 flex items-center justify-center text-lg shrink-0">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
-                <h3 class="font-bold text-lg text-emerald-night mb-1">সবক ক্লাস শিডিউল আবেদন</h3>
-                <p class="text-xs text-slate-500 mb-4">
-                    শিক্ষার্থীরা কুরআন সম্পন্ন করলে জেলা পরিচালকের উপস্থিতিতে সমাপনী সবক ক্লাসের তারিখ আবেদন করুন।
-                </p>
-
-                <form action="<?= $baseUrl ?>/teacher/activity" method="POST" class="space-y-3">
-                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                    <input type="hidden" name="activity_type" value="sabak_class">
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">সমাপনী ক্লাসের বিষয়</label>
-                        <input type="text" name="title" value="কুরআন সমাপ্তি ও চূড়ান্ত সবক ক্লাস আবেদন" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">সমাপ্তকারী শিক্ষার্থীর সংখ্যা</label>
-                        <input type="number" min="1" name="quantity" value="20" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs font-bold bg-[#fdfbf7]">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">প্রস্তাবিত তারিখ</label>
-                        <input type="date" name="preferred_date" value="<?= date('Y-m-d', strtotime('+7 days')) ?>" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">বিস্তারিত বিবরণ ও স্থান</label>
-                        <textarea name="details" rows="2" required placeholder="স্থান ও সময়ের প্রস্তাবনা..." class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]"></textarea>
-                    </div>
-
-                    <button type="submit" class="w-full bg-emerald-deep hover:bg-emerald-night text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center">
-                        <i class="fas fa-calendar-check mr-1.5 text-gold-shimmer"></i> সবক ক্লাসের তারিখ পাঠান
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- 2. Book Order Requisition to District Director -->
-        <div class="bg-[#fffefb] rounded-2xl border-2 border-gold-rich/40 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-                <div class="w-10 h-10 rounded-xl bg-amber-100 text-gold-deep flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-book-bookmark"></i>
+                <div>
+                    <h3 class="font-black text-base text-emerald-night">সমাপনী সবক ক্লাস ও দোয়া মাহফিলের আবেদন</h3>
+                    <p class="text-xs text-slate-500">শিক্ষার্থীরা কুরআন সম্পন্ন করলে জেলা পরিচালকের উপস্থিতিতে সমাপনী ক্লাসের তারিখ আবেদন করুন।</p>
                 </div>
-                <h3 class="font-bold text-lg text-emerald-night mb-1">পরিচালকের নিকট বই অর্ডার</h3>
-                <p class="text-xs text-slate-500 mb-4">
-                    নতুন ব্যাচ বা ক্লাসের শিক্ষার্থীদের জন্য প্রয়োজনীয় কারিয়ানা কায়দা, আমপারা ও কুরআন অর্ডার করুন।
-                </p>
-
-                <form action="<?= $baseUrl ?>/teacher/activity" method="POST" class="space-y-3">
-                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                    <input type="hidden" name="activity_type" value="book_order">
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">অর্ডারের শিরোনাম</label>
-                        <input type="text" name="title" value="নতুন ব্যাচের শিক্ষার্থীদের জন্য বই প্রয়োজন" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">বই নির্বাচন করুন</label>
-                        <select name="details" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]">
-                            <?php foreach ($books as $b): ?>
-                            <option value="<?= htmlspecialchars($b['title']) ?>"><?= htmlspecialchars($b['title']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">প্রয়োজনীয় সংখ্যা (কপি)</label>
-                        <input type="number" min="1" name="quantity" value="25" required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs font-bold bg-[#fdfbf7]">
-                    </div>
-
-                    <div class="pt-2">
-                        <button type="submit" class="w-full bg-gold-rich hover:bg-gold-deep text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center">
-                            <i class="fas fa-cart-shopping mr-1.5"></i> পরিচালকের কাছে অর্ডার পাঠান
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- 3. Problem Escalation to District Director -->
-        <div class="bg-[#fffefb] rounded-2xl border-2 border-slate-300 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-lg mb-3">
-                    <i class="fas fa-circle-question"></i>
+            <form action="<?= $baseUrl ?>/teacher/activity" method="POST" class="space-y-3.5">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                <input type="hidden" name="activity_type" value="sabak_class">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">সমাপনী ক্লাসের শিরোনাম <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" value="কুরআন সমাপ্তি ও চূড়ান্ত সবক ক্লাস আবেদন" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs font-bold bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">
                 </div>
-                <h3 class="font-bold text-lg text-emerald-night mb-1">শিক্ষাদান ও স্থানীয় সমস্যা রিপোর্ট</h3>
-                <p class="text-xs text-slate-500 mb-4">
-                    মাখরাজ উচ্চারণ, স্থানীয় মাদ্রাসার সমস্যা বা ক্লাসরুম ব্যবস্থাপনায় পরিচালকের পরামর্শ চান।
-                </p>
 
-                <form action="<?= $baseUrl ?>/teacher/activity" method="POST" class="space-y-3">
-                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                    <input type="hidden" name="activity_type" value="problem_report">
-
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">সমস্যার বিষয়</label>
-                        <input type="text" name="title" placeholder="যেমন: মাখরাজ দুর্বল শিক্ষার্থীদের বিশেষ কৌশল..." required class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">সমাপ্তকারী শিক্ষার্থীর সংখ্যা <span class="text-red-500">*</span></label>
+                        <input type="number" min="1" name="quantity" value="20" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs font-black bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">বিস্তারিত বিবরণ</label>
-                        <textarea name="details" rows="4" required placeholder="সমস্যার বিস্তারিত লিখুন যাতে জেলা পরিচালক প্রয়োজনীয় দিকনির্দেশনা দিতে পারেন..." class="w-full px-3 py-2 border border-[#d6ccb9] rounded-lg text-xs bg-[#fdfbf7]"></textarea>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">কাঙ্ক্ষিত তারিখ</label>
+                        <input type="date" name="preferred_date" class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">
                     </div>
+                </div>
 
-                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center">
-                        <i class="fas fa-paper-plane mr-1.5"></i> পরামর্শ চেয়ে পাঠান
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">বিস্তারিত বিবরণ / বিশেষ মন্তব্য <span class="text-red-500">*</span></label>
+                    <textarea name="details" rows="3" required placeholder="শ্রদ্ধেয় পরিচালক মহোদয়, আমাদের মাদরাসায় ২০ জন শিক্ষার্থী নাজেরা সম্পন্ন করেছে..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">শ্রদ্ধেয় পরিচালক মহোদয়, আমাদের মাদরাসায় শিক্ষার্থীরা কুরআন শিক্ষা সমাপ্ত করেছে। তাদের সমাপনী সবক ও দোয়া মাহফিলে আপনার উপস্থিতি কামনা করছি।</textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-emerald-night to-emerald-deep text-amber-300 hover:text-white rounded-2xl text-xs font-black shadow-lg transition">
+                        <i class="fas fa-paper-plane mr-1.5"></i> সবক ক্লাসের আবেদন পাঠান
                     </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Activities & Submissions History Table -->
-    <div class="bg-[#fffefb] rounded-2xl border border-[#e4dcce] shadow-sm overflow-hidden mb-8">
-        <div class="p-5 border-b border-[#ece4d6] bg-[#fbf9f4] flex items-center justify-between">
-            <h3 class="font-bold text-emerald-night text-base flex items-center">
-                <i class="fas fa-clock-rotate-left text-gold-rich mr-2"></i> প্রেরিত আবেদন ও জেলা পরিচালকের সিদ্ধান্তের ইতিহাস
-            </h3>
-            <span class="text-xs text-slate-500">মোট আবেদন: <?= count($activities) ?> টি</span>
-        </div>
+    <!-- Tab 2: Book Requisition Form -->
+    <div x-show="activeTab === 'books'" x-cloak class="space-y-4">
+        <div class="bg-[#fffefb] rounded-3xl border-2 border-emerald-600/30 p-5 sm:p-6 shadow-sm">
+            <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-[#e5ddcb]">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-gold-deep flex items-center justify-center text-lg shrink-0">
+                    <i class="fas fa-book-quran"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base text-emerald-night">কিতাব ও প্রকাশনা চাহিদা প্রেরণ</h3>
+                    <p class="text-xs text-slate-500">আপনার শিক্ষার্থীদের জন্য জেলা পরিচালকের মাধ্যমে কারিয়ানা কিতাব সংগ্রহ করুন।</p>
+                </div>
+            </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-                <thead>
-                    <tr class="bg-[#f4efe4] border-b border-[#e5ddcd] text-slate-600 font-extrabold uppercase">
-                        <th class="py-3 px-4">তারিখ</th>
-                        <th class="py-3 px-4">ধরন</th>
-                        <th class="py-3 px-4">শিরোনাম ও বিবরণ</th>
-                        <th class="py-3 px-4">সংখ্যা / প্রস্তাবিত তারিখ</th>
-                        <th class="py-3 px-4">জেলা পরিচালকের মন্তব্য</th>
-                        <th class="py-3 px-4 text-right">অবস্থা (Status)</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    <?php if (empty($activities)): ?>
-                    <tr>
-                        <td colspan="6" class="py-6 text-center text-slate-400">
-                            এখনো কোনো আবেদন পাঠানো হয়নি
-                        </td>
-                    </tr>
-                    <?php else: ?>
-                    <?php foreach ($activities as $act): ?>
-                    <tr class="hover:bg-slate-50">
-                        <td class="py-3 px-4 text-slate-500 font-mono whitespace-nowrap">
-                            <?= date('d M, Y', strtotime($act['created_at'])) ?>
-                        </td>
-                        <td class="py-3 px-4 whitespace-nowrap">
-                            <?php if ($act['activity_type'] === 'sabak_class'): ?>
-                            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">সবক ক্লাস</span>
-                            <?php elseif ($act['activity_type'] === 'book_order'): ?>
-                            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">বই অর্ডার</span>
-                            <?php else: ?>
-                            <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px]">পরামর্শ / রিপোর্ট</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="py-3 px-4">
-                            <h5 class="font-bold text-slate-900 text-xs"><?= htmlspecialchars($act['title']) ?></h5>
-                            <p class="text-slate-500 text-[11px] line-clamp-2 mt-0.5"><?= htmlspecialchars($act['details']) ?></p>
-                        </td>
-                        <td class="py-3 px-4 whitespace-nowrap font-mono text-slate-700">
-                            <?php if (!empty($act['quantity'])): ?>
-                            <span class="font-bold"><?= \Core\BengaliHelper::toBengaliNumber($act['quantity']) ?> টি/জন</span>
-                            <?php endif; ?>
-                            <?php if (!empty($act['preferred_date'])): ?>
-                            <span class="block text-[11px] text-slate-500">তারিখ: <?= htmlspecialchars($act['preferred_date']) ?></span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="py-3 px-4 text-slate-600 text-xs">
-                            <?= !empty($act['director_notes']) ? htmlspecialchars($act['director_notes']) : '<span class="text-slate-400">অপেক্ষমাণ</span>' ?>
-                        </td>
-                        <td class="py-3 px-4 text-right whitespace-nowrap">
-                            <?php if ($act['status'] === 'approved' || $act['status'] === 'scheduled'): ?>
-                            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">অনুমোদিত</span>
-                            <?php elseif ($act['status'] === 'completed'): ?>
-                            <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px]">সম্পন্ন</span>
-                            <?php else: ?>
-                            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">বিবেচনাধীন</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <form action="<?= $baseUrl ?>/teacher/activity" method="POST" class="space-y-3.5">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                <input type="hidden" name="activity_type" value="book_order">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">কিতাবের নাম নির্বাচন করুন <span class="text-red-500">*</span></label>
+                    <select name="title" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs font-black bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">
+                        <?php if (!empty($books)): ?>
+                            <?php foreach ($books as $b): ?>
+                                <option value="<?= htmlspecialchars($b['title']) ?>"><?= htmlspecialchars($b['title']) ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="কারিয়ানা নূরানী কুরআন">কারিয়ানা নূরানী কুরআন</option>
+                            <option value="কারিয়ানা সহজ কায়দা">কারিয়ানা সহজ কায়দা</option>
+                            <option value="৩০ দিনে কুরআন শিক্ষা">৩০ দিনে কুরআন শিক্ষা</option>
+                        <?php endif; ?>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">প্রয়োজনীয় কপির সংখ্যা <span class="text-red-500">*</span></label>
+                    <div class="flex items-center gap-2">
+                        <select name="quantity" class="flex-1 px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs font-black bg-[#fdfbf7] outline-none">
+                            <option value="10">১০ কপি</option>
+                            <option value="20" selected>২০ কপি</option>
+                            <option value="30">৩০ কপি</option>
+                            <option value="50">৫০ কপি</option>
+                            <option value="100">১০০ কপি</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">চাহিদার বিস্তারিত বিবরণ <span class="text-red-500">*</span></label>
+                    <textarea name="details" rows="3" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] text-xs bg-[#fdfbf7] outline-none focus:ring-2 focus:ring-gold-rich">শ্রদ্ধেয় পরিচালক মহোদয়, আমাদের নতুন ব্যাচের শিক্ষার্থীদের জন্য উল্লিখিত কিতাবের জরুরি প্রয়োজন।</textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-emerald-night to-emerald-deep text-amber-300 hover:text-white rounded-2xl text-xs font-black shadow-lg transition">
+                        <i class="fas fa-boxes-stacked mr-1.5"></i> কিতাবের চাহিদা পাঠান
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+
+    <!-- Tab 3: Activities & Status Tracker History -->
+    <div x-show="activeTab === 'history'" x-cloak class="space-y-4">
+        <h3 class="text-base font-black text-emerald-night flex items-center">
+            <i class="fas fa-clock-rotate-left text-gold-deep mr-2"></i> আমার প্রেরিত আবেদন ও কার্যক্রমের তালিকা
+        </h3>
+
+        <?php if (!empty($activities)): ?>
+            <div class="space-y-3">
+                <?php foreach ($activities as $act): ?>
+                    <div class="bg-[#fffefb] rounded-2xl border-2 <?= $act['status'] === 'approved' ? 'border-emerald-500/40' : 'border-[#e4dccb]' ?> p-4 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black <?= $act['status'] === 'approved' ? 'bg-emerald-100 text-emerald-800' : ($act['status'] === 'scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-900') ?>">
+                                        <?= $act['status'] === 'approved' ? '✓ অনুমোদিত' : ($act['status'] === 'scheduled' ? '📅 তারিখ নির্ধারিত' : '⏳ অপেক্ষমান (পেন্ডিং)') ?>
+                                    </span>
+                                    <span class="text-[11px] text-slate-400">
+                                        <?= date('d M Y', strtotime($act['created_at'])) ?>
+                                    </span>
+                                </div>
+                                <h4 class="font-black text-sm text-emerald-night"><?= htmlspecialchars($act['title']) ?></h4>
+                                <p class="text-xs text-slate-600 mt-0.5"><?= htmlspecialchars($act['details']) ?></p>
+                                
+                                <?php if (!empty($act['director_notes'])): ?>
+                                    <div class="mt-2 p-2 bg-amber-50/80 rounded-xl border border-amber-200 text-xs text-amber-900 font-bold">
+                                        <i class="fas fa-comment-dots text-gold-deep mr-1"></i> পরিচালকের মন্তব্য: <?= htmlspecialchars($act['director_notes']) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="text-right shrink-0">
+                                <span class="text-xs font-bold text-slate-500">
+                                    পরিমাণ: <strong><?= \Core\BengaliHelper::toBengaliNumber($act['quantity'] ?? 0) ?></strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div class="bg-[#fffefb] rounded-3xl border-2 border-dashed border-[#dfd4bd] p-8 text-center text-xs text-slate-500">
+                আপনি এখনো কোনো আবেদন করেননি।
+            </div>
+        <?php endif; ?>
     </div>
 </div>

@@ -193,4 +193,29 @@ class TeacherController
         Session::flash('success', 'আলহামদুলিল্লাহ! আপনার আবেদনটি জেলা পরিচালকের নিকট সফলভাবে পাঠানো হয়েছে।');
         return Response::redirect('/teacher/dashboard');
     }
+
+    /**
+     * Teacher updates their student count
+     * URL: POST /teacher/students/update
+     */
+    public function updateStudentCount(Request $request): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $sessTeacher = Session::get('teacher');
+        $teacherId = (int)$sessTeacher['id'];
+        $count = (int)$request->post('total_students', 0);
+
+        if ($count < 0) {
+            $count = 0;
+        }
+
+        $stmt = $this->db->prepare("UPDATE `teachers` SET `total_students` = :cnt, `updated_at` = NOW() WHERE `id` = :id");
+        $stmt->execute(['cnt' => $count, 'id' => $teacherId]);
+
+        Session::flash('success', 'শিক্ষার্থীর সংখ্যা সফলভাবে হালনাগাদ করা হয়েছে।');
+        return Response::redirect('/teacher/dashboard');
+    }
 }

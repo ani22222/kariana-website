@@ -97,6 +97,22 @@ if (file_exists($routesFile)) {
         return $controller->logout();
     });
 
+    // --- Student & General User Profile Routes ---
+    $router->get('/profile', function (\Core\Request $request) {
+        $controller = new \App\Controllers\StudentController();
+        return $controller->dashboard($request);
+    });
+
+    $router->post('/profile/update', function (\Core\Request $request) {
+        $controller = new \App\Controllers\StudentController();
+        return $controller->updateProfile($request);
+    });
+
+    $router->post('/profile/password', function (\Core\Request $request) {
+        $controller = new \App\Controllers\StudentController();
+        return $controller->updatePassword($request);
+    });
+
     // Courses List
     $router->get('/courses', function (\Core\Request $request) {
         if (class_exists('\\App\\Controllers\\CourseController')) {
@@ -301,6 +317,16 @@ if (file_exists($routesFile)) {
         return $controller->updateTeacherActivity($request);
     });
 
+    $router->post('/director/teachers/create', function (\Core\Request $request) {
+        $controller = new \App\Controllers\DirectorController();
+        return $controller->createTeacher($request);
+    });
+
+    $router->post('/director/teachers/delete/{id}', function (\Core\Request $request, string $id) {
+        $controller = new \App\Controllers\DirectorController();
+        return $controller->deleteTeacher($request, $id);
+    });
+
     // --- Admin CMS & Marketing Integrations Routes ---
     $router->get('/admin', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
@@ -491,6 +517,11 @@ if (file_exists($routesFile)) {
     $router->post('/teacher/activity', function (\Core\Request $request) {
         $controller = new \App\Controllers\TeacherController();
         return $controller->submitActivity($request);
+    });
+
+    $router->post('/teacher/students/update', function (\Core\Request $request) {
+        $controller = new \App\Controllers\TeacherController();
+        return $controller->updateStudentCount($request);
     });
 
     // --- Global Maximum-Level SEO: Dynamic XML Sitemap ---

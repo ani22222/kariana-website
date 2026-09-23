@@ -88,6 +88,16 @@ $error = \Core\Session::getFlash('error');
             </div>
         </a>
 
+        <a href="#teachers-hub" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-emerald-vibrant hover:shadow-md hover:scale-[1.02] transition flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-gold-deep flex items-center justify-center font-bold shrink-0">
+                <i class="fas fa-chalkboard-user"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-800 text-sm">সকল শিক্ষকবৃন্দ</h4>
+                <p class="text-xs text-slate-400"><?= \Core\BengaliHelper::toBengaliNumber($stats['teachers'] ?? 218) ?> জন শিক্ষক</p>
+            </div>
+        </a>
+
         <a href="<?= $baseUrl ?>/admin/books" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-emerald-vibrant hover:shadow-md hover:scale-[1.02] transition flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-night flex items-center justify-center font-bold shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -987,6 +997,82 @@ $error = \Core\Session::getFlash('error');
     </div>
 </div>
 
+<!-- ========================================================================= -->
+<!-- NATIONWIDE TEACHERS HUB (সারাদেশের সকল শিক্ষক ও মুয়াল্লিম তালিকা) -->
+<!-- ========================================================================= -->
+<section id="teachers-hub" class="bg-[#fffefb] rounded-3xl shadow-sm border-2 border-[#e6dece] overflow-hidden mb-12">
+    <div class="bg-gradient-to-r from-emerald-night via-emerald-deep to-emerald-night px-6 py-6 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full bg-gold-rich text-white text-xs font-black uppercase tracking-wider shadow">সারাদেশের শিক্ষক তালিকা</span>
+                <span class="text-xs text-emerald-100/90 font-medium">৬৪ জেলার মোট <?= \Core\BengaliHelper::toBengaliNumber(count($allTeachers ?? [])) ?> জন শিক্ষক</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-white flex items-center">
+                <i class="fas fa-chalkboard-user mr-2.5 text-gold-rich"></i>
+                কেন্দ্রীয় শিক্ষক ও মুয়াল্লিম ডিরেক্টরি
+            </h2>
+            <p class="text-xs sm:text-sm text-emerald-100/90 mt-1">
+                প্রত্যেক জেলা পরিচালকের অধীনস্থ শিক্ষক, তাদের দায়িত্বপ্রাপ্ত এলাকা ও শিক্ষার্থী সংখ্যা এক নজরে পর্যবেক্ষণ করুন।
+            </p>
+        </div>
+
+        <!-- Search box -->
+        <div class="relative w-full sm:w-72">
+            <input type="text" id="teacherSearchInput" onkeyup="filterTeachersAdmin()" placeholder="শিক্ষকের নাম, মোবাইল বা জেলা..." class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-gold-rich/50 bg-emerald-950/80 text-white placeholder-emerald-200/60 outline-none focus:ring-2 focus:ring-gold-rich">
+        </div>
+    </div>
+
+    <div class="p-6">
+        <?php if (!empty($allTeachers)): ?>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="teachersGridAdmin">
+                <?php foreach ($allTeachers as $t): ?>
+                    <div class="teacher-admin-card bg-[#fffefb] rounded-2xl border-2 border-[#e6dcce] hover:border-gold-rich p-4 shadow-sm transition"
+                         data-name="<?= strtolower(htmlspecialchars($t['name'])) ?>"
+                         data-district="<?= strtolower(htmlspecialchars($t['district_name'] ?? '')) ?>"
+                         data-phone="<?= htmlspecialchars($t['phone']) ?>">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-sm border border-emerald-200 shrink-0">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-black text-sm text-emerald-night leading-tight"><?= htmlspecialchars($t['name']) ?></h4>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">
+                                        <i class="fas fa-map-pin text-gold-deep mr-1"></i> <?= htmlspecialchars($t['area_name']) ?>
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full shrink-0">
+                                <?= htmlspecialchars($t['status'] ?? 'active') === 'active' ? 'সক্রিয়' : 'প্রশিক্ষণ' ?>
+                            </span>
+                        </div>
+
+                        <div class="bg-[#fcfaf5] p-2.5 rounded-xl border border-[#efe6d5] my-2 text-xs flex justify-between items-center text-slate-700">
+                            <span>জেলা: <strong><?= htmlspecialchars($t['district_name'] ?? '') ?></strong></span>
+                            <span>ছাত্র: <strong><?= \Core\BengaliHelper::toBengaliNumber($t['total_students']) ?> জন</strong></span>
+                        </div>
+
+                        <div class="text-[11px] text-slate-500 mb-2">
+                            পরিচালক: <strong class="text-emerald-night"><?= htmlspecialchars($t['director_name'] ?? '') ?></strong>
+                        </div>
+
+                        <div class="pt-2 border-t border-[#ede5d6] flex items-center gap-2">
+                            <a href="tel:<?= htmlspecialchars($t['phone']) ?>" class="flex-1 py-1.5 px-2 bg-emerald-50 hover:bg-emerald-night hover:text-white border border-emerald-300 text-emerald-900 rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1">
+                                <i class="fas fa-phone-alt text-emerald-600"></i> <?= htmlspecialchars($t['phone']) ?>
+                            </a>
+                            <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $t['phone']) ?>" target="_blank" class="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition flex items-center justify-center text-xs">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-xs text-slate-500 text-center py-6">কোনো শিক্ষকের তথ্য পাওয়া যায়নি।</p>
+        <?php endif; ?>
+    </div>
+</section>
+
 <!-- Floating Toast Notification -->
 <div id="toastMessage" class="hidden fixed bottom-6 right-6 z-50 bg-emerald-950 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-gold-rich flex items-center gap-3 transition-all duration-300">
     <div class="w-7 h-7 rounded-full bg-gold-rich text-white flex items-center justify-center font-bold text-xs shrink-0" id="toastIcon">✓</div>
@@ -999,6 +1085,21 @@ $error = \Core\Session::getFlash('error');
 <script>
 let currentDivision = 'all';
 const BASE_URL = '<?= $baseUrl ?>';
+
+// Live Search for Teachers Hub
+function filterTeachersAdmin() {
+    const q = document.getElementById('teacherSearchInput').value.toLowerCase().trim();
+    document.querySelectorAll('.teacher-admin-card').forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const district = card.getAttribute('data-district') || '';
+        const phone = card.getAttribute('data-phone') || '';
+        if (q === '' || name.includes(q) || district.includes(q) || phone.includes(q)) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+}
 
 // Show Toast Notification
 function showToast(message, isSuccess = true) {

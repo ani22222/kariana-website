@@ -202,6 +202,8 @@ class DirectorController
         ");
         $stmtTA->execute(['did' => $directorId]);
         $teacherActivities = $stmtTA->fetchAll();
+        // Get official books for visual book order requisitions
+        $books = $this->db->query("SELECT * FROM `books` ORDER BY `sort_order` ASC, `id` ASC")->fetchAll();
 
         return new Response(View::render('directors/dashboard', [
             'title'             => 'জেলা পরিচালক ড্যাশবোর্ড | ' . $director['district_name'],
@@ -209,6 +211,7 @@ class DirectorController
             'teachers'          => $teachers,
             'requests'          => $requests,
             'teacherActivities' => $teacherActivities,
+            'books'             => $books,
         ], 'layouts/main'));
     }
 
@@ -279,6 +282,77 @@ class DirectorController
 
         Session::flash('success', 'আপনার আবেদনটি কেন্দ্রীয় কার্যালয়ে সফলভাবে পাঠানো হয়েছে। পর্যালোচনার পর ব্যবস্থা গ্রহণ করা হবে।');
         return Response::redirect('/director/dashboard');
+    }
+
+    /**
+     * Director adds a new teacher under their district
+     * URL: POST /director/teachers/create
+     */
+    public function createTeacher(Request $request): Response
+    {
+        $directorId = Session::get('director_id');
+        if (!$directorId) {
+            return Response::redirect('/director/login');
+        }
+
+        $name = trim((string)$request->post('name', ''));
+        $phone = trim((string)$request->post('phone', ''));
+        $areaName = trim((string)$request->post('area_name', ''));
+        $qualification = trim((string)$request->post('qualification', 'মুয়াল্লিমুল কুরআন'));
+        $locationType = (string)$request->post('location_type', 'home');
+        $totalStudents = (int)$request->post('total_students', 15);
+
+        if ($name === '' || $phone === '') {
+            Session::flash('error', 'শিক্ষকের নাম ও মোবাইল নম্বর দেওয়া বাধ্যতামূলক।');
+            return Response::redirect('/director/dashboard#teachers-section');
+        }
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        $username = 'teacher_' . $cleanPhone;
+        $defaultPassword = password_hash('kariana2026!', PASSWORD_BCRYPT);
+
+        try {
+            $stmt = $this->db->prepare("
+                INSERT INTO `teachers` (`director_id`, `name`, `phone`, `username`, `password`, `area_name`, `qualification`, `location_type`, `total_students`, `status`, `joined_date`)
+                VALUES (:did, :name, :phone, :username, :password, :area, :qual, :loc, :students, 'active', CURDATE())
+            ");
+            $stmt->execute([
+                'did'      => $directorId,
+                'name'     => $name,
+                'phone'    => $cleanPhone,
+                'username' => $username,
+                'password' => $defaultPassword,
+                'area'     => $areaName ?: 'নিজ এলাকা',
+                'qual'     => $qualification,
+                'loc'      => $locationType,
+                'students' => $totalStudents,
+            ]);
+
+            Session::flash('success', "আলহামদুলিল্লাহ! শিক্ষক '{$name}' সফলভাবে আপনার জেলা তালিকায় যুক্ত হয়েছেন।");
+        } catch (\Throwable $e) {
+            Session::flash('error', 'শিক্ষক যুক্ত করতে সমস্যা হয়েছে: ' . $e->getMessage());
+        }
+
+        return Response::redirect('/director/dashboard#teachers-section');
+    }
+
+    /**
+     * Director deletes a teacher under their district
+     * URL: POST /director/teachers/delete/{id}
+     */
+    public function deleteTeacher(Request $request, string $id): Response
+    {
+        $directorId = Session::get('director_id');
+        if (!$directorId) {
+            return Response::redirect('/director/login');
+        }
+
+        $teacherId = (int)$id;
+        $stmt = $this->db->prepare("DELETE FROM `teachers` WHERE `id` = :id AND `director_id` = :did");
+        $stmt->execute(['id' => $teacherId, 'did' => $directorId]);
+
+        Session::flash('success', 'শিক্ষকের তথ্য সফলভাবে মুছে ফেলা হয়েছে।');
+        return Response::redirect('/director/dashboard#teachers-section');
     }
 
     /**
