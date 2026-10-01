@@ -1178,6 +1178,62 @@ class AdminController
         exit;
     }
 
+    /**
+     * View & Print A4 Ready-To-Print ID Card Sheet (Dual Face CR80)
+     * URL: GET /admin/id-card/a4/{type}/{id}
+     */
+    public function viewA4Sheet(Request $request, string $type, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $memberId = (int)$id;
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $sheetData = $idCardService->generateA4SheetSvg($type, $memberId);
+
+        if (!$sheetData['success']) {
+            Session::flash('error', $sheetData['message'] ?? 'পরিচয়পত্র শিট প্রস্তুত করা যায়নি।');
+            return Response::redirect("/admin/id-card/{$type}/{$memberId}");
+        }
+
+        $member = $sheetData['member'];
+        $autoPrint = $request->get('auto_print') === '1';
+
+        return new Response(View::render('admin/id_card_a4', [
+            'title'     => 'A4 প্রিন্ট শিট — ' . ($member['name'] ?? ''),
+            'type'      => $type,
+            'member'    => $member,
+            'a4Svg'     => $sheetData['a4_svg'] ?? '',
+            'autoPrint' => $autoPrint,
+            'frontSvg'  => $sheetData['front_svg'] ?? '',
+            'backSvg'   => $sheetData['back_svg'] ?? '',
+        ]));
+    }
+
+    /**
+     * Download Complete A4 Ready-To-Print ID Card Sheet SVG
+     * URL: GET /admin/id-card/download-a4/{type}/{id}
+     */
+    public function downloadA4SheetSvg(Request $request, string $type, string $id): void
+    {
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $memberId = (int)$id;
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $sheetData = $idCardService->generateA4SheetSvg($type, $memberId);
+
+        $svg = $sheetData['a4_svg'] ?? '';
+        $filename = "kariana_id_{$type}_{$memberId}_a4_sheet.svg";
+
+        header('Content-Type: image/svg+xml; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo $svg;
+        exit;
+    }
+
 
     /**
      * Approve Pending Teacher (1-Year Validity Activation)

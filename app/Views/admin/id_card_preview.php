@@ -42,24 +42,28 @@ $verifyUrl = "https://project.rasel.cloud/kariana/verify/{$uuid}";
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap items-center gap-3">
-            <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-emerald-950 font-black text-sm shadow-xl flex items-center gap-2 transition-all transform hover:scale-105">
+            <a href="<?= $baseUrl ?>/admin/id-card/a4/<?= $type ?>/<?= $member['id'] ?>?auto_print=1" target="_blank" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-emerald-950 font-black text-sm shadow-xl flex items-center gap-2 transition-all transform hover:scale-105">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                <span>কার্ড প্রিন্ট করুন</span>
-            </button>
+                <span>🖨️ A4 কার্ড প্রিন্ট করুন</span>
+            </a>
+
+            <a href="<?= $baseUrl ?>/admin/id-card/a4/<?= $type ?>/<?= $member['id'] ?>" class="px-4 py-2.5 rounded-xl bg-emerald-800/90 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 border border-amber-400/50 transition">
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>📄 A4 শিট প্রিভিউ</span>
+            </a>
+
+            <a href="<?= $baseUrl ?>/admin/id-card/download-a4/<?= $type ?>/<?= $member['id'] ?>" class="px-4 py-2.5 rounded-xl bg-emerald-800/90 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 border border-emerald-600 transition">
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span>⬇️ A4 শিট (SVG)</span>
+            </a>
             
-            <a href="<?= $baseUrl ?>/admin/id-card/download/<?= $type ?>/<?= $member['id'] ?>?side=front" class="px-4 py-2.5 rounded-xl bg-emerald-800/90 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 border border-emerald-600 transition">
-                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                <span>সম্মুখ ভাগ (Front SVG)</span>
+            <a href="<?= $baseUrl ?>/admin/id-card/download/<?= $type ?>/<?= $member['id'] ?>?side=front" class="px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-bold shadow-sm flex items-center gap-1 border border-slate-700 transition">
+                <span>সম্মুখ ভাগ</span>
             </a>
 
-            <a href="<?= $baseUrl ?>/admin/id-card/download/<?= $type ?>/<?= $member['id'] ?>?side=back" class="px-4 py-2.5 rounded-xl bg-emerald-800/90 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 border border-emerald-600 transition">
-                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                <span>পশ্চাৎ ভাগ (Back SVG)</span>
+            <a href="<?= $baseUrl ?>/admin/id-card/download/<?= $type ?>/<?= $member['id'] ?>?side=back" class="px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-bold shadow-sm flex items-center gap-1 border border-slate-700 transition">
+                <span>পশ্চাৎ ভাগ</span>
             </a>
-
-            <button onclick="downloadAsPng('frontCardContainer', 'kariana_id_<?= $type ?>_<?= $member['id'] ?>_front.png')" class="px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold border border-amber-400/40 shadow-sm flex items-center gap-1.5 transition">
-                <span>🖼️ ছবি (PNG)</span>
-            </button>
 
             <a href="<?= $baseUrl ?>/admin" class="px-4 py-2.5 rounded-xl bg-emerald-950 hover:bg-black text-emerald-300 text-xs font-bold border border-emerald-800 transition">
                 ← ফিরে যান

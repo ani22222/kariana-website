@@ -453,6 +453,79 @@ class DirectorController
     }
 
     /**
+     * View & Print A4 Sheet for Director Portal
+     * URL: GET /director/id-card/a4/{type}/{id}
+     */
+    public function viewA4Sheet(Request $request, string $type, string $id): Response
+    {
+        $directorId = (int)Session::get('director_id');
+        if (!$directorId) {
+            return Response::redirect('/director/login');
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $targetId = (int)$id;
+
+        if ($type === 'director') {
+            $targetId = $directorId;
+        } else {
+            $stmt = $this->db->prepare("SELECT `id` FROM `teachers` WHERE `id` = :id AND `director_id` = :dir_id LIMIT 1");
+            $stmt->execute(['id' => $targetId, 'dir_id' => $directorId]);
+            if (!$stmt->fetch()) {
+                Session::flash('error', 'এই শিক্ষকের তথ্য আপনার দায়িত্বপ্রাপ্ত অঞ্চলের অন্তর্ভুক্ত নয়।');
+                return Response::redirect('/director/dashboard');
+            }
+        }
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $sheetData = $idCardService->generateA4SheetSvg($type, $targetId);
+
+        if (!$sheetData['success']) {
+            Session::flash('error', $sheetData['message']);
+            return Response::redirect('/director/dashboard');
+        }
+
+        $member = $sheetData['member'];
+        $autoPrint = $request->get('auto_print') === '1';
+
+        return new Response(View::render('admin/id_card_a4', [
+            'title'     => 'A4 প্রিন্ট শিট — ' . ($member['name'] ?? ''),
+            'type'      => $type,
+            'member'    => $member,
+            'a4Svg'     => $sheetData['a4_svg'] ?? '',
+            'autoPrint' => $autoPrint,
+            'frontSvg'  => $sheetData['front_svg'] ?? '',
+            'backSvg'   => $sheetData['back_svg'] ?? '',
+        ]));
+    }
+
+    /**
+     * Download Complete A4 Ready-To-Print ID Card Sheet SVG for Director
+     * URL: GET /director/id-card/download-a4/{type}/{id}
+     */
+    public function downloadA4SheetSvg(Request $request, string $type, string $id): void
+    {
+        $directorId = (int)Session::get('director_id');
+        if (!$directorId) {
+            exit;
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $targetId = ($type === 'director') ? $directorId : (int)$id;
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $sheetData = $idCardService->generateA4SheetSvg($type, $targetId);
+
+        $svg = $sheetData['a4_svg'] ?? '';
+        $filename = "kariana_id_{$type}_{$targetId}_a4_sheet.svg";
+
+        header('Content-Type: image/svg+xml; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo $svg;
+        exit;
+    }
+
+    /**
      * Director Logout
      */
     public function logout(): Response

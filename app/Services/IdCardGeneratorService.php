@@ -305,6 +305,179 @@ class IdCardGeneratorService
     }
 
     /**
+     * Generate A4 Ready-To-Print Sheet SVG containing both Front & Back ID Card faces
+     * with standard CR80 physical dimensions (54mm x 85.6mm) and cutting guidelines.
+     */
+    public function generateA4SheetSvg(string $type, int $id): array
+    {
+        $card = $this->generateCard($type, $id, 'both');
+        if (!$card['success']) {
+            return $card;
+        }
+
+        $frontSvg = $card['front_svg'] ?? '';
+        $backSvg = $card['back_svg'] ?? '';
+
+        $frontInner = $this->extractInnerSvg($frontSvg, 'f');
+        $backInner = $this->extractInnerSvg($backSvg, 'b');
+
+        // Scale factors: 600 -> 540 (0.9), 960 -> 856 (856 / 960)
+        $sx = number_format(540.0 / 600.0, 4, '.', '');
+        $sy = number_format(856.0 / 960.0, 4, '.', '');
+
+        $member = $card['member'];
+        $roleTitle = ($type === 'director') ? 'জেলা পরিচালক' : 'শিক্ষক (মুয়াল্লিম)';
+        $memberName = htmlspecialchars($member['name'] ?? '', ENT_QUOTES, 'UTF-8');
+
+        $a4Svg = <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2100 2970" width="2100" height="2970">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap');
+      .a4-title { font-family: 'Hind Siliguri', 'Nirmala UI', sans-serif; font-size: 42px; font-weight: 700; fill: #064e3b; text-anchor: middle; }
+      .a4-sub   { font-family: 'Hind Siliguri', 'Nirmala UI', sans-serif; font-size: 26px; font-weight: 600; fill: #4b5563; text-anchor: middle; }
+      .a4-meta  { font-family: 'Hind Siliguri', 'Nirmala UI', sans-serif; font-size: 24px; font-weight: 500; fill: #6b7280; text-anchor: middle; }
+      .a4-guide { font-family: 'Hind Siliguri', 'Nirmala UI', sans-serif; font-size: 24px; font-weight: 700; fill: #047857; text-anchor: middle; }
+      .a4-dim   { font-family: monospace; font-size: 20px; font-weight: bold; fill: #6b7280; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Clean A4 White Page Background -->
+  <rect x="0" y="0" width="2100" height="2970" fill="#ffffff"/>
+
+  <!-- Top Header Information on Sheet -->
+  <g transform="translate(1050, 180)">
+    <text y="0" class="a4-title">ক্ব-রিয়ানা কুরআন শিক্ষা সোসাইটি — অফিসিয়াল পরিচয়পত্র প্রিন্ট শিট</text>
+    <text y="50" class="a4-sub">প্রমিত সাইজ: CR80 (৫৪ মিমি × ৮৫.৬ মিমি) • রেডি-টু-প্রিন্ট উভয় পৃষ্ঠা (Front &amp; Back) • {$roleTitle}: {$memberName}</text>
+    <text y="100" class="a4-meta">প্রিন্ট নির্দেশনা: A4 সাইজের ফটো পেপারে ১০০% স্কেলে (Actual Size / 100%) প্রিন্ট করুন।</text>
+    <line x1="-700" y1="140" x2="700" y2="140" stroke="#d1d5db" stroke-width="2"/>
+  </g>
+
+  <!-- FRONT CARD SECTION (x=460, y=420, w=540, h=856) -->
+  <g>
+    <!-- Label above Front Card -->
+    <text x="730" y="375" class="a4-guide">সম্মুখ ভাগ (Front Face)</text>
+    <text x="730" y="405" class="a4-dim">54.0 mm × 85.6 mm</text>
+
+    <!-- Corner Crop Marks for Front Card -->
+    <line x1="420" y1="420" x2="455" y2="420" stroke="#111827" stroke-width="2.5"/>
+    <line x1="460" y1="380" x2="460" y2="415" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1005" y1="420" x2="1040" y2="420" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1000" y1="380" x2="1000" y2="415" stroke="#111827" stroke-width="2.5"/>
+    <line x1="420" y1="1276" x2="455" y2="1276" stroke="#111827" stroke-width="2.5"/>
+    <line x1="460" y1="1281" x2="460" y2="1316" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1005" y1="1276" x2="1040" y2="1276" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1000" y1="1281" x2="1000" y2="1316" stroke="#111827" stroke-width="2.5"/>
+
+    <!-- Front Card Content -->
+    <g transform="translate(460, 420) scale({$sx}, {$sy})">
+      {$frontInner}
+    </g>
+
+    <!-- Outer Hairline Cut Border -->
+    <rect x="460" y="420" width="540" height="856" rx="25" ry="25" fill="none" stroke="#d1d5db" stroke-width="1.5"/>
+  </g>
+
+  <!-- CENTER FOLDING & CUTTING GUIDELINE (x=1050) -->
+  <g>
+    <line x1="1050" y1="370" x2="1050" y2="1320" stroke="#6b7280" stroke-width="2.5" stroke-dasharray="8 8"/>
+    <circle cx="1050" cy="848" r="34" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
+    <text x="1050" y="858" font-size="28" text-anchor="middle">✂️</text>
+    <text x="1050" y="910" font-family="'Hind Siliguri', sans-serif" font-size="18" fill="#4b5563" text-anchor="middle" font-weight="bold">ভাঁজ / কাটার দাগ</text>
+  </g>
+
+  <!-- BACK CARD SECTION (x=1100, y=420, w=540, h=856) -->
+  <g>
+    <!-- Label above Back Card -->
+    <text x="1370" y="375" class="a4-guide">পশ্চাৎ ভাগ (Back Face)</text>
+    <text x="1370" y="405" class="a4-dim">54.0 mm × 85.6 mm</text>
+
+    <!-- Corner Crop Marks for Back Card -->
+    <line x1="1060" y1="420" x2="1095" y2="420" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1100" y1="380" x2="1100" y2="415" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1645" y1="420" x2="1680" y2="420" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1640" y1="380" x2="1640" y2="415" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1060" y1="1276" x2="1095" y2="1276" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1100" y1="1281" x2="1100" y2="1316" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1645" y1="1276" x2="1680" y2="1276" stroke="#111827" stroke-width="2.5"/>
+    <line x1="1640" y1="1281" x2="1640" y2="1316" stroke="#111827" stroke-width="2.5"/>
+
+    <!-- Back Card Content -->
+    <g transform="translate(1100, 420) scale({$sx}, {$sy})">
+      {$backInner}
+    </g>
+
+    <!-- Outer Hairline Cut Border -->
+    <rect x="1100" y="420" width="540" height="856" rx="25" ry="25" fill="none" stroke="#d1d5db" stroke-width="1.5"/>
+  </g>
+
+  <!-- LAMINATION & CUTTING INSTRUCTIONS BOX -->
+  <g transform="translate(1050, 1420)">
+    <rect x="-650" y="0" width="1300" height="220" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="-600" y="50" font-family="'Hind Siliguri', sans-serif" font-size="28" font-weight="bold" fill="#065f46" text-anchor="start">📋 প্রিন্টিং ও লেমিনেশন গাইডলাইন (Printing &amp; Pouch Instructions):</text>
+    <text x="-600" y="95" font-family="'Hind Siliguri', sans-serif" font-size="22" fill="#334155" text-anchor="start">১. যেকোনো স্ট্যান্ডার্ড কালার প্রিন্টারে A4 সাইজের গ্লসি পেপার (Glossy Photo Paper) নির্বাচন করুন।</text>
+    <text x="-600" y="135" font-family="'Hind Siliguri', sans-serif" font-size="22" fill="#334155" text-anchor="start">২. প্রিন্টার ডায়ালগে স্কেল (Scale) অপশনে অবশ্যই "100%" অথবা "Actual Size" সিলেক্ট করবেন (Fit to page নয়)।</text>
+    <text x="-600" y="175" font-family="'Hind Siliguri', sans-serif" font-size="22" fill="#334155" text-anchor="start">৩. প্রিন্ট শেষে কাঁচি বা পেপার কাটার দিয়ে ক্রপ মার্ক (কাটিং দাগ) বরাবর কেটে প্লাস্টিক আইডি কার্ড পাউচে প্রবেশ করিয়ে লেমিনেশন করুন।</text>
+  </g>
+
+  <!-- BOTTOM FOOTER -->
+  <g transform="translate(1050, 2850)">
+    <line x1="-700" y1="0" x2="700" y2="0" stroke="#e5e7eb" stroke-width="2"/>
+    <text y="40" class="a4-meta">ক্ব-রিয়ানা কুরআন শিক্ষা সোসাইটি • নিবন্ধিত কেন্দ্রীয় কার্যালয় • ওয়েবসাইট: www.karianaquran.com • হেল্পলাইন: 01712-415613</text>
+  </g>
+</svg>
+SVG;
+
+        return [
+            'success'   => true,
+            'message'   => 'A4 সাইজের পরিচয়পত্র শিট সফলভাবে প্রস্তুত হয়েছে।',
+            'a4_svg'    => $a4Svg,
+            'member'    => $member,
+            'type'      => $type,
+            'front_svg' => $frontSvg,
+            'back_svg'  => $backSvg
+        ];
+    }
+
+    /**
+     * Helper to extract inner SVG content and prefix IDs to prevent collision
+     */
+    private function extractInnerSvg(string $svgStr, string $prefix = ''): string
+    {
+        // Strip outer <svg ...> and </svg>
+        $inner = preg_replace('/^.*?<svg[^>]*>/is', '', $svgStr);
+        $inner = preg_replace('/<\/svg>\s*$/is', '', $inner);
+
+        if (!empty($prefix)) {
+            // Find all id attributes and prefix them
+            if (preg_match_all('/id=["\']([^"\']+)["\']/i', $inner, $matches)) {
+                foreach (array_unique($matches[1]) as $idVal) {
+                    $newId = "{$prefix}_{$idVal}";
+                    $inner = str_replace([
+                        "id=\"{$idVal}\"",
+                        "id='{$idVal}'",
+                        "url(#{$idVal})",
+                        "url('#{$idVal}')",
+                        "url(\"#{$idVal}\")",
+                        "href=\"#{$idVal}\"",
+                        "href='#{$idVal}'"
+                    ], [
+                        "id=\"{$newId}\"",
+                        "id='{$newId}'",
+                        "url(#{$newId})",
+                        "url('#{$newId}')",
+                        "url(\"#{$newId}\")",
+                        "href=\"#{$newId}\"",
+                        "href='#{$newId}'"
+                    ], $inner);
+                }
+            }
+        }
+
+        return $inner;
+    }
+
+    /**
      * Convert English digits to Bengali numerals
      */
     public function toBengaliNumerals(string $input): string

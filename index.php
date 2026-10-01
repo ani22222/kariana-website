@@ -262,13 +262,16 @@ if (file_exists($routesFile)) {
 
     // Application Downloads (Android APK & Windows Desktop EXE)
     $router->get('/download/apk', function (\Core\Request $request) {
-        $file = __DIR__ . '/public/downloads/kariana-quran-v1.0.apk';
+        $file = __DIR__ . '/public/downloads/kariana-quran.apk';
+        if (!file_exists($file)) {
+            $file = __DIR__ . '/public/downloads/kariana-quran-v1.0.apk';
+        }
         if (!file_exists($file)) {
             if (!is_dir(dirname($file))) @mkdir(dirname($file), 0777, true);
             file_put_contents($file, "PK\x03\x04 Kariana Quran Android Application Package v1.0\nOfficial Build from Kariana Quran Educational Portal.");
         }
         header('Content-Type: application/vnd.android.package-archive');
-        header('Content-Disposition: attachment; filename="kariana-quran-v1.0.apk"');
+        header('Content-Disposition: attachment; filename="kariana-quran.apk"');
         header('Content-Length: ' . filesize($file));
         readfile($file);
         exit;
@@ -451,6 +454,16 @@ if (file_exists($routesFile)) {
         return $controller->viewIdCard($request, $type, $id);
     });
 
+    $router->get('/director/id-card/a4/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\DirectorController();
+        return $controller->viewA4Sheet($request, $type, $id);
+    });
+
+    $router->get('/director/id-card/download-a4/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\DirectorController();
+        $controller->downloadA4SheetSvg($request, $type, $id);
+    });
+
     $router->get('/director/my-id-card', function (\Core\Request $request) {
         $controller = new \App\Controllers\DirectorController();
         $id = (string)(\Core\Session::get('director_id') ?? 0);
@@ -496,6 +509,16 @@ if (file_exists($routesFile)) {
     $router->get('/admin/id-card/download/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
         $controller = new \App\Controllers\AdminController();
         $controller->downloadIdCardSvg($request, $type, $id);
+    });
+
+    $router->get('/admin/id-card/a4/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->viewA4Sheet($request, $type, $id);
+    });
+
+    $router->get('/admin/id-card/download-a4/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        $controller->downloadA4SheetSvg($request, $type, $id);
     });
 
     $router->post('/admin/teachers/approve/{id}', function (\Core\Request $request, string $id) {
