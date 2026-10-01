@@ -91,6 +91,7 @@ if ($publicDir !== false) {
                 'txt'   => 'text/plain; charset=UTF-8',
                 'xml'   => 'application/xml; charset=UTF-8',
                 'json'  => 'application/manifest+json; charset=UTF-8',
+                'apk'   => 'application/vnd.android.package-archive',
             ];
 
             if (isset($allowedMimes[$fileExt])) {

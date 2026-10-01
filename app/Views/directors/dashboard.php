@@ -60,6 +60,9 @@ $pendingActivities = array_filter($teacherActivities ?? [], fn($a) => ($a['statu
 
             <!-- Founder Contact & Actions -->
             <div class="flex flex-wrap items-center justify-center gap-2">
+                <a href="<?= $baseUrl ?>/director/my-id-card" target="_blank" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-3.5 py-2 rounded-xl text-xs font-black transition shadow flex items-center border border-emerald-400/40">
+                    <i class="fas fa-id-card mr-1.5 text-amber-300"></i> আমার আইডি কার্ড
+                </a>
                 <a href="tel:01717056816" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3.5 py-2 rounded-xl text-xs font-black transition shadow flex items-center">
                     <i class="fas fa-phone mr-1.5 text-white animate-pulse"></i> প্রতিষ্ঠাতা হেল্পলাইন
                 </a>
@@ -365,7 +368,7 @@ $pendingActivities = array_filter($teacherActivities ?? [], fn($a) => ($a['statu
                                     <i class="fab fa-whatsapp"></i> চ্যাট
                                 </a>
                                 <?php if ($apprStatus === 'approved'): ?>
-                                <a href="<?= $baseUrl ?>/admin/id-card/teacher/<?= $t['id'] ?>" target="_blank" class="py-1.5 px-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1 shadow-sm" title="শিক্ষকের ১ বছর মেয়াদি আইডি কার্ড প্রিন্ট করুন">
+                                <a href="<?= $baseUrl ?>/director/id-card/teacher/<?= $t['id'] ?>" target="_blank" class="py-1.5 px-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-[11px] font-black transition text-center flex items-center justify-center gap-1 shadow-sm" title="শিক্ষকের ১ বছর মেয়াদি আইডি কার্ড প্রিন্ট করুন">
                                     <i class="fas fa-id-card"></i> আইডি
                                 </a>
                                 <?php else: ?>

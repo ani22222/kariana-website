@@ -1090,12 +1090,94 @@ class AdminController
             }
         }
 
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $cardData = $idCardService->generateCard($type, $memberId, 'both');
+
         return new Response(View::render('admin/id_card_preview', [
-            'title'   => 'অফিসিয়াল আইডি কার্ড জেনারেটর — ' . ($member['name'] ?? ''),
-            'type'    => $type,
-            'member'  => $member,
+            'title'     => 'অফিসিয়াল আইডি কার্ড জেনারেটর — ' . ($member['name'] ?? ''),
+            'type'      => $type,
+            'member'    => $cardData['member'] ?? $member,
+            'cardData'  => $cardData,
+            'frontSvg'  => $cardData['front_svg'] ?? '',
+            'backSvg'   => $cardData['back_svg'] ?? '',
         ]));
     }
+
+    /**
+     * Update Candidate Information for ID Card on the fly
+     * URL: POST /admin/id-card/update/{type}/{id}
+     */
+    public function updateIdCardMember(Request $request, string $type, string $id): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $memberId = (int)$id;
+        $table = ($type === 'director') ? 'directors' : 'teachers';
+
+        $fatherName = trim((string)$request->post('father_name', ''));
+        $dob = trim((string)$request->post('dob', ''));
+        $bloodGroup = trim((string)$request->post('blood_group', ''));
+        $address = trim((string)$request->post('address', ''));
+
+        $photoSql = "";
+        $params = [
+            'fn'  => $fatherName,
+            'dob' => $dob,
+            'bg'  => $bloodGroup,
+            'adr' => $address,
+            'id'  => $memberId
+        ];
+
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['photo'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                $targetDir = dirname(__DIR__, 2) . '/public/uploads/id_cards';
+                if (!is_dir($targetDir)) {
+                    @mkdir($targetDir, 0777, true);
+                }
+                $fileName = "{$type}_{$memberId}_" . time() . ".{$ext}";
+                $targetFile = "{$targetDir}/{$fileName}";
+                if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+                    $photoSql = ", `photo` = :photo";
+                    $params['photo'] = "uploads/id_cards/{$fileName}";
+                }
+            }
+        }
+
+        $sql = "UPDATE `$table` SET `father_name` = :fn, `dob` = :dob, `blood_group` = :bg, `address` = :adr {$photoSql} WHERE `id` = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        Session::flash('success', 'সদস্যের তথ্য সফলভাবে হালনাগাদ করা হয়েছে।');
+        return Response::redirect("/admin/id-card/{$type}/{$memberId}");
+    }
+
+    /**
+     * Download ID Card SVG File Directly
+     * URL: GET /admin/id-card/download/{type}/{id}
+     */
+    public function downloadIdCardSvg(Request $request, string $type, string $id): void
+    {
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $memberId = (int)$id;
+        $side = $request->get('side', 'front');
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $cardData = $idCardService->generateCard($type, $memberId, $side);
+
+        $svg = ($side === 'back') ? ($cardData['back_svg'] ?? '') : ($cardData['front_svg'] ?? '');
+        $filename = "kariana_id_{$type}_{$memberId}_{$side}.svg";
+
+        header('Content-Type: image/svg+xml; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo $svg;
+        exit;
+    }
+
 
     /**
      * Approve Pending Teacher (1-Year Validity Activation)

@@ -1,0 +1,29 @@
+Total Pages: 2
+
+================ Page 0 (front) ================
+Dimensions: 144.0 x 230.39999389648438 pt (Rect(0.0, 0.0, 144.0, 230.39999389648438))
+Rendered PNG: C:\xampp\htdocs\Kariana Website\public\assets\templates\id_card_front_original.png (600x960 px)
+Rendered SVG: C:\xampp\htdocs\Kariana Website\public\assets\templates\id_card_front_original.svg (3531917 bytes)
+Text Blocks (8 blocks):
+  [13.0, 147.1, 46.4, 168.7]: wcZvi bvg \n Rb¥ ZvwiL
+  [5.6, 167.7, 46.4, 209.2]: wVKvbv \n †hvM`vb \n AvBwW bs \n Blood Group
+  [58.5, 147.2, 141.2, 208.4]: gv‡jK wgqv \n 28/09/2004 Bs \n fvZzwoqv, mvaynvwU, wSbvB`n \n 2026 \n 4188
+  [58.5, 219.4, 58.5, 230.7]: 
+  [55.6, 33.9, 88.1, 45.0]: cwiPq cÎ
+  [41.0, 115.1, 103.0, 148.5]: wkÿK \n wknve DwÏb
+  [6.4, 7.5, 137.6, 22.4]: K¡ -ixqvbv Kzi#b wkÿv †mvmvBwU
+  [34.4, 21.4, 109.3, 31.9]: গভঃ েরিজঃ নƓরঃ এস-৭৭৫২
+
+================ Page 1 (back) ================
+Dimensions: 144.0 x 230.39999389648438 pt (Rect(0.0, 0.0, 144.0, 230.39999389648438))
+Rendered PNG: C:\xampp\htdocs\Kariana Website\public\assets\templates\id_card_back_original.png (600x960 px)
+Rendered SVG: C:\xampp\htdocs\Kariana Website\public\assets\templates\id_card_back_original.svg (7301508 bytes)
+Text Blocks (8 blocks):
+  [6.7, 191.2, 137.3, 202.1]: GB KvW©wU †Kv_vI cvIqv †M‡j KZ©…c‡ÿi mv‡_
+  [24.5, 200.6, 119.6, 211.4]: †hvMv‡hvM Kivi Aby‡iva Kiv nj|
+  [1.4, 216.0, 69.8, 226.7]: ‡gvevBj: 01712-415613
+  [55.3, 69.9, 88.9, 75.6]: জাচাই করেত Ǆ্যান করুন
+  [9.9, 153.1, 134.1, 162.4]: †m‡µUvwii ¯^vÿi \n mfvcwZi ¯^vÿi
+  [74.1, 214.5, 143.0, 224.5]: www.karianaquran.com
+  [6.4, 7.5, 137.6, 22.4]: K¡ -ixqvbv Kzi#b wkÿv †mvmvBwU
+  [34.4, 21.4, 109.3, 31.9]: গভঃ েরিজঃ নƓরঃ এস-৭৭৫২

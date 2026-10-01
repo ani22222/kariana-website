@@ -248,10 +248,40 @@ class TeacherController
             if ($directorId > 0) {
                 (new \App\Services\UnifiedMessagingService())->sendNotificationToUser('director', $directorId, $msg);
             }
-            \App\Controllers\TelegramWebhookController::sendCategoryAlert('👥 শিক্ষক তথ্য আপডেট', "শিক্ষক {$sessTeacher['name']} শিক্ষার্থী সংখ্যা পরিবর্তন করেছেন: {$count} জন");
         } catch (\Throwable $e) {}
 
         Session::flash('success', 'শিক্ষার্থীর সংখ্যা সফলভাবে হালনাগাদ করা হয়েছে।');
         return Response::redirect('/teacher/dashboard');
+    }
+
+    /**
+     * Teacher views their own official ID card
+     * URL: GET /teacher/my-id-card
+     */
+    public function myIdCard(Request $request): Response
+    {
+        if ($redirect = $this->requireAuth($request)) {
+            return $redirect;
+        }
+
+        $sessTeacher = Session::get('teacher');
+        $teacherId = (int)$sessTeacher['id'];
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $cardData = $idCardService->generateTeacherIdCard($teacherId, 'both');
+
+        if (!$cardData['success']) {
+            Session::flash('error', $cardData['message']);
+            return Response::redirect('/teacher/dashboard');
+        }
+
+        return new Response(View::render('admin/id_card_preview', [
+            'title'     => 'আমার অফিসিয়াল পরিচয়পত্র — ' . ($cardData['member']['name'] ?? ''),
+            'type'      => 'teacher',
+            'member'    => $cardData['member'],
+            'cardData'  => $cardData,
+            'frontSvg'  => $cardData['front_svg'] ?? '',
+            'backSvg'   => $cardData['back_svg'] ?? '',
+        ]));
     }
 }

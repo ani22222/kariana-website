@@ -410,6 +410,49 @@ class DirectorController
     }
 
     /**
+     * View and Download Official ID Card for Director or Approved Teacher
+     * URL: GET /director/id-card/{type}/{id}
+     */
+    public function viewIdCard(Request $request, string $type, string $id): Response
+    {
+        $directorId = (int)Session::get('director_id');
+        if (!$directorId) {
+            return Response::redirect('/director/login');
+        }
+
+        $type = in_array($type, ['director', 'teacher']) ? $type : 'teacher';
+        $targetId = (int)$id;
+
+        if ($type === 'director') {
+            $targetId = $directorId;
+        } else {
+            $stmt = $this->db->prepare("SELECT id FROM `teachers` WHERE `id` = ? AND `director_id` = ? LIMIT 1");
+            $stmt->execute([$targetId, $directorId]);
+            if (!$stmt->fetch()) {
+                Session::flash('error', 'এই শিক্ষক আপনার জেলা ইউনিটের অন্তর্ভুক্ত নন।');
+                return Response::redirect('/director/dashboard#teachers-section');
+            }
+        }
+
+        $idCardService = new \App\Services\IdCardGeneratorService();
+        $cardData = $idCardService->generateCard($type, $targetId, 'both');
+
+        if (!$cardData['success']) {
+            Session::flash('error', $cardData['message']);
+            return Response::redirect('/director/dashboard');
+        }
+
+        return new Response(View::render('admin/id_card_preview', [
+            'title'     => 'অফিসিয়াল আইডি কার্ড — ' . ($cardData['member']['name'] ?? ''),
+            'type'      => $type,
+            'member'    => $cardData['member'],
+            'cardData'  => $cardData,
+            'frontSvg'  => $cardData['front_svg'] ?? '',
+            'backSvg'   => $cardData['back_svg'] ?? '',
+        ]));
+    }
+
+    /**
      * Director Logout
      */
     public function logout(): Response

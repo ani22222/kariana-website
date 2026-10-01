@@ -446,6 +446,17 @@ if (file_exists($routesFile)) {
         return $controller->deleteTeacher($request, $id);
     });
 
+    $router->get('/director/id-card/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\DirectorController();
+        return $controller->viewIdCard($request, $type, $id);
+    });
+
+    $router->get('/director/my-id-card', function (\Core\Request $request) {
+        $controller = new \App\Controllers\DirectorController();
+        $id = (string)(\Core\Session::get('director_id') ?? 0);
+        return $controller->viewIdCard($request, 'director', $id);
+    });
+
     // --- Admin CMS & Marketing Integrations Routes ---
     $router->get('/admin', function (\Core\Request $request) {
         $controller = new \App\Controllers\AdminController();
@@ -475,6 +486,16 @@ if (file_exists($routesFile)) {
     $router->get('/admin/id-card/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
         $controller = new \App\Controllers\AdminController();
         return $controller->generateIdCard($request, $type, $id);
+    });
+
+    $router->post('/admin/id-card/update/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        return $controller->updateIdCardMember($request, $type, $id);
+    });
+
+    $router->get('/admin/id-card/download/{type}/{id}', function (\Core\Request $request, string $type, string $id) {
+        $controller = new \App\Controllers\AdminController();
+        $controller->downloadIdCardSvg($request, $type, $id);
     });
 
     $router->post('/admin/teachers/approve/{id}', function (\Core\Request $request, string $id) {
@@ -656,6 +677,11 @@ if (file_exists($routesFile)) {
     $router->post('/teacher/students/update', function (\Core\Request $request) {
         $controller = new \App\Controllers\TeacherController();
         return $controller->updateStudentCount($request);
+    });
+
+    $router->get('/teacher/my-id-card', function (\Core\Request $request) {
+        $controller = new \App\Controllers\TeacherController();
+        return $controller->myIdCard($request);
     });
 
     // --- Global Maximum-Level SEO: Dynamic XML Sitemap ---

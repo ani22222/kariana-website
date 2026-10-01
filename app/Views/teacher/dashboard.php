@@ -39,10 +39,16 @@ $error = \Core\Session::flash('error');
                 </div>
             </div>
 
-            <!-- Logout -->
-            <a href="<?= $baseUrl ?>/teacher/logout" class="bg-red-500/20 hover:bg-red-600/40 border border-red-400/40 text-red-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center shadow-sm">
-                <i class="fas fa-sign-out-alt mr-1.5"></i> প্রস্থান
-            </a>
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
+                <a href="<?= $baseUrl ?>/teacher/my-id-card" target="_blank" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-2 rounded-xl text-xs font-black transition flex items-center shadow-md border border-amber-300/40">
+                    <i class="fas fa-id-card mr-1.5 text-white"></i> আমার আইডি কার্ড
+                </a>
+                <!-- Logout -->
+                <a href="<?= $baseUrl ?>/teacher/logout" class="bg-red-500/20 hover:bg-red-600/40 border border-red-400/40 text-red-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center shadow-sm">
+                    <i class="fas fa-sign-out-alt mr-1.5"></i> প্রস্থান
+                </a>
+            </div>
         </div>
     </div>
 

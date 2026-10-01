@@ -31,6 +31,7 @@ storage/logs/
 telegram_token.php
 telegram_state.json
 telegram_accounts.json
+antigravity_state.json
 .env
 .env.*
 
